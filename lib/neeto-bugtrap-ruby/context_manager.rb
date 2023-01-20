@@ -1,4 +1,4 @@
-require 'honeybadger/conversions'
+require 'neeto-bugtrap-ruby/conversions'
 
 module NeetoBugtrapRuby
   # @api private

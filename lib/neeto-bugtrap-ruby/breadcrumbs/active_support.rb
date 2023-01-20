@@ -1,4 +1,4 @@
-require 'honeybadger/util/sql'
+require 'neeto-bugtrap-ruby/util/sql'
 
 module NeetoBugtrapRuby
   module Breadcrumbs

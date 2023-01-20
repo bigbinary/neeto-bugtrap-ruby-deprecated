@@ -1,6 +1,6 @@
 require 'logger'
-require 'honeybadger/backend/server'
-require 'honeybadger/config'
+require 'neeto-bugtrap-ruby/backend/server'
+require 'neeto-bugtrap-ruby/config'
 
 describe NeetoBugtrapRuby::Backend::Server do
   let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, api_key: 'abc123') }

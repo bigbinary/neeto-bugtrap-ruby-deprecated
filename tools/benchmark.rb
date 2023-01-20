@@ -6,7 +6,7 @@
 #
 #     bundle exec jruby -J-Xrunhprof spec/benchmark.rb
 
-require 'honeybadger'
+require 'neeto-bugtrap-ruby'
 require 'benchmark'
 
 benchmark = Benchmark.measure do

@@ -12,7 +12,7 @@ begin
   SKIP_ACTIVE_RECORD = !!(defined?(JRUBY_VERSION) && Rails::VERSION::PRE == "alpha")
 
   require FIXTURES_PATH.join('rails', 'config', 'application.rb')
-  require 'honeybadger/init/rails'
+  require 'neeto-bugtrap-ruby/init/rails'
   require 'rspec/rails'
 rescue LoadError
   RAILS_PRESENT = false

@@ -1,5 +1,5 @@
 require 'forwardable'
-require 'honeybadger/agent'
+require 'neeto-bugtrap-ruby/agent'
 
 # NeetoBugtrapRuby's public API is made up of two parts: the {NeetoBugtrapRuby} singleton
 # module, and the {Agent} class. The singleton module delegates its methods to

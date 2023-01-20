@@ -2,7 +2,7 @@
 require File.expand_path('../application', __FILE__)
 
 # Load honeybadger hooks before initialization.
-require 'honeybadger'
+require 'neeto-bugtrap-ruby'
 
 # Initialize the rails application
 RailsApp.initialize!

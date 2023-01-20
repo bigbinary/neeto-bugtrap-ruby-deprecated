@@ -1,4 +1,4 @@
-require "honeybadger/util/sql"
+require "neeto-bugtrap-ruby/util/sql"
 
 describe NeetoBugtrapRuby::Util::SQL do
   describe "#obfuscate" do

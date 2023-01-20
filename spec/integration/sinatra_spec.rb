@@ -9,7 +9,7 @@ end
 
 if SINATRA_PRESENT
   require FIXTURES_PATH.join('sinatra', 'app.rb')
-  require 'honeybadger/init/sinatra'
+  require 'neeto-bugtrap-ruby/init/sinatra'
 
   describe 'Sinatra integration' do
     include Rack::Test::Methods

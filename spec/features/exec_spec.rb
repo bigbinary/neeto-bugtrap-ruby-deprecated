@@ -1,4 +1,4 @@
-require 'honeybadger'
+require 'neeto-bugtrap-ruby'
 
 
 feature "Running the exec cli command" do

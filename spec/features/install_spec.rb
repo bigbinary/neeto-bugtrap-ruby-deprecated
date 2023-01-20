@@ -1,4 +1,4 @@
-require 'honeybadger/config'
+require 'neeto-bugtrap-ruby/config'
 require 'pathname'
 
 feature "Installing honeybadger via the cli" do

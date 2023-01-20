@@ -1,4 +1,4 @@
-require 'honeybadger'
+require 'neeto-bugtrap-ruby'
 
 feature "Running the test cli command" do
   scenario "in a standalone project" do

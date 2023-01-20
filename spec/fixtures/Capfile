@@ -5,4 +5,4 @@ else
   require 'capistrano/deploy'
 end
 
-require 'capistrano/honeybadger'
+require 'capistrano/neeto-bugtrap-ruby'

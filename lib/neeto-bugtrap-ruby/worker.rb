@@ -1,7 +1,7 @@
 require 'forwardable'
 require 'net/http'
 
-require 'honeybadger/logging'
+require 'neeto-bugtrap-ruby/logging'
 
 module NeetoBugtrapRuby
   # A concurrent queue to notify the backend.
@@ -225,9 +225,9 @@ module NeetoBugtrapRuby
         suspend(3600)
       when 201
         if throttle = dec_throttle
-          info { sprintf('Success ⚡ https://app.honeybadger.io/notice/%s id=%s code=%s throttle=%s interval=%s', msg.id, msg.id, response.code, throttle, throttle_interval) }
+          info { sprintf('Success ⚡ https://app.neetobugtrap.com/notice/%s id=%s code=%s throttle=%s interval=%s', msg.id, msg.id, response.code, throttle, throttle_interval) }
         else
-          info { sprintf('Success ⚡ https://app.honeybadger.io/notice/%s id=%s code=%s', msg.id, msg.id, response.code) }
+          info { sprintf('Success ⚡ https://app.neetobugtrap.com/notice/%s id=%s code=%s', msg.id, msg.id, response.code) }
         end
       when :stubbed
         info { sprintf('Success ⚡ Development mode is enabled; this error will be reported if it occurs after you deploy your app. id=%s', msg.id) }

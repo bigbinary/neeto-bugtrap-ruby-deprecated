@@ -1,2 +1,2 @@
-require 'honeybadger'
+require 'neeto-bugtrap-ruby'
 raise 'badgers!'

@@ -1,4 +1,4 @@
-require 'honeybadger/backend/null'
+require 'neeto-bugtrap-ruby/backend/null'
 
 module NeetoBugtrapRuby
   module Backend

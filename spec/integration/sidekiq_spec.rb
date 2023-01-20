@@ -24,7 +24,7 @@ def run_sidekiq_job(klass, args)
   processor.__send__(:process, unit_of_work)
 end
 
-require 'honeybadger'
+require 'neeto-bugtrap-ruby'
 
 ERROR = StandardError.new('This is a failure inside NeetoBugtrapRuby integration test suite')
 

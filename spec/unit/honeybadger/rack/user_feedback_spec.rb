@@ -1,5 +1,5 @@
-require 'honeybadger/rack/user_feedback'
-require 'honeybadger/config'
+require 'neeto-bugtrap-ruby/rack/user_feedback'
+require 'neeto-bugtrap-ruby/config'
 
 describe NeetoBugtrapRuby::Rack::UserFeedback do
   let(:agent) { NeetoBugtrapRuby::Agent.new }

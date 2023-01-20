@@ -1,5 +1,5 @@
-require 'honeybadger/plugins/local_variables'
-require 'honeybadger/config'
+require 'neeto-bugtrap-ruby/plugins/local_variables'
+require 'neeto-bugtrap-ruby/config'
 
 describe "Local variables integration", order: :defined do
   let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true) }

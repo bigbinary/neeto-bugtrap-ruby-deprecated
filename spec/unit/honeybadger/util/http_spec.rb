@@ -1,7 +1,7 @@
 require 'net/http'
 require 'logger'
-require 'honeybadger/util/http'
-require 'honeybadger/config'
+require 'neeto-bugtrap-ruby/util/http'
+require 'neeto-bugtrap-ruby/config'
 
 describe NeetoBugtrapRuby::Util::HTTP do
   let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true, api_key: 'abc123') }

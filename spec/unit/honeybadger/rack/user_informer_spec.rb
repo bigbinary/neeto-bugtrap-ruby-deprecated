@@ -1,5 +1,5 @@
-require 'honeybadger/rack/user_informer'
-require 'honeybadger/config'
+require 'neeto-bugtrap-ruby/rack/user_informer'
+require 'neeto-bugtrap-ruby/config'
 
 describe NeetoBugtrapRuby::Rack::UserInformer do
   let(:agent) { NeetoBugtrapRuby::Agent.new }

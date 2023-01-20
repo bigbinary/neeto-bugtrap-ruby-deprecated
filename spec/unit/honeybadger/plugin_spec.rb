@@ -1,5 +1,5 @@
-require 'honeybadger/plugin'
-require 'honeybadger/config'
+require 'neeto-bugtrap-ruby/plugin'
+require 'neeto-bugtrap-ruby/config'
 
 describe NeetoBugtrapRuby::Plugin::CALLER_FILE do
   it { should_not match "/foo/bar" }

@@ -1,4 +1,4 @@
-require 'honeybadger/rack/error_notifier'
+require 'neeto-bugtrap-ruby/rack/error_notifier'
 
 class BacktracedException < Exception
   attr_accessor :backtrace

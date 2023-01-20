@@ -10,7 +10,7 @@ require 'webmock/rspec'
 ENV['RACK_ENV'] = nil
 ENV['RAILS_ENV'] = nil
 
-require 'honeybadger/ruby'
+require 'neeto-bugtrap-ruby/ruby'
 
 begin
   require 'i18n'
@@ -50,7 +50,7 @@ RSpec.configure do |config|
   config.include FeatureHelpers, type: :feature
 
   config.before(:all, type: :feature) do
-    require "honeybadger/cli"
+    require "neeto-bugtrap-ruby/cli"
   end
 
   config.before(:each, type: :feature) do
@@ -74,7 +74,7 @@ RSpec.configure do |config|
     require 'rack'
   rescue LoadError
     puts 'Excluding specs which depend on Rack.'
-    config.exclude_pattern = 'spec/unit/honeybadger/rack/*_spec.rb'
+    config.exclude_pattern = 'spec/unit/neeto-bugtrap-ruby/rack/*_spec.rb'
   end
 
   config.before(:each, framework: :rails) do

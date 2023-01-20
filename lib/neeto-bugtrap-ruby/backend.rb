@@ -1,10 +1,10 @@
 require 'forwardable'
 
-require 'honeybadger/backend/base'
-require 'honeybadger/backend/server'
-require 'honeybadger/backend/test'
-require 'honeybadger/backend/null'
-require 'honeybadger/backend/debug'
+require 'neeto-bugtrap-ruby/backend/base'
+require 'neeto-bugtrap-ruby/backend/server'
+require 'neeto-bugtrap-ruby/backend/test'
+require 'neeto-bugtrap-ruby/backend/null'
+require 'neeto-bugtrap-ruby/backend/debug'
 
 module NeetoBugtrapRuby
   # @api private

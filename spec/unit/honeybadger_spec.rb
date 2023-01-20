@@ -1,4 +1,4 @@
-require 'honeybadger/ruby'
+require 'neeto-bugtrap-ruby/ruby'
 
 RSpec::Matchers.define :define do |expected|
   match do |actual|

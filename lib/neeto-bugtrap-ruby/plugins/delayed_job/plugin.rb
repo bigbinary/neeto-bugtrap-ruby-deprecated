@@ -1,5 +1,5 @@
 require 'delayed_job'
-require 'honeybadger/ruby'
+require 'neeto-bugtrap-ruby/ruby'
 
 module NeetoBugtrapRuby
   module Plugins

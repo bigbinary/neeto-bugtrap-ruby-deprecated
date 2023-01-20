@@ -2,7 +2,7 @@ $:.unshift(File.expand_path('../../../vendor/cli', __FILE__))
 
 require 'thor'
 
-require 'honeybadger/cli/main'
+require 'neeto-bugtrap-ruby/cli/main'
 
 module NeetoBugtrapRuby
   # @api private

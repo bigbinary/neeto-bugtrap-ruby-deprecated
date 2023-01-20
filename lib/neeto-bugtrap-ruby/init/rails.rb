@@ -1,14 +1,14 @@
 require 'rails'
 require 'yaml'
 
-require 'honeybadger/ruby'
+require 'neeto-bugtrap-ruby/ruby'
 
 module NeetoBugtrapRuby
   module Init
     module Rails
       class Railtie < ::Rails::Railtie
         rake_tasks do
-          load 'honeybadger/tasks.rb'
+          load 'neeto-bugtrap-ruby/tasks.rb'
         end
 
         initializer 'honeybadger.install_middleware' do |app|

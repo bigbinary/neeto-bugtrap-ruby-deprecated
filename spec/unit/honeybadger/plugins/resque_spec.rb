@@ -1,6 +1,6 @@
-require 'honeybadger/plugins/resque'
-require 'honeybadger/config'
-require 'honeybadger/agent'
+require 'neeto-bugtrap-ruby/plugins/resque'
+require 'neeto-bugtrap-ruby/config'
+require 'neeto-bugtrap-ruby/agent'
 
 class TestWorker
   extend NeetoBugtrapRuby::Plugins::Resque::Extension

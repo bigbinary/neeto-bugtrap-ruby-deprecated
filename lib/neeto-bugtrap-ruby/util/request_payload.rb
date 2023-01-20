@@ -1,4 +1,4 @@
-require 'honeybadger/util/sanitizer'
+require 'neeto-bugtrap-ruby/util/sanitizer'
 
 module NeetoBugtrapRuby
   module Util

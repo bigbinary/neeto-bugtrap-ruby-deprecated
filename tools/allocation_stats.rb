@@ -1,5 +1,5 @@
 require 'allocation_stats'
-require 'honeybadger'
+require 'neeto-bugtrap-ruby'
 require 'benchmark'
 
 group_by = if ENV['GROUP']

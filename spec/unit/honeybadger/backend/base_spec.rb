@@ -1,5 +1,5 @@
-require 'honeybadger/backend/base'
-require 'honeybadger/config'
+require 'neeto-bugtrap-ruby/backend/base'
+require 'neeto-bugtrap-ruby/config'
 
 describe NeetoBugtrapRuby::Backend::Response do
   context "when successful" do

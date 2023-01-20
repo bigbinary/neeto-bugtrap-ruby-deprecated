@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require 'honeybadger/util/sanitizer'
+require 'neeto-bugtrap-ruby/util/sanitizer'
 
 describe NeetoBugtrapRuby::Util::Sanitizer do
   its(:max_depth) { should eq 20 }

@@ -3,8 +3,8 @@ require 'json'
 require 'zlib'
 require 'openssl'
 
-require 'honeybadger/backend/base'
-require 'honeybadger/util/http'
+require 'neeto-bugtrap-ruby/backend/base'
+require 'neeto-bugtrap-ruby/util/http'
 
 module NeetoBugtrapRuby
   module Backend

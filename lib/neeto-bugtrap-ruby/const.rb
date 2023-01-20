@@ -1,13 +1,13 @@
-require 'honeybadger/version'
+require 'neeto-bugtrap-ruby/version'
 
 module NeetoBugtrapRuby
   module Rack
     # Autoloading allows middleware classes to be referenced in applications
     # which include the optional Rack dependency without explicitly requiring
     # these files.
-    autoload :ErrorNotifier, 'honeybadger/rack/error_notifier'
-    autoload :UserFeedback, 'honeybadger/rack/user_feedback'
-    autoload :UserInformer, 'honeybadger/rack/user_informer'
+    autoload :ErrorNotifier, 'neeto-bugtrap-ruby/rack/error_notifier'
+    autoload :UserFeedback, 'neeto-bugtrap-ruby/rack/user_feedback'
+    autoload :UserInformer, 'neeto-bugtrap-ruby/rack/user_informer'
   end
 
   # @api private

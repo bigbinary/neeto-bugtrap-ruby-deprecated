@@ -1,14 +1,14 @@
-require 'honeybadger/cli/deploy'
-require 'honeybadger/cli/exec'
-require 'honeybadger/cli/heroku'
-require 'honeybadger/cli/install'
-require 'honeybadger/cli/notify'
-require 'honeybadger/cli/test'
-require 'honeybadger/config'
-require 'honeybadger/config/defaults'
-require 'honeybadger/ruby'
-require 'honeybadger/util/http'
-require 'honeybadger/version'
+require 'neeto-bugtrap-ruby/cli/deploy'
+require 'neeto-bugtrap-ruby/cli/exec'
+require 'neeto-bugtrap-ruby/cli/heroku'
+require 'neeto-bugtrap-ruby/cli/install'
+require 'neeto-bugtrap-ruby/cli/notify'
+require 'neeto-bugtrap-ruby/cli/test'
+require 'neeto-bugtrap-ruby/config'
+require 'neeto-bugtrap-ruby/config/defaults'
+require 'neeto-bugtrap-ruby/ruby'
+require 'neeto-bugtrap-ruby/util/http'
+require 'neeto-bugtrap-ruby/version'
 require 'logger'
 
 module NeetoBugtrapRuby
@@ -16,8 +16,8 @@ module NeetoBugtrapRuby
     BLANK = /\A\s*\z/
 
     NOTIFIER = {
-      name: 'honeybadger-ruby (cli)'.freeze,
-      url: 'https://github.com/honeybadger-io/honeybadger-ruby'.freeze,
+      name: 'neeto-bugtrap-ruby-ruby (cli)'.freeze,
+      url: 'https://github.com/bigbinary/neeto-bugtrap-ruby'.freeze,
       version: VERSION,
       language: nil
     }.freeze
@@ -112,7 +112,7 @@ WELCOME
       option :quiet, required: false, type: :boolean, aliases: :'-q', default: false, desc: 'Suppress all output unless notification fails.'
       def exec(*args)
         if args.size == 0
-          say("honeybadger: exec needs a command to run", :red)
+          say("neeto-bugtrap-ruby: exec needs a command to run", :red)
           exit(1)
         end
 

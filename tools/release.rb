@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'bundler/setup'
-require 'honeybadger/version'
+require 'neeto-bugtrap-ruby/version'
 
 module Release
   CHANGELOG_FILE    = 'CHANGELOG.md'.freeze

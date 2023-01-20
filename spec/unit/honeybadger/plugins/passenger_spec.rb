@@ -1,5 +1,5 @@
-require 'honeybadger/plugins/passenger'
-require 'honeybadger/config'
+require 'neeto-bugtrap-ruby/plugins/passenger'
+require 'neeto-bugtrap-ruby/config'
 
 describe "Passenger integration" do
   let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true) }

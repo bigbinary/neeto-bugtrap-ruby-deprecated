@@ -1,5 +1,5 @@
-require 'honeybadger/plugin'
-require 'honeybadger/breadcrumbs/logging'
+require 'neeto-bugtrap-ruby/plugin'
+require 'neeto-bugtrap-ruby/breadcrumbs/logging'
 
 module NeetoBugtrapRuby
   module Plugins

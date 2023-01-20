@@ -1,8 +1,8 @@
 # encoding: utf-8
 
-require 'honeybadger/notice'
-require 'honeybadger/config'
-require 'honeybadger/plugins/local_variables'
+require 'neeto-bugtrap-ruby/notice'
+require 'neeto-bugtrap-ruby/config'
+require 'neeto-bugtrap-ruby/plugins/local_variables'
 require 'timecop'
 
 describe NeetoBugtrapRuby::Notice do
@@ -637,7 +637,7 @@ describe NeetoBugtrapRuby::Notice do
     before(:each) do
       @source = <<-RUBY
         $:<<'lib'
-        require 'honeybadger'
+        require 'neeto-bugtrap-ruby'
 
         begin
           raise StandardError

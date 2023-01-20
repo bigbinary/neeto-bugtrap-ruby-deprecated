@@ -1,5 +1,5 @@
-require 'honeybadger/logging'
-require 'honeybadger/config'
+require 'neeto-bugtrap-ruby/logging'
+require 'neeto-bugtrap-ruby/config'
 
 LOG_SEVERITIES = [:debug, :info, :warn, :error, :fatal].freeze
 

@@ -1,5 +1,5 @@
-require 'honeybadger/plugins/shoryuken'
-require 'honeybadger/config'
+require 'neeto-bugtrap-ruby/plugins/shoryuken'
+require 'neeto-bugtrap-ruby/config'
 
 RSpec.describe "Shoryuken Dependency" do
   let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true) }

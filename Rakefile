@@ -4,7 +4,7 @@ require 'rubygems'
 require 'bundler/setup'
 require 'bump'
 require 'appraisal'
-require 'honeybadger/version'
+require 'neeto-bugtrap-ruby/version'
 require_relative 'tools/release'
 
 NAME = Dir['*.gemspec'].first.split('.').first.freeze

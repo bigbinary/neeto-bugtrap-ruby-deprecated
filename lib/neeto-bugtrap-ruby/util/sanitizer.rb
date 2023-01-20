@@ -1,7 +1,7 @@
 require 'bigdecimal'
 require 'set'
 
-require 'honeybadger/conversions'
+require 'neeto-bugtrap-ruby/conversions'
 
 module NeetoBugtrapRuby
   module Util

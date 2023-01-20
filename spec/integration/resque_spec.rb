@@ -8,7 +8,7 @@ rescue LoadError
 end
 
 if RESQUE_PRESENT
-  require 'honeybadger'
+  require 'neeto-bugtrap-ruby'
 
   ERROR = StandardError.new('This is a failure inside NeetoBugtrapRuby integration test suite')
 

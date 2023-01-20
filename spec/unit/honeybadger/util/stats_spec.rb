@@ -1,4 +1,4 @@
-require 'honeybadger/util/stats'
+require 'neeto-bugtrap-ruby/util/stats'
 
 describe NeetoBugtrapRuby::Util::Stats do
   describe '.memory' do

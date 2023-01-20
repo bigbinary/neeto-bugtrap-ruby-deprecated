@@ -1,2 +1,2 @@
-require 'honeybadger/const'
-require 'honeybadger/singleton'
+require 'neeto-bugtrap-ruby/const'
+require 'neeto-bugtrap-ruby/singleton'

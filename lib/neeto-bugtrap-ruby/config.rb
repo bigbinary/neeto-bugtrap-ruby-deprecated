@@ -4,13 +4,13 @@ require 'logger'
 require 'fileutils'
 require 'openssl'
 
-require 'honeybadger/version'
-require 'honeybadger/logging'
-require 'honeybadger/backend'
-require 'honeybadger/config/defaults'
-require 'honeybadger/util/http'
-require 'honeybadger/util/revision'
-require 'honeybadger/logging'
+require 'neeto-bugtrap-ruby/version'
+require 'neeto-bugtrap-ruby/logging'
+require 'neeto-bugtrap-ruby/backend'
+require 'neeto-bugtrap-ruby/config/defaults'
+require 'neeto-bugtrap-ruby/util/http'
+require 'neeto-bugtrap-ruby/util/revision'
+require 'neeto-bugtrap-ruby/logging'
 
 module NeetoBugtrapRuby
   # @api private
@@ -25,9 +25,9 @@ module NeetoBugtrapRuby
 
     # Config subclasses have circular dependencies, so they must be loaded
     # after constants are defined.
-    autoload :Env, 'honeybadger/config/env'
-    autoload :Yaml, 'honeybadger/config/yaml'
-    autoload :Ruby, 'honeybadger/config/ruby'
+    autoload :Env, 'neeto-bugtrap-ruby/config/env'
+    autoload :Yaml, 'neeto-bugtrap-ruby/config/yaml'
+    autoload :Ruby, 'neeto-bugtrap-ruby/config/ruby'
 
     KEY_REPLACEMENT = Regexp.new('[^a-z\d_]', Regexp::IGNORECASE).freeze
 
@@ -46,9 +46,9 @@ module NeetoBugtrapRuby
 
     attr_accessor :ruby, :env, :yaml, :framework
 
-    # Called by framework (see lib/honeybadger/init/) at the point of
+    # Called by framework (see lib/neeto-bugtrap-ruby/init/) at the point of
     # initialization. This is not required for the notifier to work (i.e. with
-    # `require 'honeybadger/ruby'`).
+    # `require 'neeto-bugtrap-ruby/ruby'`).
     def init!(opts = {}, env = ENV)
       load!(framework: opts, env: env)
 

@@ -1,4 +1,4 @@
-require 'honeybadger/util/revision'
+require 'neeto-bugtrap-ruby/util/revision'
 
 describe NeetoBugtrapRuby::Util::Revision do
   after do

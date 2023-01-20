@@ -1,4 +1,4 @@
-require 'honeybadger/util/request_hash'
+require 'neeto-bugtrap-ruby/util/request_hash'
 
 describe NeetoBugtrapRuby::Util::RequestHash, if: defined?(Rack) do
   let(:rack_env) { Rack::MockRequest.env_for('/') }

@@ -1,4 +1,4 @@
-require 'honeybadger/breadcrumbs/logging'
+require 'neeto-bugtrap-ruby/breadcrumbs/logging'
 
 describe NeetoBugtrapRuby::Breadcrumbs::LogSubscriberInjector do
   LOGGING_LEVELS = %w(info debug warn error fatal unknown)

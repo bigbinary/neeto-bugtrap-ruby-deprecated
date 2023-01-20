@@ -1,7 +1,7 @@
 require 'stringio'
-require 'honeybadger/backtrace'
-require 'honeybadger/config'
-require 'honeybadger/notice'
+require 'neeto-bugtrap-ruby/backtrace'
+require 'neeto-bugtrap-ruby/config'
+require 'neeto-bugtrap-ruby/notice'
 
 describe NeetoBugtrapRuby::Backtrace do
   let(:config) { NeetoBugtrapRuby::Config.new }
@@ -77,7 +77,7 @@ describe NeetoBugtrapRuby::Backtrace do
     before(:each) do
       source = <<-RUBY
         $:<<'lib'
-        require 'honeybadger'
+        require 'neeto-bugtrap-ruby'
 
         begin
           raise StandardError
@@ -212,7 +212,7 @@ describe NeetoBugtrapRuby::Backtrace do
   end
 
   it "removes notifier trace" do
-    inside_notifier  = ['lib/honeybadger.rb:13:in `voodoo`']
+    inside_notifier  = ['lib/neeto-bugtrap-ruby.rb:13:in `voodoo`']
     outside_notifier = ['users_controller:8:in `index`']
 
     without_inside = NeetoBugtrapRuby::Backtrace.parse(outside_notifier)

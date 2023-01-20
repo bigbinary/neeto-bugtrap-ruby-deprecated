@@ -2,19 +2,19 @@ require 'json'
 require 'securerandom'
 require 'forwardable'
 
-require 'honeybadger/version'
-require 'honeybadger/backtrace'
-require 'honeybadger/conversions'
-require 'honeybadger/util/stats'
-require 'honeybadger/util/sanitizer'
-require 'honeybadger/util/request_hash'
-require 'honeybadger/util/request_payload'
+require 'neeto-bugtrap-ruby/version'
+require 'neeto-bugtrap-ruby/backtrace'
+require 'neeto-bugtrap-ruby/conversions'
+require 'neeto-bugtrap-ruby/util/stats'
+require 'neeto-bugtrap-ruby/util/sanitizer'
+require 'neeto-bugtrap-ruby/util/request_hash'
+require 'neeto-bugtrap-ruby/util/request_payload'
 
 module NeetoBugtrapRuby
   # @api private
   NOTIFIER = {
-    name: 'honeybadger-ruby'.freeze,
-    url: 'https://github.com/honeybadger-io/honeybadger-ruby'.freeze,
+    name: 'neeto-bugtrap-ruby'.freeze,
+    url: 'https://github.com/bigbinary/neeto-bugtrap-ruby'.freeze,
     version: VERSION,
     language: 'ruby'.freeze
   }.freeze
@@ -180,7 +180,7 @@ module NeetoBugtrapRuby
                     end
       },
       lambda { |line| line.sub(RELATIVE_ROOT, STRING_EMPTY) },
-      lambda { |line| line if line !~ %r{lib/honeybadger} }
+      lambda { |line| line if line !~ %r{lib/neeto-bugtrap-ruby} }
     ].freeze
 
     # @api private

@@ -1,5 +1,5 @@
-require 'honeybadger/plugins/sidekiq'
-require 'honeybadger/config'
+require 'neeto-bugtrap-ruby/plugins/sidekiq'
+require 'neeto-bugtrap-ruby/config'
 
 describe "Sidekiq Dependency" do
   let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true) }

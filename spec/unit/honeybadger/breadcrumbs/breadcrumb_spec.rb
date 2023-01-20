@@ -1,5 +1,5 @@
 require 'timecop'
-require 'honeybadger/breadcrumbs/ring_buffer'
+require 'neeto-bugtrap-ruby/breadcrumbs/ring_buffer'
 
 describe NeetoBugtrapRuby::Breadcrumbs::Breadcrumb do
   let(:category) { :test }

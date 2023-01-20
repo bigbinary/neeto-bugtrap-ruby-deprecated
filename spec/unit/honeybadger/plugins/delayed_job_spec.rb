@@ -1,9 +1,9 @@
-require 'honeybadger/config'
-require 'honeybadger/agent'
+require 'neeto-bugtrap-ruby/config'
+require 'neeto-bugtrap-ruby/agent'
 
 begin
   require 'delayed_job'
-  require 'honeybadger/plugins/delayed_job/plugin'
+  require 'neeto-bugtrap-ruby/plugins/delayed_job/plugin'
 
   describe "DelayedJob integration" do
     # Prepend the load path with delayed_job's spec directory so that we can take

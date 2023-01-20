@@ -1,6 +1,6 @@
 require 'erb'
 require 'forwardable'
-require 'honeybadger/cli/main'
+require 'neeto-bugtrap-ruby/cli/main'
 require 'pathname'
 
 module NeetoBugtrapRuby
@@ -13,7 +13,7 @@ module NeetoBugtrapRuby
                          Object.const_get(exception_name)
                        rescue
                          Object.const_set(exception_name, Class.new(Exception))
-                       end.new('Testing honeybadger via "honeybadger test". If you can see this, it works.')
+                       end.new('Testing neeto-bugtrap-ruby via "neeto-bugtrap-ruby test". If you can see this, it works.')
 
       class TestBackend
         def initialize(backend)
@@ -42,7 +42,7 @@ module NeetoBugtrapRuby
           raise LoadError unless defined?(::Rails.application)
           say("Detected Rails #{Rails::VERSION::STRING}")
         rescue LoadError
-          require 'honeybadger/init/ruby'
+          require 'neeto-bugtrap-ruby/init/ruby'
         end
 
         if NeetoBugtrapRuby.config.get(:api_key).to_s =~ BLANK
@@ -202,7 +202,7 @@ This is usually caused by one of the following issues:
   - The exception is being rescued before it reaches our Rack middleware. If
     you're using `rescue` or `rescue_from` you may need to notify NeetoBugtrapRuby
     manually: `NeetoBugtrapRuby.notify(exception)`.
-  - The honeybadger gem is misconfigured. Check the settings in your
+  - The neeto-bugtrap-ruby gem is misconfigured. Check the settings in your
     honeybadger.yml file.
 MSG
 

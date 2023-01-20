@@ -1,5 +1,5 @@
-require 'honeybadger/breadcrumbs/breadcrumb'
-require 'honeybadger/breadcrumbs/collector'
+require 'neeto-bugtrap-ruby/breadcrumbs/breadcrumb'
+require 'neeto-bugtrap-ruby/breadcrumbs/collector'
 
 describe NeetoBugtrapRuby::Breadcrumbs::Collector do
   let(:buffer) { double("Buffer") }

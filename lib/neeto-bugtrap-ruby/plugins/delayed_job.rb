@@ -1,4 +1,4 @@
-require 'honeybadger/plugin'
+require 'neeto-bugtrap-ruby/plugin'
 
 module NeetoBugtrapRuby
   Plugin.register do
@@ -15,7 +15,7 @@ module NeetoBugtrapRuby
     end
 
     execution do
-      require 'honeybadger/plugins/delayed_job/plugin'
+      require 'neeto-bugtrap-ruby/plugins/delayed_job/plugin'
       ::Delayed::Worker.plugins << Plugins::DelayedJob::Plugin
     end
   end

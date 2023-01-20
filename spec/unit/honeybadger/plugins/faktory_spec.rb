@@ -1,5 +1,5 @@
-require 'honeybadger/plugins/faktory'
-require 'honeybadger/config'
+require 'neeto-bugtrap-ruby/plugins/faktory'
+require 'neeto-bugtrap-ruby/config'
 
 describe "Faktory Dependency" do
   let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true) }

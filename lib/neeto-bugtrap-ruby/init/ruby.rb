@@ -1,4 +1,4 @@
-require 'honeybadger/ruby'
+require 'neeto-bugtrap-ruby/ruby'
 
 NeetoBugtrapRuby.init!({
   :framework      => :ruby,

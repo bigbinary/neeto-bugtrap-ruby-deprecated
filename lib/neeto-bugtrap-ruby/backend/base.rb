@@ -2,7 +2,7 @@ require 'forwardable'
 require 'net/http'
 require 'json'
 
-require 'honeybadger/logging'
+require 'neeto-bugtrap-ruby/logging'
 
 module NeetoBugtrapRuby
   module Backend

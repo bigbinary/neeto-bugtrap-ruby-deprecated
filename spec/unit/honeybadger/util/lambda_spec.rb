@@ -1,4 +1,4 @@
-require 'honeybadger/util/lambda'
+require 'neeto-bugtrap-ruby/util/lambda'
 
 describe NeetoBugtrapRuby::Util::Lambda do
   subject { described_class }

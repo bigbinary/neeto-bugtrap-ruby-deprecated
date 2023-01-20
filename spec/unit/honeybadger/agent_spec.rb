@@ -1,4 +1,4 @@
-require 'honeybadger/agent'
+require 'neeto-bugtrap-ruby/agent'
 require 'timecop'
 
 describe NeetoBugtrapRuby::Agent do

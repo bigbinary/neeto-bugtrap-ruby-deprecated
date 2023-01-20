@@ -1,4 +1,4 @@
-require 'honeybadger/breadcrumbs/logging'
+require 'neeto-bugtrap-ruby/breadcrumbs/logging'
 
 describe NeetoBugtrapRuby::Breadcrumbs::LogWrapper do
   let(:logger) do

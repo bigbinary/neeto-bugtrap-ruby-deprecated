@@ -1,5 +1,5 @@
-require 'honeybadger/backend/test'
-require 'honeybadger/config'
+require 'neeto-bugtrap-ruby/backend/test'
+require 'neeto-bugtrap-ruby/config'
 
 describe NeetoBugtrapRuby::Backend::Test do
   let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER) }

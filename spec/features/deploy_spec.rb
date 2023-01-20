@@ -1,4 +1,4 @@
-require 'honeybadger'
+require 'neeto-bugtrap-ruby'
 
 feature "Running the deploy cli command" do
   before { set_environment_variable('HONEYBADGER_BACKEND', 'debug') }

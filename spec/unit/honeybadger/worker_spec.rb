@@ -1,10 +1,10 @@
 require 'timecop'
 require 'thread'
 
-require 'honeybadger/worker'
-require 'honeybadger/config'
-require 'honeybadger/backend'
-require 'honeybadger/notice'
+require 'neeto-bugtrap-ruby/worker'
+require 'neeto-bugtrap-ruby/config'
+require 'neeto-bugtrap-ruby/backend'
+require 'neeto-bugtrap-ruby/notice'
 
 describe NeetoBugtrapRuby::Worker do
   let!(:instance) { described_class.new(config) }

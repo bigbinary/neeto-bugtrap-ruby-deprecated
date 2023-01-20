@@ -1,4 +1,4 @@
-require 'honeybadger/ruby'
+require 'neeto-bugtrap-ruby/ruby'
 
 agent = NeetoBugtrapRuby::Agent.new({
   api_key: 'asdf',

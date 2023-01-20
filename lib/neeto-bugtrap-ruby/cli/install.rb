@@ -1,6 +1,6 @@
 require 'forwardable'
-require 'honeybadger/cli/main'
-require 'honeybadger/cli/test'
+require 'neeto-bugtrap-ruby/cli/main'
+require 'neeto-bugtrap-ruby/cli/test'
 require 'pathname'
 
 module NeetoBugtrapRuby

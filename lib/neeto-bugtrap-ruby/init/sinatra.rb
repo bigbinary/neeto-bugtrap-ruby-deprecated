@@ -1,5 +1,5 @@
 require 'sinatra/base'
-require 'honeybadger/ruby'
+require 'neeto-bugtrap-ruby/ruby'
 
 module NeetoBugtrapRuby
   module Init

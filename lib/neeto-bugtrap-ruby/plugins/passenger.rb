@@ -1,5 +1,5 @@
-require 'honeybadger/plugin'
-require 'honeybadger/agent'
+require 'neeto-bugtrap-ruby/plugin'
+require 'neeto-bugtrap-ruby/agent'
 
 module NeetoBugtrapRuby
   module Plugins

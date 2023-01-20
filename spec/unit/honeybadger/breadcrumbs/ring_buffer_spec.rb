@@ -1,4 +1,4 @@
-require 'honeybadger/breadcrumbs/ring_buffer'
+require 'neeto-bugtrap-ruby/breadcrumbs/ring_buffer'
 
 describe NeetoBugtrapRuby::Breadcrumbs::RingBuffer do
   describe "#add" do

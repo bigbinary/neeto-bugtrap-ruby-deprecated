@@ -1,11 +1,11 @@
 if defined?(::Rails::Railtie)
-  require 'honeybadger/init/rails'
+  require 'neeto-bugtrap-ruby/init/rails'
 elsif defined?(Sinatra::Base)
-  require 'honeybadger/init/sinatra'
+  require 'neeto-bugtrap-ruby/init/sinatra'
 else
-  require 'honeybadger/init/ruby'
+  require 'neeto-bugtrap-ruby/init/ruby'
 end
 
 if defined?(Rake.application)
-  require 'honeybadger/init/rake'
+  require 'neeto-bugtrap-ruby/init/rake'
 end

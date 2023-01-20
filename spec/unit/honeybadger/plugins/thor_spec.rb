@@ -1,5 +1,5 @@
-require 'honeybadger/plugins/thor'
-require 'honeybadger/config'
+require 'neeto-bugtrap-ruby/plugins/thor'
+require 'neeto-bugtrap-ruby/config'
 
 describe "Thor Dependency" do
   let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true) }

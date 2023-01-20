@@ -1,13 +1,13 @@
 require 'forwardable'
 
-require 'honeybadger/version'
-require 'honeybadger/config'
-require 'honeybadger/context_manager'
-require 'honeybadger/notice'
-require 'honeybadger/plugin'
-require 'honeybadger/logging'
-require 'honeybadger/worker'
-require 'honeybadger/breadcrumbs'
+require 'neeto-bugtrap-ruby/version'
+require 'neeto-bugtrap-ruby/config'
+require 'neeto-bugtrap-ruby/context_manager'
+require 'neeto-bugtrap-ruby/notice'
+require 'neeto-bugtrap-ruby/plugin'
+require 'neeto-bugtrap-ruby/logging'
+require 'neeto-bugtrap-ruby/worker'
+require 'neeto-bugtrap-ruby/breadcrumbs'
 
 module NeetoBugtrapRuby
   # The NeetoBugtrapRuby agent contains all the methods for interacting with the
@@ -232,7 +232,7 @@ module NeetoBugtrapRuby
     #
     #   # Explicit conversion
     #   class User < ActiveRecord::Base
-    #     def to_honeybadger_context
+    #     def to_neeto-bugtrap-ruby_context
     #       { user_id: id, user_email: email }
     #     end
     #   end
@@ -244,7 +244,7 @@ module NeetoBugtrapRuby
     #   NeetoBugtrapRuby.context.clear!
     #
     # @param [Hash] context A Hash of data which will be sent to NeetoBugtrapRuby
-    #   when an error occurs. If the object responds to +#to_honeybadger_context+,
+    #   when an error occurs. If the object responds to +#to_neeto-bugtrap-ruby_context+,
     #   the return value of that method will be used (explicit conversion). Can
     #   include any key/value, but a few keys have a special meaning in
     #   NeetoBugtrapRuby.

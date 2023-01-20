@@ -4,8 +4,8 @@ require 'json'
 require 'zlib'
 require 'openssl'
 
-require 'honeybadger/version'
-require 'honeybadger/logging'
+require 'neeto-bugtrap-ruby/version'
+require 'neeto-bugtrap-ruby/logging'
 
 module NeetoBugtrapRuby
   module Util

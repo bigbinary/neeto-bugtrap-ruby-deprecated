@@ -1,5 +1,5 @@
-require 'honeybadger/plugins/sucker_punch'
-require 'honeybadger/config'
+require 'neeto-bugtrap-ruby/plugins/sucker_punch'
+require 'neeto-bugtrap-ruby/config'
 
 describe "SuckerPunch Dependency" do
   let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true) }

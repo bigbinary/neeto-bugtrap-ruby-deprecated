@@ -1,5 +1,5 @@
 require 'ruby-prof'
-require 'honeybadger'
+require 'neeto-bugtrap-ruby'
 
 if NeetoBugtrapRuby.start({:api_key => 'badgers', :debug => true, :backend => 'null'})
   RubyProf.start and NeetoBugtrapRuby::Agent.at_exit do

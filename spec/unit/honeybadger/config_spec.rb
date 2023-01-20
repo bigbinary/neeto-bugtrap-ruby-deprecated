@@ -1,5 +1,5 @@
-require 'honeybadger/config'
-require 'honeybadger/backend/base'
+require 'neeto-bugtrap-ruby/config'
+require 'neeto-bugtrap-ruby/backend/base'
 require 'net/http'
 
 describe NeetoBugtrapRuby::Config do

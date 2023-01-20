@@ -1,7 +1,7 @@
 require 'forwardable'
 require 'rack/request'
 
-require 'honeybadger/ruby'
+require 'neeto-bugtrap-ruby/ruby'
 
 module NeetoBugtrapRuby
   module Rack
@@ -9,7 +9,7 @@ module NeetoBugtrapRuby
     # application will be delivered to NeetoBugtrapRuby and re-raised.
     #
     # @example
-    #   require 'honeybadger/rack/error_notifier'
+    #   require 'neeto-bugtrap-ruby/rack/error_notifier'
     #
     #   app = Rack::Builder.app do
     #     run lambda { |env| raise "Rack down" }
