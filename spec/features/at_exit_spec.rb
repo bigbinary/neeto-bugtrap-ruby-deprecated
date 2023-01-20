@@ -10,7 +10,7 @@ feature "Rescuing exceptions at exit" do
     set_environment_variable('HONEYBADGER_LOGGING_LEVEL', 'DEBUG')
   end
 
-  it "reports the exception to Honeybadger" do
+  it "reports the exception to NeetoBugtrap" do
     expect(run_command(crash_cmd)).not_to be_successfully_executed
     assert_notification('error' => {'class' => 'RuntimeError', 'message' => 'RuntimeError: badgers!'})
   end
@@ -35,7 +35,7 @@ feature "Rescuing exceptions at exit" do
       set_environment_variable('HONEYBADGER_EXCEPTIONS_NOTIFY_AT_EXIT', 'false')
     end
 
-    it "doesn't report the exception to Honeybadger" do
+    it "doesn't report the exception to NeetoBugtrap" do
       expect(run_command(crash_cmd)).not_to be_successfully_executed
       assert_no_notification
     end

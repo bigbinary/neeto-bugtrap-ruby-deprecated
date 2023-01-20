@@ -61,11 +61,11 @@ RSpec.configure do |config|
   config.include Helpers
 
   config.before(:all) do
-    Honeybadger::Agent.instance = Honeybadger::Agent.new(Honeybadger::Config.new(backend: 'null', logger: NULL_LOGGER))
+    NeetoBugtrapRuby::Agent.instance = NeetoBugtrapRuby::Agent.new(NeetoBugtrapRuby::Config.new(backend: 'null', logger: NULL_LOGGER))
   end
 
   config.after(:each) do
-    Honeybadger.clear!
+    NeetoBugtrapRuby.clear!
   end
 
   begin

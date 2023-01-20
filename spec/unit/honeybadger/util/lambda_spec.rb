@@ -1,6 +1,6 @@
 require 'honeybadger/util/lambda'
 
-describe Honeybadger::Util::Lambda do
+describe NeetoBugtrapRuby::Util::Lambda do
   subject { described_class }
 
   describe ".lambda_execution?" do

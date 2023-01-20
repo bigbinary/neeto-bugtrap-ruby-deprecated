@@ -10,9 +10,9 @@ require 'honeybadger'
 require 'benchmark'
 
 benchmark = Benchmark.measure do
-  if Honeybadger.start({:api_key => 'badgers', :backend => 'null'})
+  if NeetoBugtrapRuby.start({:api_key => 'badgers', :backend => 'null'})
     1000.times do
-      Honeybadger.notify(error_class: 'RubyProf', error_message: 'Profiling Honeybadger -- this should never actually be reported.')
+      NeetoBugtrapRuby.notify(error_class: 'RubyProf', error_message: 'Profiling NeetoBugtrapRuby -- this should never actually be reported.')
     end
   end
 end

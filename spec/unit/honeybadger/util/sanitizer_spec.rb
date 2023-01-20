@@ -2,7 +2,7 @@
 
 require 'honeybadger/util/sanitizer'
 
-describe Honeybadger::Util::Sanitizer do
+describe NeetoBugtrapRuby::Util::Sanitizer do
   its(:max_depth) { should eq 20 }
 
   describe "#sanitize" do

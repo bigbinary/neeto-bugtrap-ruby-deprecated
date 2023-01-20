@@ -22,11 +22,11 @@ begin
     end
 
     context "when it's installed" do
-      let(:config) { Honeybadger::Config.new(logger: NULL_LOGGER, debug: true) }
+      let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true) }
       let(:worker) { @worker }
 
       before(:all) do
-        Delayed::Worker.plugins = [Honeybadger::Plugins::DelayedJob::Plugin]
+        Delayed::Worker.plugins = [NeetoBugtrapRuby::Plugins::DelayedJob::Plugin]
         @worker = Delayed::Worker.new
       end
 
@@ -44,19 +44,19 @@ begin
 
           after { worker.work_off }
 
-          it "notifies Honeybadger" do
-            expect(Honeybadger).to receive(:notify)
+          it "notifies NeetoBugtrap" do
+            expect(NeetoBugtrapRuby).to receive(:notify)
           end
         end
 
         context "and a threshold is set" do
           let(:method_name) { :will_raise }
 
-          before { ::Honeybadger.config[:'delayed_job.attempt_threshold'] = 2 }
-          after { ::Honeybadger.config[:'delayed_job.attempt_threshold'] = 0 }
+          before { ::NeetoBugtrapRuby.config[:'delayed_job.attempt_threshold'] = 2 }
+          after { ::NeetoBugtrapRuby.config[:'delayed_job.attempt_threshold'] = 0 }
 
-          it "does not notify Honeybadger on first occurence" do
-            expect(Honeybadger).not_to receive(:notify)
+          it "does not notify NeetoBugtrapRuby on first occurence" do
+            expect(NeetoBugtrapRuby).not_to receive(:notify)
             worker.work_off
           end
         end

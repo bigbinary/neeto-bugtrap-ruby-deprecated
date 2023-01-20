@@ -5,16 +5,16 @@ require 'honeybadger/config'
 require 'honeybadger/plugins/local_variables'
 require 'timecop'
 
-describe Honeybadger::Notice do
+describe NeetoBugtrapRuby::Notice do
   let(:config) { build_config }
 
   def build_config(opts = {})
-    Honeybadger::Config.new({logger: NULL_LOGGER, api_key: 'asdf'}.merge(opts))
+    NeetoBugtrapRuby::Config.new({logger: NULL_LOGGER, api_key: 'asdf'}.merge(opts))
   end
 
   def build_notice(opts = {})
     config = opts[:config] || build_config
-    Honeybadger::Notice.new(config, opts)
+    NeetoBugtrapRuby::Notice.new(config, opts)
   end
 
   def assert_accepts_exception_attribute(attribute, args = {}, &block)
@@ -115,7 +115,7 @@ describe Honeybadger::Notice do
     def exception.detailed_message
       <<~MSG
         test.rb:1:in `<main>': undefined method `time' for 1:Integer (#{self.class.name})
-        
+
         1.time {}
          ^^^^^
         Did you mean?  times
@@ -125,7 +125,7 @@ describe Honeybadger::Notice do
     notice_from_exception = build_notice({ exception: exception })
     expect(notice_from_exception.send(:error_message)).to eq <<~EXPECTED
       NoMethodError: test.rb:1:in `<main>': undefined method `time' for 1:Integer
-      
+
       1.time {}
        ^^^^^
       Did you mean?  times
@@ -560,8 +560,8 @@ describe Honeybadger::Notice do
     it 'filters breadcrumb metadata' do
       config[:'request.filter_keys'] = ['password']
       config[:'breadcrumbs.enabled'] = true
-      coll = Honeybadger::Breadcrumbs::Collector.new(config)
-      bc = Honeybadger::Breadcrumbs::Breadcrumb.new(message: "test", metadata: { deep: {}, password: "my-password" })
+      coll = NeetoBugtrapRuby::Breadcrumbs::Collector.new(config)
+      bc = NeetoBugtrapRuby::Breadcrumbs::Breadcrumb.new(message: "test", metadata: { deep: {}, password: "my-password" })
       coll.add!(bc)
       notice = build_notice(breadcrumbs: coll)
 
@@ -642,7 +642,7 @@ describe Honeybadger::Notice do
         begin
           raise StandardError
         rescue => e
-          puts Honeybadger::Notice.new(exception: e).backtrace.to_json
+          puts NeetoBugtrapRuby::Notice.new(exception: e).backtrace.to_json
         end
       RUBY
 
@@ -657,7 +657,7 @@ describe Honeybadger::Notice do
 
     it "passes its backtrace filters for parsing" do
       allow(config).to receive(:backtrace_filter).and_return('foo')
-      expect(Honeybadger::Backtrace).to receive(:parse).with(@backtrace_array, hash_including(filters: array_including('foo'))).and_return(double(to_a: []))
+      expect(NeetoBugtrapRuby::Backtrace).to receive(:parse).with(@backtrace_array, hash_including(filters: array_including('foo'))).and_return(double(to_a: []))
       build_notice({exception: @exception, config: config}).to_json
     end
 
@@ -665,7 +665,7 @@ describe Honeybadger::Notice do
       allow(config).to receive(:backtrace_filter).and_return('foo')
 
       @backtrace_array.each do |line|
-        expect(Honeybadger::Backtrace::Line).to receive(:parse).with(line, hash_including({filters: array_including('foo'), config: config}))
+        expect(NeetoBugtrapRuby::Backtrace::Line).to receive(:parse).with(line, hash_including({filters: array_including('foo'), config: config}))
       end
 
       build_notice({exception: @exception, callbacks: config, config: config}).to_json
@@ -688,7 +688,7 @@ describe Honeybadger::Notice do
     let(:exception) { build_exception({ backtrace: backtrace }) }
 
     it "returns the parsed backtrace" do
-      expect(Honeybadger::Backtrace).to receive(:parse).once.and_call_original
+      expect(NeetoBugtrapRuby::Backtrace).to receive(:parse).once.and_call_original
       notice =  build_notice({exception: exception, config: config})
       expect(notice.parsed_backtrace.first[:number]).to eq '3'
       expect(notice.parsed_backtrace.first[:file]).to eq 'my/file/backtrace.rb'

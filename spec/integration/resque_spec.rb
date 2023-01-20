@@ -10,7 +10,7 @@ end
 if RESQUE_PRESENT
   require 'honeybadger'
 
-  ERROR = StandardError.new('This is a failure inside Honeybadger integration test suite')
+  ERROR = StandardError.new('This is a failure inside NeetoBugtrapRuby integration test suite')
 
   class TestWorker
     @queue = :test
@@ -35,18 +35,18 @@ if RESQUE_PRESENT
       Resque.redis = MockRedis.new
     end
 
-    it "reports failed jobs to Honeybadger" do
+    it "reports failed jobs to NeetoBugtrap" do
       job = Resque::Job.new(:jobs, {'class' => 'TestWorker', 'args' => nil})
 
-      expect(Honeybadger).to receive(:notify).once.with(ERROR, anything)
+      expect(NeetoBugtrapRuby).to receive(:notify).once.with(ERROR, anything)
 
       worker.perform(job)
     end
 
-    it "reports DirtyExit to Honeybadger" do
+    it "reports DirtyExit to NeetoBugtrap" do
       job = Resque::Job.new(:jobs, {'class' => 'TestWorker', 'args' => nil})
 
-      expect(Honeybadger).to receive(:notify).once.with(kind_of(Resque::DirtyExit), anything)
+      expect(NeetoBugtrapRuby).to receive(:notify).once.with(kind_of(Resque::DirtyExit), anything)
 
       worker.working_on(job)
       worker.unregister_worker

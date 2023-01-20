@@ -2,15 +2,15 @@ require 'honeybadger/plugins/thor'
 require 'honeybadger/config'
 
 describe "Thor Dependency" do
-  let(:config) { Honeybadger::Config.new(logger: NULL_LOGGER, debug: true) }
+  let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true) }
 
   before do
-    Honeybadger::Plugin.instances[:thor].reset!
+    NeetoBugtrapRuby::Plugin.instances[:thor].reset!
   end
 
   context "when thor is not installed" do
     it "fails quietly" do
-      expect { Honeybadger::Plugin.instances[:thor].load!(config) }.not_to raise_error
+      expect { NeetoBugtrapRuby::Plugin.instances[:thor].load!(config) }.not_to raise_error
     end
   end
 
@@ -28,8 +28,8 @@ describe "Thor Dependency" do
     after { Object.send(:remove_const, :Thor) }
 
     it "includes integration module into Thor" do
-      expect(shim).to receive(:send).with(:include, Honeybadger::Plugins::Thor)
-      Honeybadger::Plugin.instances[:thor].load!(config)
+      expect(shim).to receive(:send).with(:include, NeetoBugtrapRuby::Plugins::Thor)
+      NeetoBugtrapRuby::Plugin.instances[:thor].load!(config)
     end
   end
 end

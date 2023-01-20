@@ -3,14 +3,14 @@ namespace :honeybadger do
     !::SSHKit.config.command_map.respond_to?(:prefix)
   end
 
-  desc 'Notify Honeybadger of the deployment.'
+  desc 'Notify NeetoBugtrap of the deployment.'
   task :deploy => [:env, :'deploy:set_current_revision'] do
     next if sshkit_outdated?
     if server = fetch(:honeybadger_server)
       revision = fetch(:current_revision)
 
       on server do |host|
-        info 'Notifying Honeybadger of deploy.'
+        info 'Notifying NeetoBugtrap of deploy.'
 
         executable = fetch(:honeybadger, :honeybadger)
 
@@ -22,7 +22,7 @@ namespace :honeybadger do
           '--user', fetch(:honeybadger_user, ENV['USER'] || ENV['USERNAME'])
         ]
 
-        api_key = fetch(:honeybadger_api_key, ENV['HONEYBADGER_API_KEY'])
+        api_key = fetch(:honeybadger_api_key, ENV['NEETOBUGTRAP_API_KEY'])
         options += ['--api-key', api_key] if api_key
         options << '--skip-rails-load' if fetch(:honeybadger_skip_rails_load, false)
 
@@ -35,16 +35,16 @@ namespace :honeybadger do
           execute executable, options, raise_on_non_zero_exit: false
         end
 
-        info 'Honeybadger notification complete.'
+        info 'NeetoBugtrap notification complete.'
       end
     end
   end
 
-  desc 'Setup ENV for Honeybadger deploy rake task.'
+  desc 'Setup ENV for NeetoBugtrap deploy rake task.'
   task :env do
     if sshkit_outdated?
       run_locally do
-        warn 'Unable to notify Honeybadger: you are using an outdated version of SSHKIT. Please upgrade to >= 1.2.0.'
+        warn 'Unable to notify NeetoBugtrap: you are using an outdated version of SSHKIT. Please upgrade to >= 1.2.0.'
       end
       next
     end
@@ -57,7 +57,7 @@ namespace :honeybadger do
 
     unless server
       run_locally do
-        warn 'Unable to notify Honeybadger: could not find app server for notification. Try setting honeybadger_server.'
+        warn 'Unable to notify NeetoBugtrap: could not find app server for notification. Try setting honeybadger_server.'
       end
       next
     end

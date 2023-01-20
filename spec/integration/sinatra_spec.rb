@@ -19,27 +19,27 @@ if SINATRA_PRESENT
     end
 
     before(:each) do
-      Honeybadger.configure do |config|
+      NeetoBugtrapRuby.configure do |config|
         config.backend = 'test'
       end
     end
 
     after(:each) do
-      Honeybadger::Backend::Test.notifications[:notices].clear
+      NeetoBugtrapRuby::Backend::Test.notifications[:notices].clear
     end
 
     it "reports exceptions" do
-      Honeybadger.flush do
+      NeetoBugtrapRuby.flush do
         get '/runtime_error'
         expect(last_response.status).to eq(500)
       end
 
-      expect(Honeybadger::Backend::Test.notifications[:notices].size).to eq(1)
+      expect(NeetoBugtrapRuby::Backend::Test.notifications[:notices].size).to eq(1)
     end
 
     it "configures the api key from sinatra config" do
       get '/' # Initialize app
-      expect(Honeybadger.config.get(:api_key)).to eq('gem testing')
+      expect(NeetoBugtrapRuby.config.get(:api_key)).to eq('gem testing')
     end
   end
 end

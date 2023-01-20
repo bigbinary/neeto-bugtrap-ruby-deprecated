@@ -1,8 +1,8 @@
 require 'honeybadger/rack/user_feedback'
 require 'honeybadger/config'
 
-describe Honeybadger::Rack::UserFeedback do
-  let(:agent) { Honeybadger::Agent.new }
+describe NeetoBugtrapRuby::Rack::UserFeedback do
+  let(:agent) { NeetoBugtrapRuby::Agent.new }
   let(:config) { agent.config }
   let(:main_app) do
     lambda do |env|
@@ -10,7 +10,7 @@ describe Honeybadger::Rack::UserFeedback do
       [200, {}, ["<!-- HONEYBADGER FEEDBACK -->"]]
     end
   end
-  let(:informer_app) { Honeybadger::Rack::UserFeedback.new(main_app, agent) }
+  let(:informer_app) { NeetoBugtrapRuby::Rack::UserFeedback.new(main_app, agent) }
   let(:result) { informer_app.call({}) }
 
   context "there is a honeybadger id" do

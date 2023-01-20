@@ -2,8 +2,8 @@ require 'logger'
 require 'honeybadger/backend/server'
 require 'honeybadger/config'
 
-describe Honeybadger::Backend::Server do
-  let(:config) { Honeybadger::Config.new(logger: NULL_LOGGER, api_key: 'abc123') }
+describe NeetoBugtrapRuby::Backend::Server do
+  let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, api_key: 'abc123') }
   let(:logger) { config.logger }
   let(:payload) { double('Notice', to_json: '{}') }
 
@@ -15,14 +15,14 @@ describe Honeybadger::Backend::Server do
   describe "#check_in" do
     it "returns a response" do
       stub_http
-      expect(subject.check_in('foobar')).to be_a Honeybadger::Backend::Response
+      expect(subject.check_in('foobar')).to be_a NeetoBugtrapRuby::Backend::Response
     end
   end
 
   describe "#notify" do
     it "returns the response" do
       stub_http
-      expect(notify_backend).to be_a Honeybadger::Backend::Response
+      expect(notify_backend).to be_a NeetoBugtrapRuby::Backend::Response
     end
 
     context "when payload has an api key" do
@@ -58,17 +58,17 @@ describe Honeybadger::Backend::Server do
       context "connection errors" do
         it "returns Response" do
           http = stub_http
-          Honeybadger::Backend::Server::HTTP_ERRORS.each do |error|
+          NeetoBugtrapRuby::Backend::Server::HTTP_ERRORS.each do |error|
             allow(http).to receive(:post).and_raise(error)
             result = notify_backend
-            expect(result).to be_a Honeybadger::Backend::Response
+            expect(result).to be_a NeetoBugtrapRuby::Backend::Response
             expect(result.code).to eq :error
           end
         end
 
         it "doesn't fail when posting an http exception occurs" do
           http = stub_http
-          Honeybadger::Backend::Server::HTTP_ERRORS.each do |error|
+          NeetoBugtrapRuby::Backend::Server::HTTP_ERRORS.each do |error|
             allow(http).to receive(:post).and_raise(error)
             expect { notify_backend }.not_to raise_error
           end

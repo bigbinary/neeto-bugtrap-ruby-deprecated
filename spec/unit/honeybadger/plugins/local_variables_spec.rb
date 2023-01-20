@@ -2,10 +2,10 @@ require 'honeybadger/plugins/local_variables'
 require 'honeybadger/config'
 
 describe "Local variables integration", order: :defined do
-  let(:config) { Honeybadger::Config.new(logger: NULL_LOGGER, debug: true) }
+  let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true) }
 
   before do
-    Honeybadger::Plugin.instances[:local_variables].reset!
+    NeetoBugtrapRuby::Plugin.instances[:local_variables].reset!
     config[:'exceptions.local_variables'] = config_enabled
   end
 
@@ -15,8 +15,8 @@ describe "Local variables integration", order: :defined do
     let(:config_enabled) { true }
 
     it "doesn't install extensions" do
-      expect(::Exception).not_to receive(:include).with(Honeybadger::Plugins::LocalVariables::ExceptionExtension)
-      Honeybadger::Plugin.instances[:local_variables].load!(config)
+      expect(::Exception).not_to receive(:include).with(NeetoBugtrapRuby::Plugins::LocalVariables::ExceptionExtension)
+      NeetoBugtrapRuby::Plugin.instances[:local_variables].load!(config)
     end
   end
 
@@ -25,8 +25,8 @@ describe "Local variables integration", order: :defined do
       let(:config_enabled) { false }
 
       it "doesn't install extensions" do
-        expect(::Exception).not_to receive(:include).with(Honeybadger::Plugins::LocalVariables::ExceptionExtension)
-        Honeybadger::Plugin.instances[:local_variables].load!(config)
+        expect(::Exception).not_to receive(:include).with(NeetoBugtrapRuby::Plugins::LocalVariables::ExceptionExtension)
+        NeetoBugtrapRuby::Plugin.instances[:local_variables].load!(config)
       end
     end
 
@@ -34,8 +34,8 @@ describe "Local variables integration", order: :defined do
       let(:config_enabled) { true }
 
       it "installs the extensions" do
-        expect(::Exception).to receive(:include).with(Honeybadger::Plugins::LocalVariables::ExceptionExtension)
-        Honeybadger::Plugin.instances[:local_variables].load!(config)
+        expect(::Exception).to receive(:include).with(NeetoBugtrapRuby::Plugins::LocalVariables::ExceptionExtension)
+        NeetoBugtrapRuby::Plugin.instances[:local_variables].load!(config)
       end
 
       context "when BetterErrors is detected" do
@@ -44,20 +44,20 @@ describe "Local variables integration", order: :defined do
 
         it "skips extension" do
           expect(::Exception).not_to receive(:include)
-          Honeybadger::Plugin.instances[:local_variables].load!(config)
+          NeetoBugtrapRuby::Plugin.instances[:local_variables].load!(config)
         end
 
         it "warns the logger" do
           expect(config.logger).to receive(:warn).with /better_errors/
-          Honeybadger::Plugin.instances[:local_variables].load!(config)
+          NeetoBugtrapRuby::Plugin.instances[:local_variables].load!(config)
         end
       end
 
-      describe Honeybadger::Plugins::LocalVariables::ExceptionExtension do
+      describe NeetoBugtrapRuby::Plugins::LocalVariables::ExceptionExtension do
         subject do
           # Test in isolation rather than installing the plugin globally.
           Class.new(Exception) do |klass|
-            klass.send(:include, Honeybadger::Plugins::LocalVariables::ExceptionExtension)
+            klass.send(:include, NeetoBugtrapRuby::Plugins::LocalVariables::ExceptionExtension)
           end.new
         end
 

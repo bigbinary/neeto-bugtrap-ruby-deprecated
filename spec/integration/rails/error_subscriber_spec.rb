@@ -6,14 +6,14 @@ describe "Rails error subscriber integration", if: defined?(::ActiveSupport::Err
   load_rails_hooks(self)
 
   it "reports exceptions" do
-    Honeybadger.flush do
+    NeetoBugtrapRuby.flush do
       Rails.error.handle(severity: :warning, context: { key: 'value' }) do
         raise RuntimeError, "Oh no"
       end
     end
 
-    expect(Honeybadger::Backend::Test.notifications[:notices].size).to eq(1)
-    notice = Honeybadger::Backend::Test.notifications[:notices].first
+    expect(NeetoBugtrapRuby::Backend::Test.notifications[:notices].size).to eq(1)
+    notice = NeetoBugtrapRuby::Backend::Test.notifications[:notices].first
     expect(notice.error_class).to eq("RuntimeError")
     expect(notice.context).to eq({ key: 'value' })
     expect(notice.tags).to eq(["severity:warning", "handled:true"])
@@ -21,46 +21,46 @@ describe "Rails error subscriber integration", if: defined?(::ActiveSupport::Err
 
   it "does not report exceptions again if they have already been handled by the subscriber" do
     expect do
-      Honeybadger.flush do
+      NeetoBugtrapRuby.flush do
         Rails.error.record(context: { key: 'value' }) { raise RuntimeError, "Oh no" }
       rescue => e
-        Honeybadger.notify(e)
+        NeetoBugtrapRuby.notify(e)
         raise
       end
     end.to raise_error(RuntimeError, "Oh no")
 
-    expect(Honeybadger::Backend::Test.notifications[:notices].size).to eq(1)
-    notice = Honeybadger::Backend::Test.notifications[:notices].first
+    expect(NeetoBugtrapRuby::Backend::Test.notifications[:notices].size).to eq(1)
+    notice = NeetoBugtrapRuby::Backend::Test.notifications[:notices].first
     expect(notice.error_class).to eq("RuntimeError")
     expect(notice.context).to eq({ key: 'value' })
     expect(notice.tags).to eq(["severity:error", "handled:false"])
   end
 
   it "reports exceptions with source", if: RAILS_ERROR_SOURCE_SUPPORTED do
-    Honeybadger.flush do
+    NeetoBugtrapRuby.flush do
       Rails.error.handle(severity: :warning, context: { key: 'value' }, source: "task") do
         raise RuntimeError, "Oh no"
       end
     end
 
-    expect(Honeybadger::Backend::Test.notifications[:notices].size).to eq(1)
-    notice = Honeybadger::Backend::Test.notifications[:notices].first
+    expect(NeetoBugtrapRuby::Backend::Test.notifications[:notices].size).to eq(1)
+    notice = NeetoBugtrapRuby::Backend::Test.notifications[:notices].first
     expect(notice.error_class).to eq("RuntimeError")
     expect(notice.context).to eq({ key: 'value' })
     expect(notice.tags).to eq(["severity:warning", "handled:true", "source:task"])
   end
 
   it "doesn't report errors from ignored sources", if: RAILS_ERROR_SOURCE_SUPPORTED do
-    Honeybadger.configure do |config|
+    NeetoBugtrapRuby.configure do |config|
       config.rails.subscriber_ignore_sources += [/ignored/]
     end
 
-    Honeybadger.flush do
+    NeetoBugtrapRuby.flush do
       Rails.error.handle(severity: :warning, context: { key: 'value' }, source: "ignored_source") do
         raise RuntimeError, "Oh no"
       end
     end
 
-    expect(Honeybadger::Backend::Test.notifications[:notices]).to be_empty
+    expect(NeetoBugtrapRuby::Backend::Test.notifications[:notices]).to be_empty
   end
 end

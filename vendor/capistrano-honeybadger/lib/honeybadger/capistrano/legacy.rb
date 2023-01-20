@@ -1,6 +1,6 @@
 require 'capistrano'
 
-module Honeybadger
+module NeetoBugtrapRuby
   module Capistrano
     def self.load_into(configuration)
       configuration.load do
@@ -9,7 +9,7 @@ module Honeybadger
 
         namespace :honeybadger do
           desc <<-DESC
-            Notify Honeybadger of the deployment by running the notification on the REMOTE machine.
+            Notify NeetoBugtrap of the deployment by running the notification on the REMOTE machine.
               - Run remotely so we use remote API keys, environment, etc.
           DESC
           task :deploy, :except => { :no_release => true } do
@@ -27,14 +27,14 @@ module Honeybadger
             notify_options << ' --dry-run' if dry_run
             notify_options << " --api-key=#{ENV['API_KEY']}" if ENV['API_KEY']
             notify_options << ' >> /dev/null 2>&1 &' if async_notify
-            logger.info "Notifying Honeybadger of Deploy (#{notify_options})"
+            logger.info "Notifying NeetoBugtrap of Deploy (#{notify_options})"
             if configuration.dry_run
               logger.info 'DRY RUN: Notification not actually run.'
             else
               result = ''
               run("#{ notify_options }; true", :once => true, :pty => false) { |ch, stream, data| result << data }
             end
-            logger.info 'Honeybadger Notification Complete.'
+            logger.info 'NeetoBugtrap Notification Complete.'
           end
         end
       end
@@ -43,5 +43,5 @@ module Honeybadger
 end
 
 if Capistrano::Configuration.instance
-  Honeybadger::Capistrano.load_into(Capistrano::Configuration.instance)
+  NeetoBugtrapRuby::Capistrano.load_into(Capistrano::Configuration.instance)
 end

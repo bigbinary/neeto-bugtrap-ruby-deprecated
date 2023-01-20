@@ -5,7 +5,7 @@ feature "Running the notify CLI command" do
   end
 
   it "requires the --message flag" do
-    output = capture(:stderr) { Honeybadger::CLI.start(%w[notify]) }
+    output = capture(:stderr) { NeetoBugtrapRuby::CLI.start(%w[notify]) }
     expect(output).to match('--message')
     assert_no_notification(output)
   end

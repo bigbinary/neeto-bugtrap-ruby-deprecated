@@ -1,13 +1,13 @@
 require 'honeybadger/agent'
 require 'timecop'
 
-describe Honeybadger::Agent do
+describe NeetoBugtrapRuby::Agent do
   NULL_BLOCK = Proc.new{}.freeze
 
   describe "class methods" do
     subject { described_class }
 
-    its(:instance) { should be_a(Honeybadger::Agent) }
+    its(:instance) { should be_a(NeetoBugtrapRuby::Agent) }
   end
 
   describe "#check_in" do
@@ -15,7 +15,7 @@ describe Honeybadger::Agent do
       stub_request(:get, "https://api.honeybadger.io/v1/check_in/1MqIo1").
          to_return(status: 200)
 
-      config = Honeybadger::Config.new(api_key:'fake api key', logger: NULL_LOGGER)
+      config = NeetoBugtrapRuby::Config.new(api_key:'fake api key', logger: NULL_LOGGER)
       instance = described_class.new(config)
 
       instance.check_in('https://api.honeybadger.io/v1/check_in/1MqIo1')
@@ -25,7 +25,7 @@ describe Honeybadger::Agent do
       stub_request(:get, "https://api.honeybadger.io/v1/check_in/foobar").
          to_return(status: 200)
 
-      config = Honeybadger::Config.new(api_key:'fake api key', logger: NULL_LOGGER)
+      config = NeetoBugtrapRuby::Config.new(api_key:'fake api key', logger: NULL_LOGGER)
       instance = described_class.new(config)
 
       expect(instance.check_in('foobar')).to eq(true)
@@ -37,7 +37,7 @@ describe Honeybadger::Agent do
       stub_request(:get, "https://api.honeybadger.io/v1/check_in/danny").
          to_return(status: 400)
 
-      config = Honeybadger::Config.new(api_key:'fake api key', logger: NULL_LOGGER)
+      config = NeetoBugtrapRuby::Config.new(api_key:'fake api key', logger: NULL_LOGGER)
       instance = described_class.new(config)
 
       expect(instance.check_in('danny')).to eq(false)
@@ -45,7 +45,7 @@ describe Honeybadger::Agent do
   end
 
   describe '#track_deployment' do
-    let(:config) { Honeybadger::Config.new(api_key:'fake api key', logger: NULL_LOGGER) }
+    let(:config) { NeetoBugtrapRuby::Config.new(api_key:'fake api key', logger: NULL_LOGGER) }
     subject(:instance) { described_class.new(config) }
 
     it 'returns true for successful deployment tracking' do
@@ -63,7 +63,7 @@ describe Honeybadger::Agent do
     end
 
     it 'passes the revision to the servce' do
-      allow_any_instance_of(Honeybadger::Util::HTTP).to receive(:compress) { |_, body| body }
+      allow_any_instance_of(NeetoBugtrapRuby::Util::HTTP).to receive(:compress) { |_, body| body }
       stub_request(:post, "https://api.honeybadger.io/v1/deploys").
          with(body: { environment: nil, revision: '1234', local_username: nil, repository: nil }).
          to_return(status: 200)
@@ -74,7 +74,7 @@ describe Honeybadger::Agent do
 
   describe "#clear!" do
     it 'clears all transactional data' do
-      config = Honeybadger::Config.new(api_key:'fake api key', logger: NULL_LOGGER)
+      config = NeetoBugtrapRuby::Config.new(api_key:'fake api key', logger: NULL_LOGGER)
       instance = described_class.new(config)
       instance.context({a: "context"})
       instance.add_breadcrumb("Chomp")
@@ -88,7 +88,7 @@ describe Honeybadger::Agent do
 
   describe "#notify" do
     it "generates a backtrace" do
-      config = Honeybadger::Config.new(api_key:'fake api key', logger: NULL_LOGGER)
+      config = NeetoBugtrapRuby::Config.new(api_key:'fake api key', logger: NULL_LOGGER)
       instance = described_class.new(config)
 
       expect(instance.worker).to receive(:push) do |notice|
@@ -101,23 +101,23 @@ describe Honeybadger::Agent do
     it "does not mutate passed in opts" do
       opts = {error_message: 'test'}
       prev = opts.dup
-      instance = described_class.new(Honeybadger::Config.new(api_key: "fake api key", logger: NULL_LOGGER))
+      instance = described_class.new(NeetoBugtrapRuby::Config.new(api_key: "fake api key", logger: NULL_LOGGER))
       instance.notify("test", opts)
       expect(prev).to eq(opts)
     end
 
     it "does not report an already reported exception" do
-      instance = described_class.new(Honeybadger::Config.new(api_key: "fake api key", logger: NULL_LOGGER))
+      instance = described_class.new(NeetoBugtrapRuby::Config.new(api_key: "fake api key", logger: NULL_LOGGER))
       exception = RuntimeError.new
       notice_id = '4g09ko4f'
       exception.instance_variable_set(:@__hb_notice_id, notice_id)
       expect(instance.notify(exception)).to be notice_id
-      expect(Honeybadger::Notice).to_not receive(:new)
+      expect(NeetoBugtrapRuby::Notice).to_not receive(:new)
     end
 
     it "calls all of the before notify hooks before sending" do
       hooks = [spy("hook one", arity: 1), spy("hook two", arity: 1), spy("hook three", arity: 1)]
-      instance = described_class.new(Honeybadger::Config.new(api_key: "fake api key", logger: NULL_LOGGER))
+      instance = described_class.new(NeetoBugtrapRuby::Config.new(api_key: "fake api key", logger: NULL_LOGGER))
       instance.configure do |config|
         hooks.each { |hook| config.before_notify(hook) }
       end
@@ -125,13 +125,13 @@ describe Honeybadger::Agent do
       instance.notify(error_message: "testing before notify hooks")
 
       hooks.each do |hook|
-        expect(hook).to have_received(:call).with(instance_of(Honeybadger::Notice))
+        expect(hook).to have_received(:call).with(instance_of(NeetoBugtrapRuby::Notice))
       end
     end
 
     it "continues processing even if a before notify hook throws an error" do
       hook = ->(notice) { raise ArgumentError, "this was incorrect" }
-      instance = described_class.new(Honeybadger::Config.new(api_key: "fake api key", logger: NULL_LOGGER))
+      instance = described_class.new(NeetoBugtrapRuby::Config.new(api_key: "fake api key", logger: NULL_LOGGER))
       instance.configure do |config|
         config.before_notify(hook)
       end
@@ -143,7 +143,7 @@ describe Honeybadger::Agent do
       before_halt_hooks = [spy("hook one", arity: 1), spy("hook two", arity: 1)]
       halt_hook = ->(notice) { notice.halt! }
       after_halt_hooks = [spy("hook three", arity: 1), spy("hook four", arity: 1)]
-      instance = described_class.new(Honeybadger::Config.new(api_key: "fake api key", logger: NULL_LOGGER))
+      instance = described_class.new(NeetoBugtrapRuby::Config.new(api_key: "fake api key", logger: NULL_LOGGER))
       instance.configure do |config|
         before_halt_hooks.each { |hook| config.before_notify(hook) }
         config.before_notify(halt_hook)
@@ -153,17 +153,17 @@ describe Honeybadger::Agent do
       instance.notify(error_message: "testing error-raising before notify hook")
 
       before_halt_hooks.each do |hook|
-        expect(hook).to have_received(:call).with(instance_of(Honeybadger::Notice))
+        expect(hook).to have_received(:call).with(instance_of(NeetoBugtrapRuby::Notice))
       end
 
       after_halt_hooks.each do |hook|
-        expect(hook).not_to have_received(:call).with(instance_of(Honeybadger::Notice))
+        expect(hook).not_to have_received(:call).with(instance_of(NeetoBugtrapRuby::Notice))
       end
     end
 
     describe "breadcrumbs" do
-      let(:breadcrumbs) { instance_double(Honeybadger::Breadcrumbs::Collector) }
-      let(:config) { Honeybadger::Config.new(api_key: "fake api key", logger: NULL_LOGGER, :'breadcrumbs.enabled' => true) }
+      let(:breadcrumbs) { instance_double(NeetoBugtrapRuby::Breadcrumbs::Collector) }
+      let(:config) { NeetoBugtrapRuby::Config.new(api_key: "fake api key", logger: NULL_LOGGER, :'breadcrumbs.enabled' => true) }
 
       subject { described_class.new(config) }
 
@@ -171,12 +171,12 @@ describe Honeybadger::Agent do
         duped_breadcrumbs = double(each: [])
         expect(subject).to receive(:breadcrumbs).and_return(breadcrumbs)
         expect(subject).to receive(:add_breadcrumb).with(
-          "Honeybadger Notice",
+          "NeetoBugtrapRuby Notice",
           metadata: { error_message: "passed breadcrumbs?" },
           category: "notice"
         )
         expect(breadcrumbs).to receive(:dup).and_return(duped_breadcrumbs)
-        expect(Honeybadger::Notice).to receive(:new).with(config, hash_including(breadcrumbs: duped_breadcrumbs)).and_call_original
+        expect(NeetoBugtrapRuby::Notice).to receive(:new).with(config, hash_including(breadcrumbs: duped_breadcrumbs)).and_call_original
 
         subject.notify(error_message: "passed breadcrumbs?")
       end
@@ -184,8 +184,8 @@ describe Honeybadger::Agent do
   end
 
   context "breadcrumbs" do
-    let(:breadcrumbs) { instance_double(Honeybadger::Breadcrumbs::Collector, clear!: nil) }
-    let(:config) { Honeybadger::Config.new(api_key:'fake api key', logger: NULL_LOGGER) }
+    let(:breadcrumbs) { instance_double(NeetoBugtrapRuby::Breadcrumbs::Collector, clear!: nil) }
+    let(:config) { NeetoBugtrapRuby::Config.new(api_key:'fake api key', logger: NULL_LOGGER) }
     subject { described_class.new(config) }
 
     before do
@@ -202,9 +202,9 @@ describe Honeybadger::Agent do
         end
 
         it 'instantiates the breadcrumb collector with the right config' do
-          allow(Honeybadger::Breadcrumbs::Collector).to receive(:new).and_call_original
+          allow(NeetoBugtrapRuby::Breadcrumbs::Collector).to receive(:new).and_call_original
           subject.breadcrumbs
-          expect(Honeybadger::Breadcrumbs::Collector).to have_received(:new).with(instance_of(Honeybadger::Config))
+          expect(NeetoBugtrapRuby::Breadcrumbs::Collector).to have_received(:new).with(instance_of(NeetoBugtrapRuby::Config))
         end
       end
 
@@ -223,25 +223,25 @@ describe Honeybadger::Agent do
       after { Timecop.return }
 
       it "adds breadcrumb to manager" do
-        crumb = Honeybadger::Breadcrumbs::Breadcrumb.new(category: "neat", message: "This is the message", metadata: {a: "b"})
+        crumb = NeetoBugtrapRuby::Breadcrumbs::Breadcrumb.new(category: "neat", message: "This is the message", metadata: {a: "b"})
         expect(breadcrumbs).to receive(:add!).with(crumb)
 
         subject.add_breadcrumb("This is the message", metadata: {a: "b"}, category: "neat")
       end
 
       it 'has sane defaults' do
-        crumb = Honeybadger::Breadcrumbs::Breadcrumb.new(category: "custom", message: "Basic Message", metadata: {})
+        crumb = NeetoBugtrapRuby::Breadcrumbs::Breadcrumb.new(category: "custom", message: "Basic Message", metadata: {})
         expect(breadcrumbs).to receive(:add!).with(crumb)
 
         subject.add_breadcrumb("Basic Message")
       end
 
       it 'sanitizes breadcrumb before adding' do
-        sanitizer = instance_double(Honeybadger::Util::Sanitizer)
+        sanitizer = instance_double(NeetoBugtrapRuby::Util::Sanitizer)
         allow(breadcrumbs).to receive(:add!)
-        expect(Honeybadger::Util::Sanitizer).to receive(:new).with(max_depth: 2).and_return(sanitizer)
+        expect(NeetoBugtrapRuby::Util::Sanitizer).to receive(:new).with(max_depth: 2).and_return(sanitizer)
         expect(sanitizer).to receive(:sanitize).with(hash_including({message: "Breadcrumb"})).and_return({})
-        expect(Honeybadger::Breadcrumbs::Breadcrumb).to receive(:new)
+        expect(NeetoBugtrapRuby::Breadcrumbs::Breadcrumb).to receive(:new)
 
         subject.add_breadcrumb("Breadcrumb")
       end
@@ -250,7 +250,7 @@ describe Honeybadger::Agent do
 
   context do
     let!(:instance) { described_class.new(config) }
-    let(:config) { Honeybadger::Config.new(logger: NULL_LOGGER, debug: true) }
+    let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true) }
 
     subject { instance }
 
@@ -264,7 +264,7 @@ describe Honeybadger::Agent do
       describe "#worker" do
         subject { instance.worker }
 
-        it { should be_a Honeybadger::Worker }
+        it { should be_a NeetoBugtrapRuby::Worker }
       end
     end
 

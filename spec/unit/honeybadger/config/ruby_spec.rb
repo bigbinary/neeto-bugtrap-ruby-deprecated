@@ -1,9 +1,9 @@
 require 'honeybadger/config'
 
-describe Honeybadger::Config::Ruby do
+describe NeetoBugtrapRuby::Config::Ruby do
   subject { described_class.new(config) }
 
-  let(:config) { Honeybadger::Config.new(api_key: 'foo', :'user_informer.enabled' => true) }
+  let(:config) { NeetoBugtrapRuby::Config.new(api_key: 'foo', :'user_informer.enabled' => true) }
 
   it { should respond_to(:api_key) }
 

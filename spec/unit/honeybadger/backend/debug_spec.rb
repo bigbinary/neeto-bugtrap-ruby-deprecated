@@ -1,8 +1,8 @@
 require 'honeybadger/backend/debug'
 require 'honeybadger/config'
 
-describe Honeybadger::Backend::Debug do
-  let(:config) { Honeybadger::Config.new(logger: NULL_LOGGER, debug: true) }
+describe NeetoBugtrapRuby::Backend::Debug do
+  let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true) }
   let(:logger) { config.logger }
 
   let(:instance) { described_class.new(config) }
@@ -21,7 +21,7 @@ describe Honeybadger::Backend::Debug do
 
     subject { instance.notify(:notices, notice) }
 
-    it { should be_a Honeybadger::Backend::Response }
+    it { should be_a NeetoBugtrapRuby::Backend::Response }
 
     it "logs the notice" do
       expect(logger).to receive(:unknown).with(/feature=notices/)
@@ -32,7 +32,7 @@ describe Honeybadger::Backend::Debug do
   describe "#check_in" do
     it "logs the check_in" do
       expect(logger).to receive(:unknown).with("checking in debug backend with id=10")
-      
+
       instance.check_in(10)
     end
   end

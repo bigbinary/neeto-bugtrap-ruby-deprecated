@@ -1,7 +1,7 @@
 require 'honeybadger/plugin'
 require 'honeybadger/config'
 
-describe Honeybadger::Plugin::CALLER_FILE do
+describe NeetoBugtrapRuby::Plugin::CALLER_FILE do
   it { should_not match "/foo/bar" }
   it { should match "/foo/bar:32" }
   it { should match "D:/foo/bar:32" }
@@ -21,9 +21,9 @@ describe Honeybadger::Plugin::CALLER_FILE do
   end
 end
 
-describe Honeybadger::Plugin do
-  let(:config) { Honeybadger::Config.new(logger: NULL_LOGGER, debug: true) }
-  let(:plugin) { Honeybadger::Plugin.new(:testing) }
+describe NeetoBugtrapRuby::Plugin do
+  let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true) }
+  let(:plugin) { NeetoBugtrapRuby::Plugin.new(:testing) }
   subject { plugin }
 
   before do
@@ -31,60 +31,60 @@ describe Honeybadger::Plugin do
     # permanent. When testing the plugins themselves, we should ensure that we
     # are never calling `Plugin#load!` globally -- use
     # `Plugin.instances[:plugin_name]#load!` instead.
-    allow(Honeybadger::Plugin).to receive(:instances).and_return({})
+    allow(NeetoBugtrapRuby::Plugin).to receive(:instances).and_return({})
   end
 
   describe ".register" do
     it "returns a new plugin" do
       instance = double()
-      allow(Honeybadger::Plugin).to receive(:new).and_return(instance)
-      expect(Honeybadger::Plugin.register {}).to eq instance
+      allow(NeetoBugtrapRuby::Plugin).to receive(:new).and_return(instance)
+      expect(NeetoBugtrapRuby::Plugin.register {}).to eq instance
     end
 
     it "registers a new plugin without a name" do
       expect(described_class.instances).to be_empty
-      Honeybadger::Plugin.register {}
-      expect(described_class.instances[:'plugin_spec']).to be_a Honeybadger::Plugin
+      NeetoBugtrapRuby::Plugin.register {}
+      expect(described_class.instances[:'plugin_spec']).to be_a NeetoBugtrapRuby::Plugin
     end
 
     it "registers a new plugin with a name" do
       expect(described_class.instances).to be_empty
-      Honeybadger::Plugin.register(:foo) {}
-      expect(described_class.instances[:'foo']).to be_a Honeybadger::Plugin
+      NeetoBugtrapRuby::Plugin.register(:foo) {}
+      expect(described_class.instances[:'foo']).to be_a NeetoBugtrapRuby::Plugin
     end
 
     it "registers a new plugin with a String name" do
       expect(described_class.instances).to be_empty
-      Honeybadger::Plugin.register('foo') {}
-      expect(described_class.instances[:'foo']).to be_a Honeybadger::Plugin
+      NeetoBugtrapRuby::Plugin.register('foo') {}
+      expect(described_class.instances[:'foo']).to be_a NeetoBugtrapRuby::Plugin
     end
   end
 
   describe ".load!" do
     it "loads all satisfied instances" do
-      Honeybadger::Plugin.instances.replace({:one => mock_plugin, :two => mock_plugin})
-      Honeybadger::Plugin.load!(config)
+      NeetoBugtrapRuby::Plugin.instances.replace({:one => mock_plugin, :two => mock_plugin})
+      NeetoBugtrapRuby::Plugin.load!(config)
     end
 
     it "skips all unsatisfied instances" do
-      Honeybadger::Plugin.instances.replace({:one => mock_plugin(false), :two => mock_plugin(false)})
-      Honeybadger::Plugin.load!(config)
+      NeetoBugtrapRuby::Plugin.instances.replace({:one => mock_plugin(false), :two => mock_plugin(false)})
+      NeetoBugtrapRuby::Plugin.load!(config)
     end
 
     context "when skipped by configuration" do
       before do
         config[:plugins] = ['two', :three]
-        Honeybadger::Plugin.instances.replace({:one => mock_plugin(true, false), :two => mock_plugin(true), :three => mock_plugin(true)})
+        NeetoBugtrapRuby::Plugin.instances.replace({:one => mock_plugin(true, false), :two => mock_plugin(true), :three => mock_plugin(true)})
       end
 
       it "skips instances" do
-        Honeybadger::Plugin.load!(config)
+        NeetoBugtrapRuby::Plugin.load!(config)
       end
 
       it "logs skipped instances" do
         allow(config.logger).to receive(:debug)
         expect(config.logger).to receive(:debug).with(/reason=disabled/i).once
-        Honeybadger::Plugin.load!(config)
+        NeetoBugtrapRuby::Plugin.load!(config)
       end
     end
   end
@@ -195,7 +195,7 @@ describe Honeybadger::Plugin do
   end
 
   def mock_plugin(ok = true, expected = ok)
-    plugin, expecting = Honeybadger::Plugin.new(:testing), double()
+    plugin, expecting = NeetoBugtrapRuby::Plugin.new(:testing), double()
     expect(expecting).send(expected ? :to : :not_to, receive(:foo))
     allow(plugin).to receive(:ok?).and_return(ok)
     plugin.executions << Proc.new { expecting.foo }

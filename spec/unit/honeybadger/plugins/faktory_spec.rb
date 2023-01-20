@@ -2,15 +2,15 @@ require 'honeybadger/plugins/faktory'
 require 'honeybadger/config'
 
 describe "Faktory Dependency" do
-  let(:config) { Honeybadger::Config.new(logger: NULL_LOGGER, debug: true) }
+  let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true) }
 
   before do
-    Honeybadger::Plugin.instances[:faktory].reset!
+    NeetoBugtrapRuby::Plugin.instances[:faktory].reset!
   end
 
   context "when faktory is not installed" do
     it "fails quietly" do
-      expect { Honeybadger::Plugin.instances[:faktory].load!(config) }.not_to raise_error
+      expect { NeetoBugtrapRuby::Plugin.instances[:faktory].load!(config) }.not_to raise_error
     end
   end
 
@@ -34,7 +34,7 @@ describe "Faktory Dependency" do
     after { Object.send(:remove_const, :Faktory) }
 
     it "adds the error handler" do
-      Honeybadger::Plugin.instances[:faktory].load!(config)
+      NeetoBugtrapRuby::Plugin.instances[:faktory].load!(config)
       expect(faktory_config.error_handlers).not_to be_empty
     end
 
@@ -42,14 +42,14 @@ describe "Faktory Dependency" do
       let(:exception) { RuntimeError.new('boom') }
 
       before do
-        Honeybadger::Plugin.instances[:faktory].load!(config)
+        NeetoBugtrapRuby::Plugin.instances[:faktory].load!(config)
       end
 
       context "not within job execution" do
         let(:handler_context) { {context: 'Failed Hard', event: {} } }
 
-        it "notifies Honeybadger" do
-          expect(Honeybadger).to receive(:notify).with(exception, { parameters: handler_context }).once
+        it "notifies NeetoBugtrap" do
+          expect(NeetoBugtrapRuby).to receive(:notify).with(exception, { parameters: handler_context }).once
           faktory_config.error_handlers[0].call(exception, handler_context)
         end
       end
@@ -69,8 +69,8 @@ describe "Faktory Dependency" do
           action: 'perform'
         }}
 
-        it "notifies Honeybadger" do
-          expect(Honeybadger).to receive(:notify).with(exception, error_payload).once
+        it "notifies NeetoBugtrap" do
+          expect(NeetoBugtrapRuby).to receive(:notify).with(exception, error_payload).once
           faktory_config.error_handlers[0].call(exception, handler_context)
         end
 
@@ -78,10 +78,10 @@ describe "Faktory Dependency" do
           let(:job) { retried_invocation }
           let(:retry_limit) { 1 }
           let(:attempt) { 0 }
-          let(:config) { Honeybadger::Config.new(logger: NULL_LOGGER, debug: true, :'faktory.attempt_threshold' => 5) }
+          let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true, :'faktory.attempt_threshold' => 5) }
 
-          it "doesn't notify Honeybadger" do
-            expect(Honeybadger).not_to receive(:notify)
+          it "doesn't notify NeetoBugtrap" do
+            expect(NeetoBugtrapRuby).not_to receive(:notify)
             faktory_config.error_handlers[0].call(exception, handler_context)
           end
 
@@ -89,8 +89,8 @@ describe "Faktory Dependency" do
             let(:job) { first_invocation }
             let(:retry_limit) { 0 }
 
-            it "notifies Honeybadger" do
-              expect(Honeybadger).to receive(:notify).with(exception, error_payload).once
+            it "notifies NeetoBugtrap" do
+              expect(NeetoBugtrapRuby).to receive(:notify).with(exception, error_payload).once
               faktory_config.error_handlers[0].call(exception, handler_context)
             end
           end
@@ -99,8 +99,8 @@ describe "Faktory Dependency" do
             let(:attempt) { 3 }
             let(:retry_limit) { 3 }
 
-            it "notifies Honeybadger" do
-              expect(Honeybadger).to receive(:notify).with(exception, error_payload).once
+            it "notifies NeetoBugtrap" do
+              expect(NeetoBugtrapRuby).to receive(:notify).with(exception, error_payload).once
               faktory_config.error_handlers[0].call(exception, handler_context)
             end
           end
@@ -109,8 +109,8 @@ describe "Faktory Dependency" do
             let(:attempt) { 5 }
             let(:retry_limit) { 10 }
 
-            it "notifies Honeybadger" do
-              expect(Honeybadger).to receive(:notify).with(exception, error_payload).once
+            it "notifies NeetoBugtrap" do
+              expect(NeetoBugtrapRuby).to receive(:notify).with(exception, error_payload).once
               faktory_config.error_handlers[0].call(exception, handler_context)
             end
           end

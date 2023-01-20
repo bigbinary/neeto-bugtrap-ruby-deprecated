@@ -3,23 +3,23 @@ require 'honeybadger/config'
 require 'honeybadger/agent'
 
 class TestWorker
-  extend Honeybadger::Plugins::Resque::Extension
+  extend NeetoBugtrapRuby::Plugins::Resque::Extension
 end
 
 describe TestWorker do
   describe "::on_failure_with_honeybadger" do
-    let(:error) { RuntimeError.new('Failure in Honeybadger resque_spec') }
+    let(:error) { RuntimeError.new('Failure in NeetoBugtrapRuby resque_spec') }
 
     shared_examples_for "reports exceptions" do
       specify do
-        expect(Honeybadger).to receive(:notify).with(error, hash_including(parameters: {job_arguments: [1, 2, 3]}, sync: true))
+        expect(NeetoBugtrapRuby).to receive(:notify).with(error, hash_including(parameters: {job_arguments: [1, 2, 3]}, sync: true))
         described_class.on_failure_with_honeybadger(error, 1, 2, 3)
       end
     end
 
     shared_examples_for "does not report exceptions" do
       specify do
-        expect(Honeybadger).not_to receive(:notify)
+        expect(NeetoBugtrapRuby).not_to receive(:notify)
         expect {
           described_class.around_perform_with_honeybadger(1, 2, 3) do
             fail 'foo'
@@ -32,19 +32,19 @@ describe TestWorker do
 
     it "clears the context" do
       expect {
-        Honeybadger.context(badgers: true)
+        NeetoBugtrapRuby.context(badgers: true)
         described_class.on_failure_with_honeybadger(error, 1, 2, 3)
-      }.not_to change { Honeybadger::ContextManager.current.get_context }.from(nil)
+      }.not_to change { NeetoBugtrapRuby::ContextManager.current.get_context }.from(nil)
     end
 
     describe "with worker not extending Resque::Plugins::Retry" do
       context "when send exceptions on retry enabled" do
-        before { ::Honeybadger.config[:'resque.resque_retry.send_exceptions_when_retrying'] = true }
+        before { ::NeetoBugtrapRuby.config[:'resque.resque_retry.send_exceptions_when_retrying'] = true }
         it_behaves_like "reports exceptions"
       end
 
       context "when send exceptions on retry disabled" do
-        before { ::Honeybadger.config[:'resque.resque_retry.send_exceptions_when_retrying'] = false }
+        before { ::NeetoBugtrapRuby.config[:'resque.resque_retry.send_exceptions_when_retrying'] = false }
         it_behaves_like "reports exceptions"
       end
     end
@@ -62,7 +62,7 @@ describe TestWorker do
       end
 
       context "when send exceptions on retry enabled" do
-        before { ::Honeybadger.config[:'resque.resque_retry.send_exceptions_when_retrying'] = true }
+        before { ::NeetoBugtrapRuby.config[:'resque.resque_retry.send_exceptions_when_retrying'] = true }
 
         context "with retry criteria invalid" do
           it_behaves_like "reports exceptions"
@@ -75,7 +75,7 @@ describe TestWorker do
       end
 
       context "when send exceptions on retry disabled" do
-        before { ::Honeybadger.config[:'resque.resque_retry.send_exceptions_when_retrying'] = false }
+        before { ::NeetoBugtrapRuby.config[:'resque.resque_retry.send_exceptions_when_retrying'] = false }
 
         context "with retry criteria invalid" do
           it_behaves_like "reports exceptions"
@@ -88,9 +88,9 @@ describe TestWorker do
 
         context "and retry_criteria_valid? raises exception" do
           it "should report raised error to honeybadger" do
-            other_error = StandardError.new('stubbed Honeybadger error in retry_criteria_valid?')
+            other_error = StandardError.new('stubbed NeetoBugtrapRuby error in retry_criteria_valid?')
             allow(described_class).to receive(:retry_criteria_valid?).and_raise(other_error)
-            expect(Honeybadger).to receive(:notify).with(other_error, hash_including(parameters: {job_arguments: [1, 2, 3]}, sync: true))
+            expect(NeetoBugtrapRuby).to receive(:notify).with(other_error, hash_including(parameters: {job_arguments: [1, 2, 3]}, sync: true))
             described_class.on_failure_with_honeybadger(error, 1, 2, 3)
           end
         end
@@ -101,7 +101,7 @@ describe TestWorker do
 
   describe "::around_perform_with_honeybadger" do
     it "flushes pending errors before worker dies" do
-      expect(Honeybadger).to receive(:flush)
+      expect(NeetoBugtrapRuby).to receive(:flush)
 
       described_class.around_perform_with_honeybadger do
       end
@@ -119,9 +119,9 @@ describe TestWorker do
   describe "::after_perform_with_honeybadger" do
     it "clears the context" do
       expect {
-        Honeybadger.context(badgers: true)
+        NeetoBugtrapRuby.context(badgers: true)
         described_class.after_perform_with_honeybadger
-      }.not_to change { Honeybadger::ContextManager.current.get_context }.from(nil)
+      }.not_to change { NeetoBugtrapRuby::ContextManager.current.get_context }.from(nil)
     end
   end
 end

@@ -1,7 +1,7 @@
 require 'honeybadger/backend/base'
 require 'honeybadger/config'
 
-describe Honeybadger::Backend::Response do
+describe NeetoBugtrapRuby::Backend::Response do
   context "when successful" do
     subject { described_class.new(201) }
     its(:error) { should be_nil }
@@ -37,8 +37,8 @@ describe Honeybadger::Backend::Response do
   end
 end
 
-describe Honeybadger::Backend::Base do
-  let(:config) { Honeybadger::Config.new }
+describe NeetoBugtrapRuby::Backend::Base do
+  let(:config) { NeetoBugtrapRuby::Config.new }
 
   subject { described_class.new(config) }
 

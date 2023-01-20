@@ -2,15 +2,15 @@ require 'honeybadger/plugins/shoryuken'
 require 'honeybadger/config'
 
 RSpec.describe "Shoryuken Dependency" do
-  let(:config) { Honeybadger::Config.new(logger: NULL_LOGGER, debug: true) }
+  let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true) }
 
   before do
-    Honeybadger::Plugin.instances[:shoryuken].reset!
+    NeetoBugtrapRuby::Plugin.instances[:shoryuken].reset!
   end
 
   context "when shoryuken is not installed" do
     it "fails quietly" do
-      expect { Honeybadger::Plugin.instances[:shoryuken].load!(config) }.not_to raise_error
+      expect { NeetoBugtrapRuby::Plugin.instances[:shoryuken].load!(config) }.not_to raise_error
     end
   end
 
@@ -33,13 +33,13 @@ RSpec.describe "Shoryuken Dependency" do
     after { Object.send(:remove_const, :Shoryuken) }
 
     it "adds the server middleware" do
-      expect(chain).to receive(:add).with(Honeybadger::Plugins::Shoryuken::Middleware)
-      Honeybadger::Plugin.instances[:shoryuken].load!(config)
+      expect(chain).to receive(:add).with(NeetoBugtrapRuby::Plugins::Shoryuken::Middleware)
+      NeetoBugtrapRuby::Plugin.instances[:shoryuken].load!(config)
     end
   end
 end
 
-class TestShoryukenWorker < Honeybadger::Plugins::Shoryuken::Middleware; end
+class TestShoryukenWorker < NeetoBugtrapRuby::Plugins::Shoryuken::Middleware; end
 
 RSpec.describe TestShoryukenWorker do
   let(:sqs_msg) do
@@ -50,18 +50,18 @@ RSpec.describe TestShoryukenWorker do
   end
   let(:body) { { "key" => "value" } }
 
-  shared_examples_for "notifies Honeybadger" do
+  shared_examples_for "notifies NeetoBugtrap" do
     it do
-      expect(Honeybadger).to receive(:notify).with(kind_of(RuntimeError),
+      expect(NeetoBugtrapRuby).to receive(:notify).with(kind_of(RuntimeError),
                                                    hash_including(parameters: { body: { "key" => "value" } }))
 
       expect { job_execution }.to raise_error(RuntimeError)
     end
   end
 
-  shared_examples_for "batch notifies Honeybadger" do
+  shared_examples_for "batch notifies NeetoBugtrap" do
     it do
-      expect(Honeybadger).to receive(:notify).with(kind_of(RuntimeError),
+      expect(NeetoBugtrapRuby).to receive(:notify).with(kind_of(RuntimeError),
                                                    hash_including(parameters:
                                                                     { batch: [
                                                                         { "key" => "value" },
@@ -74,9 +74,9 @@ RSpec.describe TestShoryukenWorker do
     end
   end
 
-  shared_examples_for "doesn't notify Honeybadger" do
+  shared_examples_for "doesn't notify NeetoBugtrap" do
     it do
-      expect(Honeybadger).to_not receive(:notify)
+      expect(NeetoBugtrapRuby).to_not receive(:notify)
       expect { job_execution }.to raise_error(RuntimeError)
     end
   end
@@ -91,18 +91,18 @@ RSpec.describe TestShoryukenWorker do
 
   context "with a single message" do
     context "when an attempt threshold is not configured" do
-      include_examples "notifies Honeybadger"
+      include_examples "notifies NeetoBugtrap"
     end
 
     context "when an attempt threshold is configured" do
-      before { ::Honeybadger.config[:'shoryuken.attempt_threshold'] = 2 }
-      after { ::Honeybadger.config[:'shoryuken.attempt_threshold'] = 0 }
+      before { ::NeetoBugtrapRuby.config[:'shoryuken.attempt_threshold'] = 2 }
+      after { ::NeetoBugtrapRuby.config[:'shoryuken.attempt_threshold'] = 0 }
 
-      include_examples "doesn't notify Honeybadger"
+      include_examples "doesn't notify NeetoBugtrap"
 
       context "when retries are exhausted" do
         let(:receive_count) { "2" }
-        include_examples "notifies Honeybadger"
+        include_examples "notifies NeetoBugtrap"
       end
     end
   end
@@ -111,6 +111,6 @@ RSpec.describe TestShoryukenWorker do
     let(:sqs_msgs) { Array.new(2) { sqs_msg.dup } }
     let(:bodies) { Array.new(2) { body.dup } }
 
-    include_examples "batch notifies Honeybadger"
+    include_examples "batch notifies NeetoBugtrap"
   end
 end

@@ -7,11 +7,11 @@ feature "Running the test cli command" do
       expect(run_command("honeybadger test")).to be_successfully_executed
       expect(all_output).not_to match /Detected Rails/i
       expect(all_output).to match /asdf/
-      expect(all_output).to match /Initializing Honeybadger/
-      expect(all_output).to match /HoneybadgerTestingException/
+      expect(all_output).to match /Initializing NeetoBugtrapRuby/
+      expect(all_output).to match /NeetoBugtrapRubyTestingException/
       # Make sure the worker timeout isn't being exceeded.
       expect(all_output).not_to match /kill/
-      assert_notification('error' => {'class' => 'HoneybadgerTestingException'})
+      assert_notification('error' => {'class' => 'NeetoBugtrapRubyTestingException'})
     end
 
     context "with invalid configuration" do
@@ -34,9 +34,9 @@ YML
       expect(run_command("honeybadger test")).to be_successfully_executed
       expect(all_output).to match /Detected Rails/i
       expect(all_output).to match /asdf/
-      expect(all_output).to match /Initializing Honeybadger/
-      expect(all_output).to match /HoneybadgerTestingException/
-      assert_notification('error' => {'class' => 'HoneybadgerTestingException'})
+      expect(all_output).to match /Initializing NeetoBugtrapRuby/
+      expect(all_output).to match /NeetoBugtrapRubyTestingException/
+      assert_notification('error' => {'class' => 'NeetoBugtrapRubyTestingException'})
     end
 
     context "with invalid configuration" do

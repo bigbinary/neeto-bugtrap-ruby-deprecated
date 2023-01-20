@@ -3,7 +3,7 @@ require 'pathname'
 
 feature "Installing honeybadger via the cli" do
   shared_examples_for "cli installer" do |rails|
-    let(:config) { Honeybadger::Config.new(:api_key => 'asdf', :'config.path' => config_file) }
+    let(:config) { NeetoBugtrapRuby::Config.new(:api_key => 'asdf', :'config.path' => config_file) }
 
     before { set_environment_variable('HONEYBADGER_BACKEND', 'debug') }
 
@@ -12,7 +12,7 @@ feature "Installing honeybadger via the cli" do
       expect(all_output).to match /Writing configuration/i
       expect(all_output).to match /Happy 'badgering/i
       expect(all_output).not_to match /heroku/i
-      expect(all_output).not_to match /Starting Honeybadger/i
+      expect(all_output).not_to match /Starting NeetoBugtrapRuby/i
       if rails
         expect(all_output).to match /Detected Rails/i
       else
@@ -29,7 +29,7 @@ feature "Installing honeybadger via the cli" do
     it "sends a test notification" do
       set_environment_variable('HONEYBADGER_LOGGING_LEVEL', '1')
       expect(run_command('honeybadger install asdf')).to be_successfully_executed
-      assert_notification('error' => {'class' => 'HoneybadgerTestingException'})
+      assert_notification('error' => {'class' => 'NeetoBugtrapRubyTestingException'})
     end
 
     context "with the --no-test option" do

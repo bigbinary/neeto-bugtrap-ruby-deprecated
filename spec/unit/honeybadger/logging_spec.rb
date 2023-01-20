@@ -3,7 +3,7 @@ require 'honeybadger/config'
 
 LOG_SEVERITIES = [:debug, :info, :warn, :error, :fatal].freeze
 
-describe Honeybadger::Logging::Base do
+describe NeetoBugtrapRuby::Logging::Base do
   LOG_SEVERITIES.each do |severity|
     it { should respond_to severity }
   end
@@ -15,7 +15,7 @@ describe Honeybadger::Logging::Base do
   end
 end
 
-describe Honeybadger::Logging::StandardLogger do
+describe NeetoBugtrapRuby::Logging::StandardLogger do
   it "injects honeybadger as progname" do
     logger_dbl = instance_double(Logger, add: nil)
     logger = described_class.new(logger_dbl)
@@ -24,7 +24,7 @@ describe Honeybadger::Logging::StandardLogger do
   end
 end
 
-describe Honeybadger::Logging::BootLogger.instance do
+describe NeetoBugtrapRuby::Logging::BootLogger.instance do
   LOG_SEVERITIES.each do |severity|
     it { should respond_to severity }
 
@@ -37,7 +37,7 @@ describe Honeybadger::Logging::BootLogger.instance do
   end
 end
 
-describe Honeybadger::Logging::FormattedLogger do
+describe NeetoBugtrapRuby::Logging::FormattedLogger do
   let(:logger) { Logger.new(File::NULL) }
 
   subject { described_class.new(logger) }
@@ -52,8 +52,8 @@ describe Honeybadger::Logging::FormattedLogger do
   end
 end
 
-describe Honeybadger::Logging::ConfigLogger do
-  let(:config) { Honeybadger::Config.new(debug: true, :'logging.tty_level' => tty_level) }
+describe NeetoBugtrapRuby::Logging::ConfigLogger do
+  let(:config) { NeetoBugtrapRuby::Config.new(debug: true, :'logging.tty_level' => tty_level) }
   let(:logger) { Logger.new(File::NULL) }
   let(:tty_level) { 'ERROR' }
 

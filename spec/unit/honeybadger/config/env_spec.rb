@@ -1,6 +1,6 @@
 require 'honeybadger/config'
 
-describe Honeybadger::Config::Env do
+describe NeetoBugtrapRuby::Config::Env do
   subject { described_class.new(env) }
 
   let(:env) { {} }

@@ -10,17 +10,17 @@ group_by = if ENV['GROUP']
 
 puts Benchmark.measure {
   stats = AllocationStats.trace do
-    Honeybadger.configure do |config|
+    NeetoBugtrapRuby.configure do |config|
       config.api_key = 'badgers'
       config.backend = 'null'
     end
 
     1000.times do
-      Honeybadger.notify(error_class: 'RubyProf', error_message: 'Profiling Honeybadger -- this should never actually be reported.')
+      NeetoBugtrapRuby.notify(error_class: 'RubyProf', error_message: 'Profiling NeetoBugtrapRuby -- this should never actually be reported.')
     end
   end
 
-  Honeybadger.flush
+  NeetoBugtrapRuby.flush
 
   puts "\n\n"
   puts stats.allocations(alias_paths: true).group_by(*group_by).to_text

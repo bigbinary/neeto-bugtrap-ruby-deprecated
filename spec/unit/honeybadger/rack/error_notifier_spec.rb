@@ -18,14 +18,14 @@ def build_exception(opts = {})
   BacktracedException.new(opts)
 end
 
-describe Honeybadger::Rack::ErrorNotifier do
-  let(:agent) { Honeybadger::Agent.new }
+describe NeetoBugtrapRuby::Rack::ErrorNotifier do
+  let(:agent) { NeetoBugtrapRuby::Agent.new }
   let(:config) { agent.config }
 
   it "calls the upstream app with the environment" do
     environment = { 'key' => 'value' }
     app = lambda { |env| ['response', {}, env] }
-    stack = Honeybadger::Rack::ErrorNotifier.new(app, agent)
+    stack = NeetoBugtrapRuby::Rack::ErrorNotifier.new(app, agent)
 
     response = stack.call(environment)
 
@@ -44,7 +44,7 @@ describe Honeybadger::Rack::ErrorNotifier do
     expect(agent).to receive(:notify).with(exception)
 
     begin
-      stack = Honeybadger::Rack::ErrorNotifier.new(app, agent)
+      stack = NeetoBugtrapRuby::Rack::ErrorNotifier.new(app, agent)
       stack.call(environment)
     rescue Exception => raised
       expect(raised).to eq exception
@@ -63,7 +63,7 @@ describe Honeybadger::Rack::ErrorNotifier do
       env['rack.exception'] = exception
       response
     end
-    stack = Honeybadger::Rack::ErrorNotifier.new(app, agent)
+    stack = NeetoBugtrapRuby::Rack::ErrorNotifier.new(app, agent)
 
     expect(agent).to receive(:notify).with(exception)
 
@@ -82,7 +82,7 @@ describe Honeybadger::Rack::ErrorNotifier do
       env['sinatra.error'] = exception
       response
     end
-    stack = Honeybadger::Rack::ErrorNotifier.new(app, agent)
+    stack = NeetoBugtrapRuby::Rack::ErrorNotifier.new(app, agent)
 
     expect(agent).to receive(:notify).with(exception)
 
@@ -92,14 +92,14 @@ describe Honeybadger::Rack::ErrorNotifier do
   end
 
   it "clears context after app is called" do
-    Honeybadger.context(foo: :bar)
-    expect(Honeybadger.get_context).to eq({foo: :bar})
+    NeetoBugtrapRuby.context(foo: :bar)
+    expect(NeetoBugtrapRuby.get_context).to eq({foo: :bar})
 
     app = lambda { |env| ['response', {}, env] }
-    stack = Honeybadger::Rack::ErrorNotifier.new(app, agent)
+    stack = NeetoBugtrapRuby::Rack::ErrorNotifier.new(app, agent)
 
     stack.call({})
 
-    expect(Honeybadger.get_context).to be_nil
+    expect(NeetoBugtrapRuby.get_context).to be_nil
   end
 end
