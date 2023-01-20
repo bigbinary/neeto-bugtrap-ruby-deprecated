@@ -23,7 +23,7 @@ module NeetoBugtrapRuby
         message.nil? ||
         message == "" ||
         Thread.current[:__hb_within_log_subscriber] ||
-        progname == "neeto-bugtrap-ruby"
+        progname == "neetobugtrap"
       end
     end
 

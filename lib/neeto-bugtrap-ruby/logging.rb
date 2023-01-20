@@ -7,7 +7,7 @@ module NeetoBugtrapRuby
   # @api private
   module Logging
     PREFIX = '** [NeetoBugtrapRuby] '.freeze
-    LOGGER_PROG = "honeybadger".freeze
+    LOGGER_PROG = "neetobugtrap".freeze
 
     # Logging helper methods. Requires a NeetoBugtrapRuby::Config @config instance
     # variable to exist and/or #logger to be defined. Each method is
