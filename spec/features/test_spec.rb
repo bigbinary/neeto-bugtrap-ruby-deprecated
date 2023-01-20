@@ -24,7 +24,7 @@ feature "Running the test cli command" do
   end
 
   scenario "in a rails project", framework: :rails do
-    let(:config_file) { Pathname(current_dir).join('config', 'honeybadger.yml') }
+    let(:config_file) { Pathname(current_dir).join('config', 'neetobugtrap.yml') }
 
     it "displays expected debug output and sends notification" do
       File.write(config_file, <<-YML)

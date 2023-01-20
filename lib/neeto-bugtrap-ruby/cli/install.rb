@@ -26,7 +26,7 @@ module NeetoBugtrapRuby
           root = config_root = Pathname.new(Dir.pwd)
         end
 
-        config_path = config_root.join('honeybadger.yml')
+        config_path = config_root.join('neetobugtrap.yml')
 
         if config_path.exist?
           say("You're already on NeetoBugtrap, so you're all set.", :yellow)

@@ -2,7 +2,7 @@ require 'neeto-bugtrap-ruby/config'
 
 describe NeetoBugtrapRuby::Config::Yaml do
   subject { described_class.new(path, env) }
-  let(:path) { FIXTURES_PATH.join('honeybadger.yml') }
+  let(:path) { FIXTURES_PATH.join('neetobugtrap.yml') }
   let(:env) { 'production' }
 
   it { should be_a Hash }
@@ -52,7 +52,7 @@ logging:
   end
 
   context "when an environment namespace is not present" do
-    subject { described_class.new(FIXTURES_PATH.join('honeybadger.yml'), 'foo') }
+    subject { described_class.new(FIXTURES_PATH.join('neetobugtrap.yml'), 'foo') }
 
     it "falls back to the top level namespace" do
       expect(subject[:api_key]).to eq 'zxcv'
@@ -120,7 +120,7 @@ logging:
   end
 
   context "when an error occurs in ERB" do
-    let(:config_path) { FIXTURES_PATH.join('honeybadger.yml') }
+    let(:config_path) { FIXTURES_PATH.join('neetobugtrap.yml') }
     let(:yaml) { <<-YAML }
 ---
 api_key: "<%= MyApp.config.nonexistant_var %>"

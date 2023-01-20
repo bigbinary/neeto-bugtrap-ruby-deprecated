@@ -21,7 +21,7 @@ module NeetoBugtrapRuby
           NeetoBugtrapRuby.init!({
             :root           => ::Rails.root.to_s,
             :env            => ::Rails.env,
-            :'config.path'  => ::Rails.root.join('config', 'honeybadger.yml'),
+            :'config.path'  => ::Rails.root.join('config', 'neetobugtrap.yml'),
             :logger         => Logging::FormattedLogger.new(::Rails.logger),
             :framework      => :rails
           })

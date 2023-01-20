@@ -203,7 +203,7 @@ This is usually caused by one of the following issues:
     you're using `rescue` or `rescue_from` you may need to notify NeetoBugtrapRuby
     manually: `NeetoBugtrapRuby.notify(exception)`.
   - The neeto-bugtrap-ruby gem is misconfigured. Check the settings in your
-    honeybadger.yml file.
+    neetobugtrap.yml file.
 MSG
 
         notices = TestBackend.callings[:notices].map(&:first)

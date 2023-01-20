@@ -28,13 +28,13 @@ describe NeetoBugtrapRuby::Config do
       end
 
       it "prefers file to options" do
-        config.init!(:'config.path' => FIXTURES_PATH.join('honeybadger.yml'), api_key: 'bar')
+        config.init!(:'config.path' => FIXTURES_PATH.join('neetobugtrap.yml'), api_key: 'bar')
         expect(config[:api_key]).to eq 'zxcv'
       end
 
       it "prefers ENV to file" do
         env['HONEYBADGER_API_KEY'] = 'foo'
-        config.init!({:'config.path' => FIXTURES_PATH.join('honeybadger.yml'), api_key: 'bar'}, env)
+        config.init!({:'config.path' => FIXTURES_PATH.join('neetobugtrap.yml'), api_key: 'bar'}, env)
         expect(config[:api_key]).to eq 'foo'
       end
     end
@@ -61,7 +61,7 @@ describe NeetoBugtrapRuby::Config do
     end
 
     context "when the config path is defined" do
-      let(:config_file) { TMP_DIR.join('honeybadger.yml') }
+      let(:config_file) { TMP_DIR.join('neetobugtrap.yml') }
       let(:instance) { NeetoBugtrapRuby::Config.new(:'config.path' => config_file) }
 
       before { File.write(config_file, '') }

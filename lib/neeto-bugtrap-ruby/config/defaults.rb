@@ -29,7 +29,7 @@ module NeetoBugtrapRuby
 
     DEVELOPMENT_ENVIRONMENTS = ['development', 'test', 'cucumber'].map(&:freeze).freeze
 
-    DEFAULT_PATHS = ['honeybadger.yml', 'config/honeybadger.yml', "#{ENV['HOME']}/honeybadger.yml"].map(&:freeze).freeze
+    DEFAULT_PATHS = ['neetobugtrap.yml', 'config/neetobugtrap.yml', "#{ENV['HOME']}/neetobugtrap.yml"].map(&:freeze).freeze
 
     OPTIONS = {
       api_key: {

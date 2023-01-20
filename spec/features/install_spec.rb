@@ -80,13 +80,13 @@ YML
   end
 
   scenario "in a plain ruby project" do
-    let(:config_file) { Pathname(current_dir).join('honeybadger.yml') }
+    let(:config_file) { Pathname(current_dir).join('neetobugtrap.yml') }
 
     it_behaves_like "cli installer", false
   end
 
   scenario "in a Rails project", framework: :rails do
-    let(:config_file) { Pathname(current_dir).join('config', 'honeybadger.yml') }
+    let(:config_file) { Pathname(current_dir).join('config', 'neetobugtrap.yml') }
 
     it_behaves_like "cli installer", true
   end
