@@ -119,11 +119,11 @@ module NeetoBugtrapRuby
         class NeetoBugtrapRuby::TestController < ApplicationController
           # This is to bypass any filters that may prevent access to the action.
           if respond_to?(:prepend_before_action)
-            prepend_before_action :test_honeybadger
+            prepend_before_action :test_neetobugtrap
           else
-            prepend_before_filter :test_honeybadger
+            prepend_before_filter :test_neetobugtrap
           end
-          def test_honeybadger
+          def test_neetobugtrap
             puts "Raising '#{NeetoBugtrapRuby::CLI::Test::TEST_EXCEPTION.class.name}' to simulate application failure."
             raise NeetoBugtrapRuby::CLI::Test::TEST_EXCEPTION
           end
