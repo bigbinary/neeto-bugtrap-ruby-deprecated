@@ -11,7 +11,7 @@ module NeetoBugtrapRuby
           load 'neeto-bugtrap-ruby/tasks.rb'
         end
 
-        initializer 'honeybadger.install_middleware' do |app|
+        initializer 'neetobugtrap.install_middleware' do |app|
           app.config.middleware.insert(0, NeetoBugtrapRuby::Rack::ErrorNotifier)
           app.config.middleware.insert_before(NeetoBugtrapRuby::Rack::ErrorNotifier, NeetoBugtrapRuby::Rack::UserInformer)
           app.config.middleware.insert_before(NeetoBugtrapRuby::Rack::ErrorNotifier, NeetoBugtrapRuby::Rack::UserFeedback)
