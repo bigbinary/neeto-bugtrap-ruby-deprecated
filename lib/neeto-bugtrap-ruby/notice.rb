@@ -391,7 +391,7 @@ module NeetoBugtrapRuby
     def exception_context(exception)
       # This extra check exists because the exception itself is not expected to
       # convert to a hash.
-      object = exception if exception.respond_to?(:to_honeybadger_context)
+      object = exception if exception.respond_to?(:to_neetobugtrap_context)
       object ||= {}.freeze
 
       Context(object)

@@ -9,7 +9,7 @@ module NeetoBugtrapRuby
     #
     # @return [Hash] The hash context.
     def Context(object)
-      object = object.to_honeybadger_context if object.respond_to?(:to_honeybadger_context)
+      object = object.to_neetobugtrap_context if object.respond_to?(:to_neetobugtrap_context)
       Hash(object)
     end
   end
