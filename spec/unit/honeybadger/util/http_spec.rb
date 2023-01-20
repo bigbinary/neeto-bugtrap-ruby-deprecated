@@ -140,7 +140,7 @@ describe NeetoBugtrapRuby::Util::HTTP do
     it "posts to the right url for non-ssl" do
       config[:'connection.secure'] = false
       http = stub_http
-      url = "http://api.honeybadger.io:80/v1/foo"
+      url = "http://api.neetobugtrap.com:80/v1/foo"
       uri = URI.parse(url)
       expect(http).to receive(:post).with(uri.path, anything, NeetoBugtrapRuby::Util::HTTP::HEADERS.merge({ 'X-API-Key' => 'abc123'}))
       http_post
@@ -153,7 +153,7 @@ describe NeetoBugtrapRuby::Util::HTTP do
     end
 
     it "verifies the SSL peer when the use_ssl option is set to true" do
-      url = "https://api.honeybadger.io/v1/foo"
+      url = "https://api.neetobugtrap.com/v1/foo"
       uri = URI.parse(url)
 
       real_http = Net::HTTP.new(uri.host, uri.port)

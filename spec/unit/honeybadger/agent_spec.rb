@@ -12,17 +12,17 @@ describe NeetoBugtrapRuby::Agent do
 
   describe "#check_in" do
     it 'parses check_in id from a url' do
-      stub_request(:get, "https://api.honeybadger.io/v1/check_in/1MqIo1").
+      stub_request(:get, "https://api.neetobugtrap.com/v1/check_in/1MqIo1").
          to_return(status: 200)
 
       config = NeetoBugtrapRuby::Config.new(api_key:'fake api key', logger: NULL_LOGGER)
       instance = described_class.new(config)
 
-      instance.check_in('https://api.honeybadger.io/v1/check_in/1MqIo1')
+      instance.check_in('https://api.neetobugtrap.com/v1/check_in/1MqIo1')
     end
 
     it 'returns true for successful check ins' do
-      stub_request(:get, "https://api.honeybadger.io/v1/check_in/foobar").
+      stub_request(:get, "https://api.neetobugtrap.com/v1/check_in/foobar").
          to_return(status: 200)
 
       config = NeetoBugtrapRuby::Config.new(api_key:'fake api key', logger: NULL_LOGGER)
@@ -34,7 +34,7 @@ describe NeetoBugtrapRuby::Agent do
     end
 
     it 'returns false for failed check ins' do
-      stub_request(:get, "https://api.honeybadger.io/v1/check_in/danny").
+      stub_request(:get, "https://api.neetobugtrap.com/v1/check_in/danny").
          to_return(status: 400)
 
       config = NeetoBugtrapRuby::Config.new(api_key:'fake api key', logger: NULL_LOGGER)
@@ -49,14 +49,14 @@ describe NeetoBugtrapRuby::Agent do
     subject(:instance) { described_class.new(config) }
 
     it 'returns true for successful deployment tracking' do
-      stub_request(:post, "https://api.honeybadger.io/v1/deploys").
+      stub_request(:post, "https://api.neetobugtrap.com/v1/deploys").
          to_return(status: 200)
 
       expect(instance.track_deployment).to eq(true)
     end
 
     it 'returns false for unsuccessful deployment tracking' do
-      stub_request(:post, "https://api.honeybadger.io/v1/deploys").
+      stub_request(:post, "https://api.neetobugtrap.com/v1/deploys").
          to_return(status: 400)
 
       expect(instance.track_deployment).to eq(false)
@@ -64,7 +64,7 @@ describe NeetoBugtrapRuby::Agent do
 
     it 'passes the revision to the servce' do
       allow_any_instance_of(NeetoBugtrapRuby::Util::HTTP).to receive(:compress) { |_, body| body }
-      stub_request(:post, "https://api.honeybadger.io/v1/deploys").
+      stub_request(:post, "https://api.neetobugtrap.com/v1/deploys").
          with(body: { environment: nil, revision: '1234', local_username: nil, repository: nil }).
          to_return(status: 200)
 

@@ -134,7 +134,7 @@ module NeetoBugtrapRuby
       },
       :'connection.host' => {
         description: 'The host to use when sending data.',
-        default: 'api.honeybadger.io'.freeze,
+        default: 'api.neetobugtrap.com'.freeze,
         type: String
       },
       :'connection.port' => {

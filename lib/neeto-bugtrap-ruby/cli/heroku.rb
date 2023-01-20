@@ -23,7 +23,7 @@ module NeetoBugtrapRuby
           exit(1)
         end
 
-        cmd = %Q(heroku webhooks:add -i api:release -l notify -u "https://api.honeybadger.io/v1/deploys/heroku?environment=#{rails_env}&api_key=#{api_key}"#{app ? " --app #{app}" : ''})
+        cmd = %Q(heroku webhooks:add -i api:release -l notify -u "https://api.neetobugtrap.com/v1/deploys/heroku?environment=#{rails_env}&api_key=#{api_key}"#{app ? " --app #{app}" : ''})
 
         say("Running: `#{cmd}`")
         say(run(cmd))
