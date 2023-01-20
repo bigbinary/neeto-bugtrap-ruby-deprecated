@@ -220,7 +220,7 @@ MSG
 
       def generate_success_message(response)
         notice_id = JSON.parse(response.body)['id']
-        notice_url = "https://app.honeybadger.io/notice/#{notice_id}"
+        notice_url = "https://app.neetobugtrap.com/notice/#{notice_id}"
 
         unless options[:install]
           return "⚡ Success: #{notice_url}"
