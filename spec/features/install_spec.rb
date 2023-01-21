@@ -1,14 +1,14 @@
 require 'neeto-bugtrap-ruby/config'
 require 'pathname'
 
-feature "Installing honeybadger via the cli" do
+feature "Installing neetobugtrap via the cli" do
   shared_examples_for "cli installer" do |rails|
     let(:config) { NeetoBugtrapRuby::Config.new(:api_key => 'asdf', :'config.path' => config_file) }
 
     before { set_environment_variable('HONEYBADGER_BACKEND', 'debug') }
 
     it "outputs successful result" do
-      expect(run_command('honeybadger install asdf')).to be_successfully_executed
+      expect(run_command('neetobugtrap install asdf')).to be_successfully_executed
       expect(all_output).to match /Writing configuration/i
       expect(all_output).to match /Happy 'badgering/i
       expect(all_output).not_to match /heroku/i
@@ -22,20 +22,20 @@ feature "Installing honeybadger via the cli" do
 
     it "creates the configuration file" do
       expect {
-        run_command_and_stop('honeybadger install asdf', fail_on_error: true)
+        run_command_and_stop('neetobugtrap install asdf', fail_on_error: true)
       }.to change { config_file.exist? }.from(false).to(true)
     end
 
     it "sends a test notification" do
       set_environment_variable('HONEYBADGER_LOGGING_LEVEL', '1')
-      expect(run_command('honeybadger install asdf')).to be_successfully_executed
+      expect(run_command('neetobugtrap install asdf')).to be_successfully_executed
       assert_notification('error' => {'class' => 'NeetoBugtrapRubyTestingException'})
     end
 
     context "with the --no-test option" do
       it "skips the test notification" do
         set_environment_variable('HONEYBADGER_LOGGING_LEVEL', '1')
-        expect(run_command('honeybadger install asdf --no-test')).to be_successfully_executed
+        expect(run_command('neetobugtrap install asdf --no-test')).to be_successfully_executed
         assert_no_notification
       end
     end
@@ -47,14 +47,14 @@ api_key: 'asdf'
 YML
 
       it "does not overwrite existing configuration" do
-        expect(run_command('honeybadger install asdf')).to be_successfully_executed
+        expect(run_command('neetobugtrap install asdf')).to be_successfully_executed
         expect {
-          run_command_and_stop('honeybadger install asdf', fail_on_error: true)
+          run_command_and_stop('neetobugtrap install asdf', fail_on_error: true)
         }.not_to change { config_file.mtime }
       end
 
       it "outputs successful result" do
-        expect(run_command('honeybadger install asdf')).to be_successfully_executed
+        expect(run_command('neetobugtrap install asdf')).to be_successfully_executed
         expect(all_output).to match /Happy 'badgering/i
       end
     end
@@ -72,9 +72,9 @@ end
 YML
 
       it "installs capistrano command" do
-        expect(run_command('honeybadger install asdf')).to be_successfully_executed
+        expect(run_command('neetobugtrap install asdf')).to be_successfully_executed
         expect(run_command('bundle exec cap -T')).to be_successfully_executed
-        expect(all_output).to match(/honeybadger\:deploy/i)
+        expect(all_output).to match(/neetobugtrap\:deploy/i)
       end
     end
   end

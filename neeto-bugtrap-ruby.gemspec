@@ -1,7 +1,7 @@
-require File.expand_path('../lib/honeybadger/version.rb', __FILE__)
+require File.expand_path('../lib/neeto-bugtrap-ruby/version.rb', __FILE__)
 
 Gem::Specification.new do |s|
-  s.name        = 'honeybadger'
+  s.name        = 'neeto-bugtrap-ruby'
   s.version     = NeetoBugtrapRuby::VERSION
   s.platform    = Gem::Platform::RUBY
   s.summary     = 'Error reports you can be happy about.'
@@ -11,11 +11,11 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://www.honeybadger.io/for/ruby/'
   s.license     = 'MIT'
   s.metadata = {
-    'bug_tracker_uri'   => 'https://github.com/honeybadger-io/honeybadger-ruby/issues',
-    'changelog_uri'     => 'https://github.com/honeybadger-io/honeybadger-ruby/blob/master/CHANGELOG.md',
+    'bug_tracker_uri'   => 'https://github.com/bigbinary/neeto-bugtrap-ruby/issues',
+    'changelog_uri'     => 'https://github.com/bigbinary/neeto-bugtrap-ruby/blob/master/CHANGELOG.md',
     'documentation_uri' => 'https://docs.honeybadger.io/lib/ruby/',
     'homepage_uri'      => 'https://www.honeybadger.io/for/ruby/',
-    'source_code_uri'   => 'https://github.com/honeybadger-io/honeybadger-ruby'
+    'source_code_uri'   => 'https://github.com/bigbinary/neeto-bugtrap-ruby'
   }
 
   s.required_ruby_version = '>= 2.3.0'
@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
   s.files += Dir['*.md']
   s.files += ['LICENSE']
 
-  s.require_paths = ['lib', 'vendor/capistrano-honeybadger/lib']
+  s.require_paths = ['lib', 'vendor/capistrano-neetobugtrap/lib']
 
-  s.executables << 'honeybadger'
+  s.executables << 'neetobugtrap'
 end

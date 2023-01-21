@@ -5,9 +5,9 @@ describe NeetoBugtrapRuby::Rack::UserInformer do
   let(:agent) { NeetoBugtrapRuby::Agent.new }
   let(:config) { agent.config }
 
-  it 'modifies output if there is a honeybadger id' do
+  it 'modifies output if there is a neetobugtrap id' do
     main_app = lambda do |env|
-      env['honeybadger.error_id'] = 1
+      env['neetobugtrap.error_id'] = 1
       [200, {}, ["<!-- HONEYBADGER ERROR -->"]]
     end
     informer_app = NeetoBugtrapRuby::Rack::UserInformer.new(main_app, agent)
@@ -18,7 +18,7 @@ describe NeetoBugtrapRuby::Rack::UserInformer do
     expect(result[1]["Content-Length"].to_i).to eq 19
   end
 
-  it 'does not modify output if there is no honeybadger id' do
+  it 'does not modify output if there is no neetobugtrap id' do
     main_app = lambda do |env|
       [200, {}, ["<!-- HONEYBADGER ERROR -->"]]
     end

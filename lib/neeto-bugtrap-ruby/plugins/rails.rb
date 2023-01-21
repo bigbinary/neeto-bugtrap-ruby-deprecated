@@ -22,8 +22,8 @@ module NeetoBugtrapRuby
             env = arg
           end
 
-          env['honeybadger.exception'] = exception
-          env['honeybadger.request.url'] = request.url rescue nil
+          env['neetobugtrap.exception'] = exception
+          env['neetobugtrap.request.url'] = request.url rescue nil
 
           super(arg, exception)
         end

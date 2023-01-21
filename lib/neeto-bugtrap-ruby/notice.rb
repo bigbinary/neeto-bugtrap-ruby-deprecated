@@ -456,11 +456,11 @@ module NeetoBugtrapRuby
     def local_variables_from_exception(exception, config)
       return nil unless send_local_variables?(config)
       return {} unless Exception === exception
-      return {} unless exception.respond_to?(:__honeybadger_bindings_stack)
-      return {} if exception.__honeybadger_bindings_stack.empty?
+      return {} unless exception.respond_to?(:__neetobugtrap_bindings_stack)
+      return {} if exception.__neetobugtrap_bindings_stack.empty?
 
       if config[:root]
-        binding = exception.__honeybadger_bindings_stack.find { |b|
+        binding = exception.__neetobugtrap_bindings_stack.find { |b|
           if BINDING_HAS_SOURCE_LOCATION
             b.source_location[0]
           else
@@ -469,7 +469,7 @@ module NeetoBugtrapRuby
         }
       end
 
-      binding ||= exception.__honeybadger_bindings_stack[0]
+      binding ||= exception.__neetobugtrap_bindings_stack[0]
 
       vars = binding.eval('local_variables')
       results =

@@ -133,7 +133,7 @@ describe NeetoBugtrapRuby do
 
     it "generates a backtrace excluding the singleton" do
       expect(instance.worker).to receive(:push) do |notice|
-        expect(notice.backtrace.to_a[0]).to match('lib/honeybadger/agent.rb')
+        expect(notice.backtrace.to_a[0]).to match('lib/neeto-bugtrap-ruby/agent.rb')
       end
 
       NeetoBugtrapRuby.notify(error_message: 'testing backtrace generation')

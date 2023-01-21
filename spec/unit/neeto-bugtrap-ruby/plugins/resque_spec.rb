@@ -7,13 +7,13 @@ class TestWorker
 end
 
 describe TestWorker do
-  describe "::on_failure_with_honeybadger" do
+  describe "::on_failure_with_neetobugtrap" do
     let(:error) { RuntimeError.new('Failure in NeetoBugtrapRuby resque_spec') }
 
     shared_examples_for "reports exceptions" do
       specify do
         expect(NeetoBugtrapRuby).to receive(:notify).with(error, hash_including(parameters: {job_arguments: [1, 2, 3]}, sync: true))
-        described_class.on_failure_with_honeybadger(error, 1, 2, 3)
+        described_class.on_failure_with_neetobugtrap(error, 1, 2, 3)
       end
     end
 
@@ -21,7 +21,7 @@ describe TestWorker do
       specify do
         expect(NeetoBugtrapRuby).not_to receive(:notify)
         expect {
-          described_class.around_perform_with_honeybadger(1, 2, 3) do
+          described_class.around_perform_with_neetobugtrap(1, 2, 3) do
             fail 'foo'
           end
         }.to raise_error(RuntimeError)
@@ -33,7 +33,7 @@ describe TestWorker do
     it "clears the context" do
       expect {
         NeetoBugtrapRuby.context(badgers: true)
-        described_class.on_failure_with_honeybadger(error, 1, 2, 3)
+        described_class.on_failure_with_neetobugtrap(error, 1, 2, 3)
       }.not_to change { NeetoBugtrapRuby::ContextManager.current.get_context }.from(nil)
     end
 
@@ -87,11 +87,11 @@ describe TestWorker do
         end
 
         context "and retry_criteria_valid? raises exception" do
-          it "should report raised error to honeybadger" do
+          it "should report raised error to neetobugtrap" do
             other_error = StandardError.new('stubbed NeetoBugtrapRuby error in retry_criteria_valid?')
             allow(described_class).to receive(:retry_criteria_valid?).and_raise(other_error)
             expect(NeetoBugtrapRuby).to receive(:notify).with(other_error, hash_including(parameters: {job_arguments: [1, 2, 3]}, sync: true))
-            described_class.on_failure_with_honeybadger(error, 1, 2, 3)
+            described_class.on_failure_with_neetobugtrap(error, 1, 2, 3)
           end
         end
 
@@ -99,28 +99,28 @@ describe TestWorker do
     end
   end
 
-  describe "::around_perform_with_honeybadger" do
+  describe "::around_perform_with_neetobugtrap" do
     it "flushes pending errors before worker dies" do
       expect(NeetoBugtrapRuby).to receive(:flush)
 
-      described_class.around_perform_with_honeybadger do
+      described_class.around_perform_with_neetobugtrap do
       end
     end
 
     it "raises exceptions" do
       expect {
-        described_class.around_perform_with_honeybadger do
+        described_class.around_perform_with_neetobugtrap do
           fail 'foo'
         end
       }.to raise_error(RuntimeError, /foo/)
     end
   end
 
-  describe "::after_perform_with_honeybadger" do
+  describe "::after_perform_with_neetobugtrap" do
     it "clears the context" do
       expect {
         NeetoBugtrapRuby.context(badgers: true)
-        described_class.after_perform_with_honeybadger
+        described_class.after_perform_with_neetobugtrap
       }.not_to change { NeetoBugtrapRuby::ContextManager.current.get_context }.from(nil)
     end
   end

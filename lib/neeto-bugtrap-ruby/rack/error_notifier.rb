@@ -29,16 +29,16 @@ module NeetoBugtrapRuby
       def call(env)
         agent.with_rack_env(env) do
           begin
-            env['honeybadger.config'] = config
+            env['neetobugtrap.config'] = config
             response = @app.call(env)
           rescue Exception => raised
-            env['honeybadger.error_id'] = notify_honeybadger(raised, env)
+            env['neetobugtrap.error_id'] = notify_neetobugtrap(raised, env)
             raise
           end
 
           framework_exception = framework_exception(env)
           if framework_exception
-            env['honeybadger.error_id'] = notify_honeybadger(framework_exception, env)
+            env['neetobugtrap.error_id'] = notify_neetobugtrap(framework_exception, env)
           end
 
           response
@@ -62,7 +62,7 @@ module NeetoBugtrapRuby
           any? { |ua| ua === env['HTTP_USER_AGENT'] }
       end
 
-      def notify_honeybadger(exception, env)
+      def notify_neetobugtrap(exception, env)
         return if ignored_user_agent?(env)
 
         if config[:'breadcrumbs.enabled']
@@ -85,7 +85,7 @@ module NeetoBugtrapRuby
 
       def framework_exception(env)
         env['action_dispatch.exception'] || env['rack.exception'] ||
-          env['sinatra.error'] || env['honeybadger.exception']
+          env['sinatra.error'] || env['neetobugtrap.exception']
       end
     end
   end

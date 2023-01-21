@@ -122,7 +122,7 @@ module NeetoBugtrapRuby
       opts = opts.dup
 
       if exception_or_opts.is_a?(Exception)
-        already_reported_notice_id = exception_or_opts.instance_variable_get(:@__hb_notice_id)
+        already_reported_notice_id = exception_or_opts.instance_variable_get(:@__nb_notice_id)
         return already_reported_notice_id if already_reported_notice_id
 
         opts[:exception] = exception_or_opts
@@ -175,7 +175,7 @@ module NeetoBugtrapRuby
       end
 
       if exception_or_opts.is_a?(Exception)
-        exception_or_opts.instance_variable_set(:@__hb_notice_id, notice.id) unless exception_or_opts.frozen?
+        exception_or_opts.instance_variable_set(:@__nb_notice_id, notice.id) unless exception_or_opts.frozen?
       end
 
       notice.id
@@ -232,7 +232,7 @@ module NeetoBugtrapRuby
     #
     #   # Explicit conversion
     #   class User < ActiveRecord::Base
-    #     def to_neeto-bugtrap-ruby_context
+    #     def to_neetobugtrap_context
     #       { user_id: id, user_email: email }
     #     end
     #   end
@@ -244,7 +244,7 @@ module NeetoBugtrapRuby
     #   NeetoBugtrapRuby.context.clear!
     #
     # @param [Hash] context A Hash of data which will be sent to NeetoBugtrapRuby
-    #   when an error occurs. If the object responds to +#to_neeto-bugtrap-ruby_context+,
+    #   when an error occurs. If the object responds to +#to_neetobugtrap_context+,
     #   the return value of that method will be used (explicit conversion). Can
     #   include any key/value, but a few keys have a special meaning in
     #   NeetoBugtrapRuby.
@@ -284,7 +284,7 @@ module NeetoBugtrapRuby
     def breadcrumbs
       return @breadcrumbs if @breadcrumbs
 
-      Thread.current[:__hb_breadcrumbs] ||= Breadcrumbs::Collector.new(config)
+      Thread.current[:__nb_breadcrumbs] ||= Breadcrumbs::Collector.new(config)
     end
 
     # Appends a breadcrumb to the trace. Use this when you want to add some

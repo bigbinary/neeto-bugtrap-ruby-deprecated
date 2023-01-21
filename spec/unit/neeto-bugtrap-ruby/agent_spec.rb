@@ -92,7 +92,7 @@ describe NeetoBugtrapRuby::Agent do
       instance = described_class.new(config)
 
       expect(instance.worker).to receive(:push) do |notice|
-        expect(notice.backtrace.to_a[0]).to match('lib/honeybadger/agent.rb')
+        expect(notice.backtrace.to_a[0]).to match('lib/neeto-bugtrap-ruby/agent.rb')
       end
 
       instance.notify(error_message: 'testing backtrace generation')
@@ -110,7 +110,7 @@ describe NeetoBugtrapRuby::Agent do
       instance = described_class.new(NeetoBugtrapRuby::Config.new(api_key: "fake api key", logger: NULL_LOGGER))
       exception = RuntimeError.new
       notice_id = '4g09ko4f'
-      exception.instance_variable_set(:@__hb_notice_id, notice_id)
+      exception.instance_variable_set(:@__nb_notice_id, notice_id)
       expect(instance.notify(exception)).to be notice_id
       expect(NeetoBugtrapRuby::Notice).to_not receive(:new)
     end
@@ -189,7 +189,7 @@ describe NeetoBugtrapRuby::Agent do
     subject { described_class.new(config) }
 
     before do
-      Thread.current[:__hb_breadcrumbs] = nil
+      Thread.current[:__nb_breadcrumbs] = nil
     end
 
     describe "#breadcrumbs" do
@@ -198,7 +198,7 @@ describe NeetoBugtrapRuby::Agent do
 
         it 'creates instance local breadcrumb' do
           subject.breadcrumbs
-          expect(Thread.current[:__hb_breadcrumbs]).to be nil
+          expect(Thread.current[:__nb_breadcrumbs]).to be nil
         end
 
         it 'instantiates the breadcrumb collector with the right config' do
@@ -210,7 +210,7 @@ describe NeetoBugtrapRuby::Agent do
 
       it 'stores breadcrumbs in thread local' do
         bc = subject.breadcrumbs
-        expect(Thread.current[:__hb_breadcrumbs]).to eq(bc)
+        expect(Thread.current[:__nb_breadcrumbs]).to eq(bc)
       end
     end
 

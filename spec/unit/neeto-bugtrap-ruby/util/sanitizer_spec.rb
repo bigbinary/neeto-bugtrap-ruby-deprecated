@@ -44,30 +44,30 @@ describe NeetoBugtrapRuby::Util::Sanitizer do
       expect(described_class.new.sanitize(BasicObject.new)).to eq('#<BasicObject>')
     end
 
-    it "converts objects with #to_honeybadger before sanitizing" do
-      object = double(to_honeybadger: { string: double(to_honeybadger: 'expected value') })
+    it "converts objects with #to_neetobugtrap before sanitizing" do
+      object = double(to_neetobugtrap: { string: double(to_neetobugtrap: 'expected value') })
       expect(described_class.new.sanitize(object)).to eq({ string: 'expected value' })
     end
 
-    it "indicates raised when #to_honeybadger raises an exception" do
+    it "indicates raised when #to_neetobugtrap raises an exception" do
       object = double
-      allow(object).to receive(:to_honeybadger).and_raise("error in #to_honeybadger")
+      allow(object).to receive(:to_neetobugtrap).and_raise("error in #to_neetobugtrap")
       expect(described_class.new.sanitize(object)).to eq('[RAISED]')
     end
 
-    it "halts infinite recursion of #to_honeybadger" do
+    it "halts infinite recursion of #to_neetobugtrap" do
       object = double
-      allow(object).to receive(:to_honeybadger).and_return(object)
+      allow(object).to receive(:to_neetobugtrap).and_return(object)
       expect(described_class.new.sanitize(object)).to eq('[RECURSION]')
     end
 
-    it "halts infinite recursion of different objects responding to #to_honeybadger" do
-      to_honeybadger = -> {
+    it "halts infinite recursion of different objects responding to #to_neetobugtrap" do
+      to_neetobugtrap = -> {
         object = double
-        allow(object).to receive(:to_honeybadger, &to_honeybadger)
+        allow(object).to receive(:to_neetobugtrap, &to_neetobugtrap)
         object
       }
-      object = to_honeybadger.call
+      object = to_neetobugtrap.call
       expect(described_class.new.sanitize(object)).to eq('[DEPTH]')
     end
 
@@ -176,23 +176,23 @@ describe NeetoBugtrapRuby::Util::Sanitizer do
     subject { described_class.new.filter_url(url) }
 
     context "malformed query" do
-      let(:url) { 'https://www.honeybadger.io/?foobar12' }
+      let(:url) { 'https://www.neetobugtrap.io/?foobar12' }
       it { should eq url }
     end
 
     context "no query" do
-      let(:url) { 'https://www.honeybadger.io' }
+      let(:url) { 'https://www.neetobugtrap.io' }
       it { should eq url }
     end
 
     context "malformed url" do
-      let(:url) { 'http s ! honeybadger' }
+      let(:url) { 'http s ! neetobugtrap' }
       before { expect { URI.parse(url) }.to raise_error(URI::InvalidURIError) }
       it { should eq url }
     end
 
     context "complex url" do
-      let(:url) { 'https://foo:bar@www.honeybadger.io:123/asdf/?foo=1&bar=2&baz=3' }
+      let(:url) { 'https://foo:bar@www.neetobugtrap.io:123/asdf/?foo=1&bar=2&baz=3' }
       it { should eq url }
     end
   end

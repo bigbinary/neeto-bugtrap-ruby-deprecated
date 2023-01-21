@@ -7,14 +7,14 @@ module NeetoBugtrapRuby
     def self.included(klass)
       klass.class_eval do
         include Rake087Methods unless defined?(Rake::VERSION) && Rake::VERSION >= '0.9.0'
-        alias_method :display_error_message_without_honeybadger, :display_error_message
-        alias_method :display_error_message, :display_error_message_with_honeybadger
+        alias_method :display_error_message_without_neetobugtrap, :display_error_message
+        alias_method :display_error_message, :display_error_message_with_neetobugtrap
       end
     end
 
-    def display_error_message_with_honeybadger(ex)
+    def display_error_message_with_neetobugtrap(ex)
       NeetoBugtrapRuby.notify(ex, origin: :rake, component: reconstruct_command_line)
-      display_error_message_without_honeybadger(ex)
+      display_error_message_without_neetobugtrap(ex)
     ensure
       NeetoBugtrapRuby.clear!
     end

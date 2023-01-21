@@ -51,14 +51,14 @@ describe NeetoBugtrapRuby::Breadcrumbs::LogWrapper do
       subject.add("test", "")
     end
 
-    it 'honeybadger progname' do
-      subject.add("test", "noop", "honeybadger")
+    it 'neetobugtrap progname' do
+      subject.add("test", "noop", "neetobugtrap")
     end
 
     it 'within log_subscriber call' do
-      Thread.current[:__hb_within_log_subscriber] = true
+      Thread.current[:__nb_within_log_subscriber] = true
       subject.add("test", "a message")
-      Thread.current[:__hb_within_log_subscriber] = false
+      Thread.current[:__nb_within_log_subscriber] = false
     end
   end
 end

@@ -6,20 +6,20 @@ module NeetoBugtrapRuby
     module LocalVariables
       module ExceptionExtension
         def self.included(base)
-          base.send(:alias_method, :set_backtrace_without_honeybadger, :set_backtrace)
-          base.send(:alias_method, :set_backtrace, :set_backtrace_with_honeybadger)
+          base.send(:alias_method, :set_backtrace_without_neetobugtrap, :set_backtrace)
+          base.send(:alias_method, :set_backtrace, :set_backtrace_with_neetobugtrap)
         end
 
-        def set_backtrace_with_honeybadger(*args, &block)
+        def set_backtrace_with_neetobugtrap(*args, &block)
           if caller.none? { |loc| loc.match(::NeetoBugtrapRuby::Backtrace::Line::INPUT_FORMAT) && Regexp.last_match(1) == __FILE__ }
-            @__honeybadger_bindings_stack = binding.callers.drop(1)
+            @__neetobugtrap_bindings_stack = binding.callers.drop(1)
           end
 
-          set_backtrace_without_honeybadger(*args, &block)
+          set_backtrace_without_neetobugtrap(*args, &block)
         end
 
-        def __honeybadger_bindings_stack
-          @__honeybadger_bindings_stack || []
+        def __neetobugtrap_bindings_stack
+          @__neetobugtrap_bindings_stack || []
         end
       end
 

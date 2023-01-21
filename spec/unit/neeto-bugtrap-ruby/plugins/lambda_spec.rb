@@ -19,7 +19,7 @@ describe "Lambda Plugin" do
     expect(config[:sync]).to eq true
   end
 
-  describe "hb_wrap_handler decorator" do
+  describe "nb_wrap_handler decorator" do
     it 'auto-captures errors from class methods when decorator is used' do
       expect(NeetoBugtrapRuby).to receive(:notify).with kind_of(RuntimeError)
       NeetoBugtrapRuby::Plugin.instances[:lambda].load!(config)
@@ -30,7 +30,7 @@ describe "Lambda Plugin" do
         def self.test_handler(event:, context:)
           raise "An exception"
         end
-        hb_wrap_handler :test_handler
+        nb_wrap_handler :test_handler
       end
 
       expect { klass.test_handler(event: {}, context: {}) }.to raise_error(RuntimeError, "An exception")
@@ -45,7 +45,7 @@ describe "Lambda Plugin" do
         def test_handler(event:, context:)
           raise "An exception"
         end
-        hb_wrap_handler :test_handler
+        nb_wrap_handler :test_handler
       end
 
       expect { main.test_handler(event: {}, context: {}) }.to raise_error(RuntimeError, "An exception")

@@ -5,13 +5,13 @@ module NeetoBugtrapRuby
     requirement { defined?(::Delayed::Plugin) }
     requirement { defined?(::Delayed::Worker.plugins) }
     requirement do
-      if delayed_job_honeybadger = defined?(::Delayed::Plugins::NeetoBugtrapRuby)
+      if delayed_job_neetobugtrap = defined?(::Delayed::Plugins::NeetoBugtrapRuby)
         logger.warn("Support for Delayed Job has been moved " \
-                    "to the honeybadger gem. Please remove " \
-                    "delayed_job_honeybadger from your " \
+                    "to the neetobugtrap gem. Please remove " \
+                    "delayed_job_neetobugtrap from your " \
                     "Gemfile.")
       end
-      !delayed_job_honeybadger
+      !delayed_job_neetobugtrap
     end
 
     execution do

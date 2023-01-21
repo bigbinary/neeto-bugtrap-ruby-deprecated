@@ -19,9 +19,9 @@ module NeetoBugtrapRuby
       def call(env)
         return @app.call(env) unless config[:'user_informer.enabled']
         status, headers, body = @app.call(env)
-        if env['honeybadger.error_id']
+        if env['neetobugtrap.error_id']
           new_body = []
-          replace  = replacement(env['honeybadger.error_id'])
+          replace  = replacement(env['neetobugtrap.error_id'])
           body.each do |chunk|
             new_body << chunk.gsub("<!-- HONEYBADGER ERROR -->", replace)
           end

@@ -15,7 +15,7 @@ module NeetoBugtrapRuby
     class Thread < ::Thread; end
 
     # Used to signal the worker to shutdown.
-    SHUTDOWN = :__hb_worker_shutdown!
+    SHUTDOWN = :__nb_worker_shutdown!
 
     # The base number for the exponential backoff formula when calculating the
     # throttle interval. `1.05 ** throttle` will reach an interval of 2 minutes

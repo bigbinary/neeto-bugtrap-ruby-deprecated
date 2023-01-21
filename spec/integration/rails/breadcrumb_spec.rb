@@ -5,7 +5,7 @@ describe 'Rails Breadcrumbs integration', if: RAILS_PRESENT, type: :request do
   # after config as plugins only check requirement only at load time
   before(:all) do
     # Clear the thread local so it reload correctly
-    Thread.current[:__hb_breadcrumbs] = nil
+    Thread.current[:__nb_breadcrumbs] = nil
     NeetoBugtrapRuby.configure do |config|
       config.breadcrumbs.enabled = true
     end

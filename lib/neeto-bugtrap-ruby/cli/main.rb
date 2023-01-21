@@ -209,7 +209,7 @@ MSG
 # What did you try to do?
 
   You tried to execute the following command:
-  `honeybadger #{ARGV.join(' ')}`
+  `neetobugtrap #{ARGV.join(' ')}`
 
 # What actually happend?
 

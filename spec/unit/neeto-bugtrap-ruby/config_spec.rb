@@ -40,7 +40,7 @@ describe NeetoBugtrapRuby::Config do
     end
 
     context "when a logging path is defined" do
-      let(:log_file) { TMP_DIR.join('honeybadger.log') }
+      let(:log_file) { TMP_DIR.join('neetobugtrap.log') }
 
       before { log_file.delete if log_file.exist? }
 
@@ -54,7 +54,7 @@ describe NeetoBugtrapRuby::Config do
     context "when options include logger" do
       it "overrides configured logger" do
         allow(NULL_LOGGER).to receive(:add)
-        expect(NULL_LOGGER).to receive(:add).with(Logger::Severity::ERROR, /foo/, "honeybadger")
+        expect(NULL_LOGGER).to receive(:add).with(Logger::Severity::ERROR, /foo/, "neetobugtrap")
         config = NeetoBugtrapRuby::Config.new.init!(logger: NULL_LOGGER)
         config.logger.error('foo')
       end
@@ -257,15 +257,15 @@ describe NeetoBugtrapRuby::Config do
         INIT_LOGGER = Logger.new(File::NULL)
         CONFIGURE_LOGGER = Logger.new(File::NULL)
 
-        honeybadger = NeetoBugtrapRuby::Config.new.init!(logger: INIT_LOGGER)
+        neetobugtrap = NeetoBugtrapRuby::Config.new.init!(logger: INIT_LOGGER)
 
-        honeybadger.configure do |config|
+        neetobugtrap.configure do |config|
           config.logger = CONFIGURE_LOGGER
         end
 
-        expect(CONFIGURE_LOGGER).to receive(:add).with(Logger::Severity::ERROR, /foo/, "honeybadger")
+        expect(CONFIGURE_LOGGER).to receive(:add).with(Logger::Severity::ERROR, /foo/, "neetobugtrap")
 
-        honeybadger.logger.error('foo')
+        neetobugtrap.logger.error('foo')
       end
     end
 

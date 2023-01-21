@@ -30,7 +30,7 @@ feature "Running the exec cli command" do
 
   context "when the command fails due to standard error output" do
     it "notifies NeetoBugtrap of the failure" do
-      expect(run_command('honeybadger exec --api-key=test-api-key echo "test stderr" 1>&2')).to be_successfully_executed
+      expect(run_command('neetobugtrap exec --api-key=test-api-key echo "test stderr" 1>&2')).to be_successfully_executed
       expect(all_output).to match(/failure/i)
       expect(all_output).to match(/test stderr/i)
       expect(all_output).to match(/Successfully notified NeetoBugtrap/i)

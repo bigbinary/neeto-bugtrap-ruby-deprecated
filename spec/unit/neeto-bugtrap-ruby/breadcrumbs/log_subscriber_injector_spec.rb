@@ -19,9 +19,9 @@ describe NeetoBugtrapRuby::Breadcrumbs::LogSubscriberInjector do
 
   subject { logger.new }
 
-  it "resets __hb_within_log_subscriber to false" do
+  it "resets __nb_within_log_subscriber to false" do
     subject.info "test"
-    expect(Thread.current[:__hb_within_log_subscriber]).to eq(false)
+    expect(Thread.current[:__nb_within_log_subscriber]).to eq(false)
   end
 
   it "works when message is a string" do

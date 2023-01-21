@@ -22,7 +22,7 @@ module NeetoBugtrapRuby
       def should_ignore_log?(message, progname)
         message.nil? ||
         message == "" ||
-        Thread.current[:__hb_within_log_subscriber] ||
+        Thread.current[:__nb_within_log_subscriber] ||
         progname == "neetobugtrap"
       end
     end
@@ -38,10 +38,10 @@ module NeetoBugtrapRuby
       %w(info debug warn error fatal unknown).each do |level|
         define_method(level) do |*args, &block|
           begin
-            Thread.current[:__hb_within_log_subscriber] = true
+            Thread.current[:__nb_within_log_subscriber] = true
             super(*args, &block)
           ensure
-            Thread.current[:__hb_within_log_subscriber] = false
+            Thread.current[:__nb_within_log_subscriber] = false
           end
         end
       end

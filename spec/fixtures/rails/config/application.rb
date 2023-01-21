@@ -46,7 +46,7 @@ end
 
 class RailsController < ApplicationController
   def runtime_error
-    raise 'exception raised from test Rails app in honeybadger gem test suite'
+    raise 'exception raised from test Rails app in neeto-bugtrap-ruby gem test suite'
   end
 
   def record_not_found
@@ -54,7 +54,7 @@ class RailsController < ApplicationController
   end
 
   def index
-    render plain: 'This is a test Rails app used by the honeybadger gem test suite.'
+    render plain: 'This is a test Rails app used by the neeto-bugtrap-ruby gem test suite.'
   end
 end
 

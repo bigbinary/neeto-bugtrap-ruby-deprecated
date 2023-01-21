@@ -6,7 +6,7 @@ module NeetoBugtrapRuby
     include Conversions
 
     def self.current
-      Thread.current[:__hb_context_manager] ||= new
+      Thread.current[:__nb_context_manager] ||= new
     end
 
     def initialize

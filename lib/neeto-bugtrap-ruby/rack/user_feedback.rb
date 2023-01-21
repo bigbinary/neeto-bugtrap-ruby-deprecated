@@ -29,7 +29,7 @@ module NeetoBugtrapRuby
       def call(env)
         return @app.call(env) unless config[:'feedback.enabled']
         status, headers, body = @app.call(env)
-        if env['honeybadger.error_id'] && form = render_form(env['honeybadger.error_id'])
+        if env['neetobugtrap.error_id'] && form = render_form(env['neetobugtrap.error_id'])
           new_body = []
           body.each do |chunk|
             new_body << chunk.gsub("<!-- HONEYBADGER FEEDBACK -->", form)
@@ -57,7 +57,7 @@ module NeetoBugtrapRuby
 
       # @private
       def custom_template_file
-        @custom_template_file ||= File.join(config[:root], 'lib', 'honeybadger', 'templates', 'feedback_form.erb')
+        @custom_template_file ||= File.join(config[:root], 'lib', 'neetobugtrap', 'templates', 'feedback_form.erb')
       end
 
       # @private

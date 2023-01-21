@@ -141,7 +141,7 @@ module NeetoBugtrapRuby
             r.disable_clear_and_finalize = true
             r.clear!
             r.draw do
-              match 'verify' => 'honeybadger/test#verify', :as => "verify_#{SecureRandom.hex}", :via => :get
+              match 'verify' => 'neetobugtrap/test#verify', :as => "verify_#{SecureRandom.hex}", :via => :get
             end
             ::Rails.application.routes_reloader.paths.each{ |path| load(path) }
             ::ActiveSupport.on_load(:action_controller) { r.finalize! }

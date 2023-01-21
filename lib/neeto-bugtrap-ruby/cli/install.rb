@@ -78,12 +78,12 @@ CONFIG
         end
 
         if (capfile = root.join('Capfile')).exist?
-          if capfile.read.match(/honeybadger/)
+          if capfile.read.match(/neetobugtrap/)
             say("Detected NeetoBugtrap in Capfile; skipping Capistrano installation.", :yellow)
           else
             say("Appending Capistrano tasks to: #{capfile}", :yellow)
             File.open(capfile, 'a') do |f|
-              f.puts("\nrequire 'capistrano/honeybadger'")
+              f.puts("\nrequire 'capistrano/neetobugtrap'")
             end
           end
         end

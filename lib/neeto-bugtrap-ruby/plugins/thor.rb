@@ -7,14 +7,14 @@ module NeetoBugtrapRuby
       def self.included(base)
         base.class_eval do
           no_commands do
-            alias_method :invoke_command_without_honeybadger, :invoke_command
-            alias_method :invoke_command, :invoke_command_with_honeybadger
+            alias_method :invoke_command_without_neetobugtrap, :invoke_command
+            alias_method :invoke_command, :invoke_command_with_neetobugtrap
           end
         end
       end
 
-      def invoke_command_with_honeybadger(*args)
-        invoke_command_without_honeybadger(*args)
+      def invoke_command_with_neetobugtrap(*args)
+        invoke_command_without_neetobugtrap(*args)
       rescue Exception => e
         NeetoBugtrapRuby.notify(e)
         raise

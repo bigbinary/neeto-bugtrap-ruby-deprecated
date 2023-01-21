@@ -20,7 +20,7 @@ feature "Running the deploy cli command" do
 
     it "notifies the user" do
 
-      cmd = run_command("honeybadger deploy --api-key=test-api-key --environment=test-env --revision=test-rev --repository=test-repo --user=test-user")
+      cmd = run_command("neetobugtrap deploy --api-key=test-api-key --environment=test-env --revision=test-rev --repository=test-repo --user=test-user")
       expect(cmd).not_to be_successfully_executed
       expect(cmd.output).to match(/request failed/i)
     end

@@ -45,7 +45,7 @@ module NeetoBugtrapRuby
           invoke :install_deploy_notification, [], { app: app, api_key: api_key, environment: env }
         else
           say('Skipping deploy notification installation: we were unable to determine the environment name from your Heroku app.', :yellow)
-          say("To install manually, try `honeybadger heroku install_deploy_notification#{app ? " -a #{app}" : ""} -k #{api_key} --environment ENVIRONMENT`", :yellow)
+          say("To install manually, try `neetobugtrap heroku install_deploy_notification#{app ? " -a #{app}" : ""} -k #{api_key} --environment ENVIRONMENT`", :yellow)
         end
 
         say("Installation complete. Happy 'badgering!", :green)

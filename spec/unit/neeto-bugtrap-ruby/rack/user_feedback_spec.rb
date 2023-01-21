@@ -6,25 +6,25 @@ describe NeetoBugtrapRuby::Rack::UserFeedback do
   let(:config) { agent.config }
   let(:main_app) do
     lambda do |env|
-      env['honeybadger.error_id'] = honeybadger_id if defined?(honeybadger_id)
+      env['neetobugtrap.error_id'] = neetobugtrap_id if defined?(neetobugtrap_id)
       [200, {}, ["<!-- HONEYBADGER FEEDBACK -->"]]
     end
   end
   let(:informer_app) { NeetoBugtrapRuby::Rack::UserFeedback.new(main_app, agent) }
   let(:result) { informer_app.call({}) }
 
-  context "there is a honeybadger id" do
-    let(:honeybadger_id) { 1 }
+  context "there is a neetobugtrap id" do
+    let(:neetobugtrap_id) { 1 }
 
     it "modifies output" do
       rendered_length = informer_app.render_form(1).size
-      expect(result[2][0]).to match(/honeybadger_feedback_token/)
+      expect(result[2][0]).to match(/neetobugtrap_feedback_token/)
       expect(result[1]["Content-Length"].to_i).to eq rendered_length
     end
 
     context "a project root is configured" do
       let(:tmp_dir) { TMP_DIR }
-      let(:template_dir) { File.join(tmp_dir, 'lib', 'honeybadger', 'templates') }
+      let(:template_dir) { File.join(tmp_dir, 'lib', 'neetobugtrap', 'templates') }
       let(:template_file) { File.join(template_dir, 'feedback_form.erb') }
 
       before do
@@ -45,7 +45,7 @@ describe NeetoBugtrapRuby::Rack::UserFeedback do
     end
   end
 
-  context "there is no honeybadger id" do
+  context "there is no neetobugtrap id" do
     it "does not modify the output" do
       expect(result[2][0]).to eq '<!-- HONEYBADGER FEEDBACK -->'
     end

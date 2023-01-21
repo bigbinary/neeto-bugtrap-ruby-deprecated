@@ -105,11 +105,11 @@ module NeetoBugtrapRuby
           data
         when String
           sanitize_string(data)
-        when -> (d) { d.respond_to?(:to_honeybadger) }
+        when -> (d) { d.respond_to?(:to_neetobugtrap) }
           return DEPTH if depth >= max_depth
 
           begin
-            data = data.to_honeybadger
+            data = data.to_neetobugtrap
           rescue
             return RAISED
           end
@@ -191,7 +191,7 @@ module NeetoBugtrapRuby
       end
 
       def recursive?(data)
-        data.is_a?(Hash) || data.is_a?(Array) || data.is_a?(Set) || data.respond_to?(:to_honeybadger)
+        data.is_a?(Hash) || data.is_a?(Array) || data.is_a?(Set) || data.respond_to?(:to_neetobugtrap)
       end
 
       def basic_object?(object)

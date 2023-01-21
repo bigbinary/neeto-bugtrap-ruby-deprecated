@@ -354,7 +354,7 @@ describe NeetoBugtrapRuby::Notice do
 
     it "doesn't mutate global context" do
       global_context = {'one' => 'two'}
-      expect { build_notice(global_context: global_context, context: {'foo' => 'bar'}) }.not_to change { Thread.current[:__honeybadger_context] }
+      expect { build_notice(global_context: global_context, context: {'foo' => 'bar'}) }.not_to change { Thread.current[:__neetobugtrap_context] }
     end
 
     it "doesn't mutate local context" do
@@ -389,10 +389,10 @@ describe NeetoBugtrapRuby::Notice do
         expect(notice.cgi_data['REQUEST_METHOD']).to eq 'GET'
       end
 
-      it "prefers honeybadger.request.url to default PATH_INFO" do
+      it "prefers neetobugtrap.request.url to default PATH_INFO" do
         url = 'https://subdomain.happylane.com:100/test/file.rb?var=value&var2=value2'
         env = Rack::MockRequest.env_for(url)
-        env['honeybadger.request.url'] = 'http://foo.com'
+        env['neetobugtrap.request.url'] = 'http://foo.com'
         notice = build_notice(rack_env: env)
 
         expect(notice.url).to eq 'http://foo.com'
@@ -647,8 +647,8 @@ describe NeetoBugtrapRuby::Notice do
       RUBY
 
       @backtrace_array = ["my/file/backtrace:3",
-                          "test/honeybadger/rack_test.rb:2:in `build_exception'",
-                          "test/honeybadger/rack_test.rb:52:in `test_delivers_exception_from_rack'",
+                          "test/neetobugtrap/rack_test.rb:2:in `build_exception'",
+                          "test/neetobugtrap/rack_test.rb:52:in `test_delivers_exception_from_rack'",
                           "foo/bar/baz.rb:28:in `run'"]
 
       @exception = build_exception
@@ -776,16 +776,16 @@ describe NeetoBugtrapRuby::Notice do
     context "when binding_of_caller is installed" do
       before do
         exception.instance_eval do
-          def __honeybadger_bindings_stack
-            @__honeybadger_bindings_stack
+          def __neetobugtrap_bindings_stack
+            @__neetobugtrap_bindings_stack
           end
 
-          def __honeybadger_bindings_stack=(val)
-            @__honeybadger_bindings_stack = val
+          def __neetobugtrap_bindings_stack=(val)
+            @__neetobugtrap_bindings_stack = val
           end
         end
 
-        exception.__honeybadger_bindings_stack = [@mock_binding]
+        exception.__neetobugtrap_bindings_stack = [@mock_binding]
       end
 
       context "when local variables aren't enabled" do
@@ -801,16 +801,16 @@ describe NeetoBugtrapRuby::Notice do
           expect(notice.local_variables[:foo]).to eq(String(value))
         end
 
-        context "when value responds to #to_honeybadger" do
-          it "returns the #to_honeybadger value" do
-            allow(value).to receive(:to_honeybadger).and_return('baz')
+        context "when value responds to #to_neetobugtrap" do
+          it "returns the #to_neetobugtrap value" do
+            allow(value).to receive(:to_neetobugtrap).and_return('baz')
             expect(notice.local_variables[:foo]).to eq('baz')
           end
         end
 
         context "with an application trace" do
           before do
-            exception.__honeybadger_bindings_stack.unshift(double('Binding', :eval => nil, :source_location => []))
+            exception.__neetobugtrap_bindings_stack.unshift(double('Binding', :eval => nil, :source_location => []))
             config[:root] = File.dirname(__FILE__)
           end
 

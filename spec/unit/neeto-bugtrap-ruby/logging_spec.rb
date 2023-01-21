@@ -16,10 +16,10 @@ describe NeetoBugtrapRuby::Logging::Base do
 end
 
 describe NeetoBugtrapRuby::Logging::StandardLogger do
-  it "injects honeybadger as progname" do
+  it "injects neetobugtrap as progname" do
     logger_dbl = instance_double(Logger, add: nil)
     logger = described_class.new(logger_dbl)
-    expect(logger_dbl).to receive(:add).with(Logger::Severity::INFO, "a message", "honeybadger")
+    expect(logger_dbl).to receive(:add).with(Logger::Severity::INFO, "a message", "neetobugtrap")
     logger.info("a message")
   end
 end
@@ -46,7 +46,7 @@ describe NeetoBugtrapRuby::Logging::FormattedLogger do
     it { should respond_to severity }
 
     it "delegates ##{severity} to configured logger" do
-      expect(logger).to receive(:add).with(Logger::Severity.const_get(severity.to_s.upcase), :foo, "honeybadger")
+      expect(logger).to receive(:add).with(Logger::Severity.const_get(severity.to_s.upcase), :foo, "neetobugtrap")
       subject.send(severity, :foo)
     end
   end
@@ -68,7 +68,7 @@ describe NeetoBugtrapRuby::Logging::ConfigLogger do
       it "delegates ##{severity} to configured logger" do
         # Debug is logged at the info level.
         const = Logger::Severity.const_get((severity == :debug ? :info : severity).to_s.upcase)
-        expect(logger).to receive(:add).with(const, :foo, "honeybadger")
+        expect(logger).to receive(:add).with(const, :foo, "neetobugtrap")
         subject.send(severity, :foo)
       end
     end
@@ -84,7 +84,7 @@ describe NeetoBugtrapRuby::Logging::ConfigLogger do
 
     [:error, :fatal].each do |severity|
       it "delegates ##{severity} to configured logger" do
-        expect(logger).to receive(:add).with(Logger::Severity.const_get(severity.to_s.upcase), :foo, "honeybadger")
+        expect(logger).to receive(:add).with(Logger::Severity.const_get(severity.to_s.upcase), :foo, "neetobugtrap")
         subject.send(severity, :foo)
       end
     end
@@ -96,7 +96,7 @@ describe NeetoBugtrapRuby::Logging::ConfigLogger do
         it "delegates ##{severity} to configured logger" do
           # Debug is logged at the info level.
           const = Logger::Severity.const_get((severity == :debug ? :info : severity).to_s.upcase)
-          expect(logger).to receive(:add).with(const, :foo, "honeybadger")
+          expect(logger).to receive(:add).with(const, :foo, "neetobugtrap")
           subject.send(severity, :foo)
         end
       end

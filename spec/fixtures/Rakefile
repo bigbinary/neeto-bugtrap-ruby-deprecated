@@ -4,14 +4,14 @@ require 'rake'
 require 'rubygems'
 
 # Should catch exception
-task :honeybadger do
+task :neetobugtrap do
   stub_tty_output(false)
   require 'neeto-bugtrap-ruby'
   raise_exception
 end
 
 # Should not catch exception as tty_output is true
-task :honeybadger_autodetect_from_terminal do
+task :neetobugtrap_autodetect_from_terminal do
   stub_tty_output(true)
   require 'neeto-bugtrap-ruby'
   raise_exception

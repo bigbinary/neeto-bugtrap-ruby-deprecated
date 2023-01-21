@@ -11,8 +11,8 @@ class BacktracedException < Exception
 end
 
 def build_exception(opts = {})
-  backtrace = ["test/honeybadger/rack_test.rb:15:in `build_exception'",
-               "test/honeybadger/rack_test.rb:52:in `test_delivers_exception_from_rack'",
+  backtrace = ["test/neetobugtrap/rack_test.rb:15:in `build_exception'",
+               "test/neetobugtrap/rack_test.rb:52:in `test_delivers_exception_from_rack'",
                "/Users/josh/Developer/.rvm/gems/ruby-1.9.3-p0/gems/mocha-0.10.5/lib/mocha/integration/mini_test/version_230_to_262.rb:28:in `run'"]
   opts = { :backtrace => backtrace }.merge(opts)
   BacktracedException.new(opts)

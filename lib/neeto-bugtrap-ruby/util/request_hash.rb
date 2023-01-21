@@ -41,7 +41,7 @@ module NeetoBugtrapRuby
       end
 
       def self.extract_url(request)
-        request.env['honeybadger.request.url'] || request.url
+        request.env['neetobugtrap.request.url'] || request.url
       rescue => e
         "Failed to access URL -- #{e}"
       end

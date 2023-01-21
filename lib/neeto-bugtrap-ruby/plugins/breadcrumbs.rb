@@ -24,7 +24,7 @@ module NeetoBugtrapRuby
     #
     # We hook into Rails's ActiveSupport Instrumentation system to provide
     # automatic breadcrumb event generation. You can customize these events by
-    # passing a Hash into the honeybadger configuration. The simplest method is
+    # passing a Hash into the neetobugtrap configuration. The simplest method is
     # to alter the current defaults:
     #
     # @example

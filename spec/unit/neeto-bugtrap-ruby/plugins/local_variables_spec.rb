@@ -62,23 +62,23 @@ describe "Local variables integration", order: :defined do
         end
 
         it {
-          should respond_to :__honeybadger_bindings_stack
+          should respond_to :__neetobugtrap_bindings_stack
         }
 
         describe "#set_backtrace" do
           context "call stack does not match current file" do
             it "changes the bindings stack" do
-              expect { subject.set_backtrace(['foo.rb:1']) }.to change(subject, :__honeybadger_bindings_stack).from([])
+              expect { subject.set_backtrace(['foo.rb:1']) }.to change(subject, :__neetobugtrap_bindings_stack).from([])
             end
           end
 
           context "call stack includes current file" do
             before do
-              allow(subject).to receive(:caller).and_return(["#{File.expand_path('../../../../../lib/honeybadger/plugins/local_variables.rb', __FILE__)}:1"])
+              allow(subject).to receive(:caller).and_return(["#{File.expand_path('../../../../../lib/neeto-bugtrap-ruby/plugins/local_variables.rb', __FILE__)}:1"])
             end
 
             it "does not change the bindings stack" do
-              expect { subject.set_backtrace(['foo.rb:1']) }.not_to change(subject, :__honeybadger_bindings_stack).from([])
+              expect { subject.set_backtrace(['foo.rb:1']) }.not_to change(subject, :__neetobugtrap_bindings_stack).from([])
             end
           end
 
@@ -92,7 +92,7 @@ describe "Local variables integration", order: :defined do
             end
 
             it "changes the bindings stack" do
-              expect { subject.set_backtrace(['foo.rb:1']) }.to change(subject, :__honeybadger_bindings_stack).from([])
+              expect { subject.set_backtrace(['foo.rb:1']) }.to change(subject, :__neetobugtrap_bindings_stack).from([])
             end
           end
         end

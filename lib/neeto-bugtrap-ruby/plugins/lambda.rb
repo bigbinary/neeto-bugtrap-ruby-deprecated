@@ -9,7 +9,7 @@ module NeetoBugtrapRuby
       # Usage:
       #
       # # Automatically included in the top-level main object
-      # hb_wrap_handler :my_handler_1, :my_handler_2
+      # nb_wrap_handler :my_handler_1, :my_handler_2
       #
       # def my_handler_1(event:, context:)
       # end
@@ -17,12 +17,12 @@ module NeetoBugtrapRuby
       # class MyLambdaApp
       #   extend ::NeetoBugtrapRuby::Plugins::LambdaExtension
       #
-      #   hb_wrap_handler :my_handler_1, :my_handler_2
+      #   nb_wrap_handler :my_handler_1, :my_handler_2
       #
       #   def self.my_handler_1(event:, context:)
       #   end
       # end
-      def hb_wrap_handler(*handler_names)
+      def nb_wrap_handler(*handler_names)
         mod = Module.new do
           handler_names.each do |handler|
             define_method(handler) do |event:, context:|

@@ -6,32 +6,32 @@ module NeetoBugtrapRuby
     module Sinatra
       ::Sinatra::Base.class_eval do
         class << self
-          def build_with_honeybadger(*args, &block)
-            configure_honeybadger
-            install_honeybadger
+          def build_with_neetobugtrap(*args, &block)
+            configure_neetobugtrap
+            install_neetobugtrap
             # Sinatra is a special case. Sinatra starts the web application in an at_exit
             # handler. And, since we require sinatra before requiring HB, the only way to
-            # setup our at_exit callback is in the sinatra build callback honeybadger/init/sinatra.rb
+            # setup our at_exit callback is in the sinatra build callback neeto-bugtrap-ruby/init/sinatra.rb
             NeetoBugtrapRuby.install_at_exit_callback
-            build_without_honeybadger(*args, &block)
+            build_without_neetobugtrap(*args, &block)
           end
-          alias :build_without_honeybadger :build
-          alias :build :build_with_honeybadger
+          alias :build_without_neetobugtrap :build
+          alias :build :build_with_neetobugtrap
 
-          def configure_honeybadger
-            return unless defined?(honeybadger_api_key)
+          def configure_neetobugtrap
+            return unless defined?(neetobugtrap_api_key)
             NeetoBugtrapRuby.configure do |config|
-              config.api_key = honeybadger_api_key
+              config.api_key = neetobugtrap_api_key
             end
           end
 
-          def install_honeybadger
+          def install_neetobugtrap
             config = NeetoBugtrapRuby.config
             return unless config[:'sinatra.enabled']
-            install_honeybadger_middleware(NeetoBugtrapRuby::Rack::ErrorNotifier) if config[:'exceptions.enabled']
+            install_neetobugtrap_middleware(NeetoBugtrapRuby::Rack::ErrorNotifier) if config[:'exceptions.enabled']
           end
 
-          def install_honeybadger_middleware(klass)
+          def install_neetobugtrap_middleware(klass)
             return if middleware.any? {|m| m[0] == klass }
             use(klass)
           end
