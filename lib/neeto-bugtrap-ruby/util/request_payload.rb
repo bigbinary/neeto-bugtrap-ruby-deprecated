@@ -1,6 +1,6 @@
 require 'neeto-bugtrap-ruby/util/sanitizer'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Util
     # Constructs/sanitizes request data for notices
     module RequestPayload

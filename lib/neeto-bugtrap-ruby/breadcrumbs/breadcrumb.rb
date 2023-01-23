@@ -1,6 +1,6 @@
 require 'time'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Breadcrumbs
     class Breadcrumb
       # Raw breadcrumb data structure

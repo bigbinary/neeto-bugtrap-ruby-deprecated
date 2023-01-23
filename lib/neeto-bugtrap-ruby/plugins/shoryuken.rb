@@ -1,7 +1,7 @@
 require 'neeto-bugtrap-ruby/plugin'
 require 'neeto-bugtrap-ruby/ruby'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Plugins
     module Shoryuken
       class Middleware
@@ -10,19 +10,19 @@ module NeetoBugtrapRuby
             yield
           rescue => e
             if attempt_threshold <= receive_count(sqs_msg)
-              NeetoBugtrapRuby.notify(e, parameters: notification_params(body))
+              NeetoBugtrap.notify(e, parameters: notification_params(body))
             end
 
             raise e
           end
         ensure
-          NeetoBugtrapRuby.clear!
+          NeetoBugtrap.clear!
         end
 
         private
 
         def attempt_threshold
-          ::NeetoBugtrapRuby.config[:'shoryuken.attempt_threshold'].to_i
+          ::NeetoBugtrap.config[:'shoryuken.attempt_threshold'].to_i
         end
 
         def receive_count(sqs_msg)

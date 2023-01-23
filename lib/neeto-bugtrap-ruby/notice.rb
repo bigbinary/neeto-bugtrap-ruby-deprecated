@@ -10,7 +10,7 @@ require 'neeto-bugtrap-ruby/util/sanitizer'
 require 'neeto-bugtrap-ruby/util/request_hash'
 require 'neeto-bugtrap-ruby/util/request_payload'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   # @api private
   NOTIFIER = {
     name: 'neeto-bugtrap-ruby'.freeze,

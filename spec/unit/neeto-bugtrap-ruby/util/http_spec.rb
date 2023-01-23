@@ -3,8 +3,8 @@ require 'logger'
 require 'neeto-bugtrap-ruby/util/http'
 require 'neeto-bugtrap-ruby/config'
 
-describe NeetoBugtrapRuby::Util::HTTP do
-  let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true, api_key: 'abc123') }
+describe NeetoBugtrap::Util::HTTP do
+  let(:config) { NeetoBugtrap::Config.new(logger: NULL_LOGGER, debug: true, api_key: 'abc123') }
   let(:logger) { config.logger }
 
   subject { described_class.new(config) }
@@ -14,13 +14,13 @@ describe NeetoBugtrapRuby::Util::HTTP do
 
   it "sends a user agent with version number" do
     http  = stub_http
-    expect(http).to receive(:post).with(kind_of(String), kind_of(String), hash_including({'User-Agent' => "HB-Ruby #{NeetoBugtrapRuby::VERSION}; #{RUBY_VERSION}; #{RUBY_PLATFORM}"}))
+    expect(http).to receive(:post).with(kind_of(String), kind_of(String), hash_including({'User-Agent' => "HB-Ruby #{NeetoBugtrap::VERSION}; #{RUBY_VERSION}; #{RUBY_PLATFORM}"}))
     http_post
   end
 
   context "when proxy settings are configured" do
     let(:config) {
-      NeetoBugtrapRuby::Config.new({
+      NeetoBugtrap::Config.new({
         :api_key => 'abc123',
         :'connection.proxy_host' => 'some.host',
         :'connection.proxy_port' => 88,
@@ -29,7 +29,7 @@ describe NeetoBugtrapRuby::Util::HTTP do
       })
     }
 
-    it "gets from NeetoBugtrapRuby when using an HTTP proxy" do
+    it "gets from NeetoBugtrap when using an HTTP proxy" do
       http  = stub_http
       proxy = double(new: http)
       allow(Net::HTTP).to receive(:Proxy).and_return(proxy)
@@ -40,12 +40,12 @@ describe NeetoBugtrapRuby::Util::HTTP do
       http_get
     end
 
-    it "posts to NeetoBugtrapRuby when using an HTTP proxy" do
+    it "posts to NeetoBugtrap when using an HTTP proxy" do
       http  = stub_http
       proxy = double(new: http)
       allow(Net::HTTP).to receive(:Proxy).and_return(proxy)
 
-      expect(http).to receive(:post).with('/v1/foo', kind_of(String), NeetoBugtrapRuby::Util::HTTP::HEADERS.merge({ 'X-API-Key' => 'abc123'}))
+      expect(http).to receive(:post).with('/v1/foo', kind_of(String), NeetoBugtrap::Util::HTTP::HEADERS.merge({ 'X-API-Key' => 'abc123'}))
       expect(Net::HTTP).to receive(:Proxy).with('some.host', 88, 'login', 'passwd')
 
       http_post
@@ -120,7 +120,7 @@ describe NeetoBugtrapRuby::Util::HTTP do
     # context "connection errors" do
     #   it "returns nil" do
     #     http = stub_http
-    #     NeetoBugtrapRuby::Backend::Server::HTTP_ERRORS.each do |error|
+    #     NeetoBugtrap::Backend::Server::HTTP_ERRORS.each do |error|
     #       allow(http).to receive(:post).and_raise(error)
     #       expect(http_post).to be_nil
     #     end
@@ -128,7 +128,7 @@ describe NeetoBugtrapRuby::Util::HTTP do
 
     #   it "doesn't fail when posting an http exception occurs" do
     #     http = stub_http
-    #     NeetoBugtrapRuby::Backend::Server::HTTP_ERRORS.each do |error|
+    #     NeetoBugtrap::Backend::Server::HTTP_ERRORS.each do |error|
     #       allow(http).to receive(:post).and_raise(error)
     #       expect { http_post }.not_to raise_error
     #     end
@@ -142,13 +142,13 @@ describe NeetoBugtrapRuby::Util::HTTP do
       http = stub_http
       url = "http://api.neetobugtrap.com:80/v1/foo"
       uri = URI.parse(url)
-      expect(http).to receive(:post).with(uri.path, anything, NeetoBugtrapRuby::Util::HTTP::HEADERS.merge({ 'X-API-Key' => 'abc123'}))
+      expect(http).to receive(:post).with(uri.path, anything, NeetoBugtrap::Util::HTTP::HEADERS.merge({ 'X-API-Key' => 'abc123'}))
       http_post
     end
 
     it "post to the right path for ssl" do
       http = stub_http
-      expect(http).to receive(:post).with('/v1/foo', anything, NeetoBugtrapRuby::Util::HTTP::HEADERS.merge({ 'X-API-Key' => 'abc123'}))
+      expect(http).to receive(:post).with('/v1/foo', anything, NeetoBugtrap::Util::HTTP::HEADERS.merge({ 'X-API-Key' => 'abc123'}))
       http_post
     end
 

@@ -1,7 +1,7 @@
 require 'neeto-bugtrap-ruby/plugin'
 require 'neeto-bugtrap-ruby/util/lambda'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Plugins
     module LambdaExtension
       # Wrap Lambda handlers so exceptions can be automatically captured
@@ -15,7 +15,7 @@ module NeetoBugtrapRuby
       # end
       #
       # class MyLambdaApp
-      #   extend ::NeetoBugtrapRuby::Plugins::LambdaExtension
+      #   extend ::NeetoBugtrap::Plugins::LambdaExtension
       #
       #   nb_wrap_handler :my_handler_1, :my_handler_2
       #
@@ -27,11 +27,11 @@ module NeetoBugtrapRuby
           handler_names.each do |handler|
             define_method(handler) do |event:, context:|
               begin
-                NeetoBugtrapRuby.context(aws_request_id: context.aws_request_id) if context.respond_to?(:aws_request_id)
+                NeetoBugtrap.context(aws_request_id: context.aws_request_id) if context.respond_to?(:aws_request_id)
 
                 super(event: event, context: context)
               rescue => e
-                NeetoBugtrapRuby.notify(e)
+                NeetoBugtrap.notify(e)
                 raise
               end
             end

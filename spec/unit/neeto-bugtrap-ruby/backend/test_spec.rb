@@ -1,8 +1,8 @@
 require 'neeto-bugtrap-ruby/backend/test'
 require 'neeto-bugtrap-ruby/config'
 
-describe NeetoBugtrapRuby::Backend::Test do
-  let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER) }
+describe NeetoBugtrap::Backend::Test do
+  let(:config) { NeetoBugtrap::Config.new(logger: NULL_LOGGER) }
   let(:logger) { config.logger }
 
   let(:instance) { described_class.new(config) }
@@ -10,8 +10,8 @@ describe NeetoBugtrapRuby::Backend::Test do
   subject { instance }
 
   before do
-    NeetoBugtrapRuby::Backend::Test.notifications.clear
-    NeetoBugtrapRuby::Backend::Test.check_ins.clear
+    NeetoBugtrap::Backend::Test.notifications.clear
+    NeetoBugtrap::Backend::Test.check_ins.clear
   end
 
   it { should respond_to :notifications }
@@ -33,7 +33,7 @@ describe NeetoBugtrapRuby::Backend::Test do
       expect { instance.notify(:notices, notice) }.to change { instance.notifications[:notices] }.from([]).to([notice])
     end
 
-    it { should be_a NeetoBugtrapRuby::Backend::Response }
+    it { should be_a NeetoBugtrap::Backend::Response }
   end
 
   describe "#check_in" do
@@ -41,8 +41,8 @@ describe NeetoBugtrapRuby::Backend::Test do
       expect { instance.check_in(10) }.to change { instance.check_ins }.from([]).to([10])
     end
 
-    it "should return a NeetoBugtrapRuby::Backend::Response" do
-      expect(instance.check_in(10)).to be_a NeetoBugtrapRuby::Backend::Response
+    it "should return a NeetoBugtrap::Backend::Response" do
+      expect(instance.check_in(10)).to be_a NeetoBugtrap::Backend::Response
     end
   end
 end

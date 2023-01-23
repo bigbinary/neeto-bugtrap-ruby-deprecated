@@ -5,7 +5,7 @@ require 'neeto-bugtrap-ruby/cli/helpers'
 require 'neeto-bugtrap-ruby/util/http'
 require 'neeto-bugtrap-ruby/util/stats'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module CLI
     class Notify
       extend Forwardable

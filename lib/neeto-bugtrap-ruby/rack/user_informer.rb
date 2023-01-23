@@ -1,6 +1,6 @@
 require 'forwardable'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Rack
     # Middleware for Rack applications. Adds an error ID to the Rack response
     # when an error has occurred.
@@ -38,7 +38,7 @@ module NeetoBugtrapRuby
       def_delegator :config, :logger
 
       def agent
-        @agent || NeetoBugtrapRuby::Agent.instance
+        @agent || NeetoBugtrap::Agent.instance
       end
     end
   end

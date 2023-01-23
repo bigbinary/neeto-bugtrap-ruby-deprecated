@@ -61,11 +61,11 @@ RSpec.configure do |config|
   config.include Helpers
 
   config.before(:all) do
-    NeetoBugtrapRuby::Agent.instance = NeetoBugtrapRuby::Agent.new(NeetoBugtrapRuby::Config.new(backend: 'null', logger: NULL_LOGGER))
+    NeetoBugtrap::Agent.instance = NeetoBugtrap::Agent.new(NeetoBugtrap::Config.new(backend: 'null', logger: NULL_LOGGER))
   end
 
   config.after(:each) do
-    NeetoBugtrapRuby.clear!
+    NeetoBugtrap.clear!
   end
 
   begin

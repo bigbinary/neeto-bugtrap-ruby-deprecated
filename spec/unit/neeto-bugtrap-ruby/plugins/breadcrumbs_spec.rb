@@ -2,15 +2,15 @@ require 'neeto-bugtrap-ruby/plugins/breadcrumbs'
 require 'neeto-bugtrap-ruby/config'
 
 describe "Breadcrumbs Plugin" do
-  let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true) }
+  let(:config) { NeetoBugtrap::Config.new(logger: NULL_LOGGER, debug: true) }
   let(:active_support) { double("ActiveSupport::Notifications") }
 
   before do
-    NeetoBugtrapRuby::Plugin.instances[:breadcrumbs].reset!
+    NeetoBugtrap::Plugin.instances[:breadcrumbs].reset!
     stub_const("ActiveSupport::Notifications", active_support)
   end
 
-  describe NeetoBugtrapRuby::Plugins::RailsBreadcrumbs do
+  describe NeetoBugtrap::Plugins::RailsBreadcrumbs do
     describe ".subscribe_to_notification" do
       let(:name) { "a.notification" }
       let(:config) {{ foo: "bar" }}
@@ -40,24 +40,24 @@ describe "Breadcrumbs Plugin" do
         data = {cars: "trucks"}
         config = {message: "config message", category: :test}
 
-        expect(NeetoBugtrapRuby).to receive(:add_breadcrumb).with("config message", {category: :test, metadata: data.merge({duration: 99})})
+        expect(NeetoBugtrap).to receive(:add_breadcrumb).with("config message", {category: :test, metadata: data.merge({duration: 99})})
         described_class.send_breadcrumb_notification("message", 99, config, data)
       end
 
       it "adds a breadcrumb with defaults" do
-        expect(NeetoBugtrapRuby).to receive(:add_breadcrumb).with("message", {category: :custom, metadata: {duration: 100}})
+        expect(NeetoBugtrap).to receive(:add_breadcrumb).with("message", {category: :custom, metadata: {duration: 100}})
         described_class.send_breadcrumb_notification("message", 100, config, {})
       end
 
       it "ignores nil duration" do
-        expect(NeetoBugtrapRuby).to receive(:add_breadcrumb).with("message", {category: :custom, metadata: {}})
+        expect(NeetoBugtrap).to receive(:add_breadcrumb).with("message", {category: :custom, metadata: {}})
         described_class.send_breadcrumb_notification("message", nil, config, {})
       end
 
       describe ":message" do
         it "can allow a string" do
           config = { message: "config message" }
-          expect(NeetoBugtrapRuby).to receive(:add_breadcrumb).with("config message", anything)
+          expect(NeetoBugtrap).to receive(:add_breadcrumb).with("config message", anything)
           described_class.send_breadcrumb_notification("noop", 100, config, {})
         end
 
@@ -70,12 +70,12 @@ describe "Breadcrumbs Plugin" do
             end
           }
 
-          expect(NeetoBugtrapRuby).to receive(:add_breadcrumb).with("a dynamic message", anything)
+          expect(NeetoBugtrap).to receive(:add_breadcrumb).with("a dynamic message", anything)
           described_class.send_breadcrumb_notification("noop", 100, config, data)
         end
 
         it "defaults to instrumentation name if not set" do
-          expect(NeetoBugtrapRuby).to receive(:add_breadcrumb).with("instrument name", anything)
+          expect(NeetoBugtrap).to receive(:add_breadcrumb).with("instrument name", anything)
           described_class.send_breadcrumb_notification("instrument name", 100, {}, {})
         end
       end
@@ -90,13 +90,13 @@ describe "Breadcrumbs Plugin" do
             end
           }
 
-          expect(NeetoBugtrapRuby).to_not receive(:add_breadcrumb)
+          expect(NeetoBugtrap).to_not receive(:add_breadcrumb)
           described_class.send_breadcrumb_notification("name", 10, config, data)
         end
 
         it "includes event if proc returns true" do
           config = { exclude_when: ->(_){ false } }
-          expect(NeetoBugtrapRuby).to receive(:add_breadcrumb)
+          expect(NeetoBugtrap).to receive(:add_breadcrumb)
           described_class.send_breadcrumb_notification("name", 33, config, {})
         end
       end
@@ -108,7 +108,7 @@ describe "Breadcrumbs Plugin" do
           removed_data = {c: :d}
           config = { select_keys: [:a] }
 
-          expect(NeetoBugtrapRuby).to receive(:add_breadcrumb).with(anything, hash_including(metadata: hash_not_including(removed_data)))
+          expect(NeetoBugtrap).to receive(:add_breadcrumb).with(anything, hash_including(metadata: hash_not_including(removed_data)))
           described_class.send_breadcrumb_notification("_", 0, config, data)
         end
       end
@@ -123,7 +123,7 @@ describe "Breadcrumbs Plugin" do
               new_data
             end
           }
-          expect(NeetoBugtrapRuby).to receive(:add_breadcrumb).with(anything, hash_including(metadata: new_data))
+          expect(NeetoBugtrap).to receive(:add_breadcrumb).with(anything, hash_including(metadata: new_data))
 
           described_class.send_breadcrumb_notification("name", 33, config, data)
         end

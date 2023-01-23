@@ -1,6 +1,6 @@
 require 'forwardable'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Breadcrumbs
     class Collector
       include Enumerable

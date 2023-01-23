@@ -19,27 +19,27 @@ if SINATRA_PRESENT
     end
 
     before(:each) do
-      NeetoBugtrapRuby.configure do |config|
+      NeetoBugtrap.configure do |config|
         config.backend = 'test'
       end
     end
 
     after(:each) do
-      NeetoBugtrapRuby::Backend::Test.notifications[:notices].clear
+      NeetoBugtrap::Backend::Test.notifications[:notices].clear
     end
 
     it "reports exceptions" do
-      NeetoBugtrapRuby.flush do
+      NeetoBugtrap.flush do
         get '/runtime_error'
         expect(last_response.status).to eq(500)
       end
 
-      expect(NeetoBugtrapRuby::Backend::Test.notifications[:notices].size).to eq(1)
+      expect(NeetoBugtrap::Backend::Test.notifications[:notices].size).to eq(1)
     end
 
     it "configures the api key from sinatra config" do
       get '/' # Initialize app
-      expect(NeetoBugtrapRuby.config.get(:api_key)).to eq('gem testing')
+      expect(NeetoBugtrap.config.get(:api_key)).to eq('gem testing')
     end
   end
 end

@@ -3,7 +3,7 @@ require 'neeto-bugtrap-ruby/cli/main'
 require 'neeto-bugtrap-ruby/cli/test'
 require 'pathname'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module CLI
     class Install
       extend Forwardable
@@ -15,7 +15,7 @@ module NeetoBugtrapRuby
       end
 
       def run
-        say("Installing NeetoBugtrapRuby #{VERSION}")
+        say("Installing NeetoBugtrap #{VERSION}")
 
         begin
           require File.join(Dir.pwd, 'config', 'application.rb')

@@ -1,6 +1,6 @@
 require 'neeto-bugtrap-ruby/backend/base'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Backend
     class Null < Base
       class StubbedResponse < Response

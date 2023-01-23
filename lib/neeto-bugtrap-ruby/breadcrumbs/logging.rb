@@ -1,4 +1,4 @@
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Breadcrumbs
     # @api private
     #
@@ -8,7 +8,7 @@ module NeetoBugtrapRuby
         message, progname = [progname, nil] if message.nil?
         message = message && message.to_s.strip
         unless should_ignore_log?(message, progname)
-          NeetoBugtrapRuby.add_breadcrumb(message, category: :log, metadata: {
+          NeetoBugtrap.add_breadcrumb(message, category: :log, metadata: {
             severity: format_severity(severity),
             progname: progname
           })

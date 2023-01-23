@@ -1,8 +1,8 @@
 require 'neeto-bugtrap-ruby/rack/user_feedback'
 require 'neeto-bugtrap-ruby/config'
 
-describe NeetoBugtrapRuby::Rack::UserFeedback do
-  let(:agent) { NeetoBugtrapRuby::Agent.new }
+describe NeetoBugtrap::Rack::UserFeedback do
+  let(:agent) { NeetoBugtrap::Agent.new }
   let(:config) { agent.config }
   let(:main_app) do
     lambda do |env|
@@ -10,7 +10,7 @@ describe NeetoBugtrapRuby::Rack::UserFeedback do
       [200, {}, ["<!-- HONEYBADGER FEEDBACK -->"]]
     end
   end
-  let(:informer_app) { NeetoBugtrapRuby::Rack::UserFeedback.new(main_app, agent) }
+  let(:informer_app) { NeetoBugtrap::Rack::UserFeedback.new(main_app, agent) }
   let(:result) { informer_app.call({}) }
 
   context "there is a neetobugtrap id" do

@@ -1,8 +1,8 @@
 require 'neeto-bugtrap-ruby/backend/debug'
 require 'neeto-bugtrap-ruby/config'
 
-describe NeetoBugtrapRuby::Backend::Debug do
-  let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true) }
+describe NeetoBugtrap::Backend::Debug do
+  let(:config) { NeetoBugtrap::Config.new(logger: NULL_LOGGER, debug: true) }
   let(:logger) { config.logger }
 
   let(:instance) { described_class.new(config) }
@@ -21,7 +21,7 @@ describe NeetoBugtrapRuby::Backend::Debug do
 
     subject { instance.notify(:notices, notice) }
 
-    it { should be_a NeetoBugtrapRuby::Backend::Response }
+    it { should be_a NeetoBugtrap::Backend::Response }
 
     it "logs the notice" do
       expect(logger).to receive(:unknown).with(/feature=notices/)

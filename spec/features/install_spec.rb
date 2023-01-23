@@ -3,7 +3,7 @@ require 'pathname'
 
 feature "Installing neetobugtrap via the cli" do
   shared_examples_for "cli installer" do |rails|
-    let(:config) { NeetoBugtrapRuby::Config.new(:api_key => 'asdf', :'config.path' => config_file) }
+    let(:config) { NeetoBugtrap::Config.new(:api_key => 'asdf', :'config.path' => config_file) }
 
     before { set_environment_variable('HONEYBADGER_BACKEND', 'debug') }
 
@@ -12,7 +12,7 @@ feature "Installing neetobugtrap via the cli" do
       expect(all_output).to match /Writing configuration/i
       expect(all_output).to match /Happy 'badgering/i
       expect(all_output).not_to match /heroku/i
-      expect(all_output).not_to match /Starting NeetoBugtrapRuby/i
+      expect(all_output).not_to match /Starting NeetoBugtrap/i
       if rails
         expect(all_output).to match /Detected Rails/i
       else
@@ -29,7 +29,7 @@ feature "Installing neetobugtrap via the cli" do
     it "sends a test notification" do
       set_environment_variable('HONEYBADGER_LOGGING_LEVEL', '1')
       expect(run_command('neetobugtrap install asdf')).to be_successfully_executed
-      assert_notification('error' => {'class' => 'NeetoBugtrapRubyTestingException'})
+      assert_notification('error' => {'class' => 'NeetoBugtrapTestingException'})
     end
 
     context "with the --no-test option" do

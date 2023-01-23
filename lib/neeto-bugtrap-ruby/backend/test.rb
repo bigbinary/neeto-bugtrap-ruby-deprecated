@@ -1,6 +1,6 @@
 require 'neeto-bugtrap-ruby/backend/null'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Backend
     class Test < Null
       # The notification list.

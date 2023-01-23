@@ -31,7 +31,7 @@ class BreadcrumbController < ApplicationController
   private
 
   def notice
-    NeetoBugtrapRuby.notify(StandardError.new('test backend'))
+    NeetoBugtrap.notify(StandardError.new('test backend'))
     head 200
   end
 end

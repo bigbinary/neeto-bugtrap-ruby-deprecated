@@ -1,6 +1,6 @@
 require 'neeto-bugtrap-ruby/conversions'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   # @api private
   class ContextManager
     include Conversions

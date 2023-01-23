@@ -1,6 +1,6 @@
 require 'json'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   # @api private
   # Front end to parsing the backtrace for each notice.
   class Backtrace

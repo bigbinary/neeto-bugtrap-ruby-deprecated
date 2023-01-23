@@ -22,11 +22,11 @@ begin
     end
 
     context "when it's installed" do
-      let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true) }
+      let(:config) { NeetoBugtrap::Config.new(logger: NULL_LOGGER, debug: true) }
       let(:worker) { @worker }
 
       before(:all) do
-        Delayed::Worker.plugins = [NeetoBugtrapRuby::Plugins::DelayedJob::Plugin]
+        Delayed::Worker.plugins = [NeetoBugtrap::Plugins::DelayedJob::Plugin]
         @worker = Delayed::Worker.new
       end
 
@@ -45,18 +45,18 @@ begin
           after { worker.work_off }
 
           it "notifies NeetoBugtrap" do
-            expect(NeetoBugtrapRuby).to receive(:notify)
+            expect(NeetoBugtrap).to receive(:notify)
           end
         end
 
         context "and a threshold is set" do
           let(:method_name) { :will_raise }
 
-          before { ::NeetoBugtrapRuby.config[:'delayed_job.attempt_threshold'] = 2 }
-          after { ::NeetoBugtrapRuby.config[:'delayed_job.attempt_threshold'] = 0 }
+          before { ::NeetoBugtrap.config[:'delayed_job.attempt_threshold'] = 2 }
+          after { ::NeetoBugtrap.config[:'delayed_job.attempt_threshold'] = 0 }
 
-          it "does not notify NeetoBugtrapRuby on first occurence" do
-            expect(NeetoBugtrapRuby).not_to receive(:notify)
+          it "does not notify NeetoBugtrap on first occurence" do
+            expect(NeetoBugtrap).not_to receive(:notify)
             worker.work_off
           end
         end

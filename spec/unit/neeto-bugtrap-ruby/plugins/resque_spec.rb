@@ -3,23 +3,23 @@ require 'neeto-bugtrap-ruby/config'
 require 'neeto-bugtrap-ruby/agent'
 
 class TestWorker
-  extend NeetoBugtrapRuby::Plugins::Resque::Extension
+  extend NeetoBugtrap::Plugins::Resque::Extension
 end
 
 describe TestWorker do
   describe "::on_failure_with_neetobugtrap" do
-    let(:error) { RuntimeError.new('Failure in NeetoBugtrapRuby resque_spec') }
+    let(:error) { RuntimeError.new('Failure in NeetoBugtrap resque_spec') }
 
     shared_examples_for "reports exceptions" do
       specify do
-        expect(NeetoBugtrapRuby).to receive(:notify).with(error, hash_including(parameters: {job_arguments: [1, 2, 3]}, sync: true))
+        expect(NeetoBugtrap).to receive(:notify).with(error, hash_including(parameters: {job_arguments: [1, 2, 3]}, sync: true))
         described_class.on_failure_with_neetobugtrap(error, 1, 2, 3)
       end
     end
 
     shared_examples_for "does not report exceptions" do
       specify do
-        expect(NeetoBugtrapRuby).not_to receive(:notify)
+        expect(NeetoBugtrap).not_to receive(:notify)
         expect {
           described_class.around_perform_with_neetobugtrap(1, 2, 3) do
             fail 'foo'
@@ -32,19 +32,19 @@ describe TestWorker do
 
     it "clears the context" do
       expect {
-        NeetoBugtrapRuby.context(badgers: true)
+        NeetoBugtrap.context(badgers: true)
         described_class.on_failure_with_neetobugtrap(error, 1, 2, 3)
-      }.not_to change { NeetoBugtrapRuby::ContextManager.current.get_context }.from(nil)
+      }.not_to change { NeetoBugtrap::ContextManager.current.get_context }.from(nil)
     end
 
     describe "with worker not extending Resque::Plugins::Retry" do
       context "when send exceptions on retry enabled" do
-        before { ::NeetoBugtrapRuby.config[:'resque.resque_retry.send_exceptions_when_retrying'] = true }
+        before { ::NeetoBugtrap.config[:'resque.resque_retry.send_exceptions_when_retrying'] = true }
         it_behaves_like "reports exceptions"
       end
 
       context "when send exceptions on retry disabled" do
-        before { ::NeetoBugtrapRuby.config[:'resque.resque_retry.send_exceptions_when_retrying'] = false }
+        before { ::NeetoBugtrap.config[:'resque.resque_retry.send_exceptions_when_retrying'] = false }
         it_behaves_like "reports exceptions"
       end
     end
@@ -62,7 +62,7 @@ describe TestWorker do
       end
 
       context "when send exceptions on retry enabled" do
-        before { ::NeetoBugtrapRuby.config[:'resque.resque_retry.send_exceptions_when_retrying'] = true }
+        before { ::NeetoBugtrap.config[:'resque.resque_retry.send_exceptions_when_retrying'] = true }
 
         context "with retry criteria invalid" do
           it_behaves_like "reports exceptions"
@@ -75,7 +75,7 @@ describe TestWorker do
       end
 
       context "when send exceptions on retry disabled" do
-        before { ::NeetoBugtrapRuby.config[:'resque.resque_retry.send_exceptions_when_retrying'] = false }
+        before { ::NeetoBugtrap.config[:'resque.resque_retry.send_exceptions_when_retrying'] = false }
 
         context "with retry criteria invalid" do
           it_behaves_like "reports exceptions"
@@ -88,9 +88,9 @@ describe TestWorker do
 
         context "and retry_criteria_valid? raises exception" do
           it "should report raised error to neetobugtrap" do
-            other_error = StandardError.new('stubbed NeetoBugtrapRuby error in retry_criteria_valid?')
+            other_error = StandardError.new('stubbed NeetoBugtrap error in retry_criteria_valid?')
             allow(described_class).to receive(:retry_criteria_valid?).and_raise(other_error)
-            expect(NeetoBugtrapRuby).to receive(:notify).with(other_error, hash_including(parameters: {job_arguments: [1, 2, 3]}, sync: true))
+            expect(NeetoBugtrap).to receive(:notify).with(other_error, hash_including(parameters: {job_arguments: [1, 2, 3]}, sync: true))
             described_class.on_failure_with_neetobugtrap(error, 1, 2, 3)
           end
         end
@@ -101,7 +101,7 @@ describe TestWorker do
 
   describe "::around_perform_with_neetobugtrap" do
     it "flushes pending errors before worker dies" do
-      expect(NeetoBugtrapRuby).to receive(:flush)
+      expect(NeetoBugtrap).to receive(:flush)
 
       described_class.around_perform_with_neetobugtrap do
       end
@@ -119,9 +119,9 @@ describe TestWorker do
   describe "::after_perform_with_neetobugtrap" do
     it "clears the context" do
       expect {
-        NeetoBugtrapRuby.context(badgers: true)
+        NeetoBugtrap.context(badgers: true)
         described_class.after_perform_with_neetobugtrap
-      }.not_to change { NeetoBugtrapRuby::ContextManager.current.get_context }.from(nil)
+      }.not_to change { NeetoBugtrap::ContextManager.current.get_context }.from(nil)
     end
   end
 end

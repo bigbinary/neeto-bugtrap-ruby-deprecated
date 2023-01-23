@@ -1,6 +1,6 @@
 require 'neeto-bugtrap-ruby/plugin'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Plugins
     module Rails
       module ExceptionsCatcher
@@ -31,11 +31,11 @@ module NeetoBugtrapRuby
 
       class ErrorSubscriber
         def self.report(exception, handled:, severity:, context: {}, source: nil)
-          return if source && ::NeetoBugtrapRuby.config[:'rails.subscriber_ignore_sources'].any? { |regex| regex.match?(source) }
+          return if source && ::NeetoBugtrap.config[:'rails.subscriber_ignore_sources'].any? { |regex| regex.match?(source) }
 
           tags = ["severity:#{severity}", "handled:#{handled}"]
           tags << "source:#{source}" if source
-          NeetoBugtrapRuby.notify(exception, context: context, tags: tags)
+          NeetoBugtrap.notify(exception, context: context, tags: tags)
         end
       end
 

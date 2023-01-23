@@ -2,7 +2,7 @@ require 'pathname'
 require 'yaml'
 require 'erb'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   class Config
     module Yaml
       DISALLOWED_KEYS = [:'config.path'].freeze

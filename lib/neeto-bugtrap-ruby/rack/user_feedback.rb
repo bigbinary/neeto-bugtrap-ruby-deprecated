@@ -5,7 +5,7 @@ require 'forwardable'
 begin
   require 'i18n'
 rescue LoadError
-  module NeetoBugtrapRuby
+  module NeetoBugtrap
     module I18n
       def self.t(key, options={})
         options[:default]
@@ -14,7 +14,7 @@ rescue LoadError
   end
 end
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Rack
     # Middleware for Rack applications. Adds a feedback form to the Rack
     # response when an error has occurred.
@@ -80,7 +80,7 @@ module NeetoBugtrapRuby
       def_delegator :config, :logger
 
       def agent
-        @agent || NeetoBugtrapRuby::Agent.instance
+        @agent || NeetoBugtrap::Agent.instance
       end
 
     end

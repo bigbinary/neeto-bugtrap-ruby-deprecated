@@ -15,14 +15,14 @@ feature "Rescuing exceptions in a rake task" do
       set_environment_variable('HONEYBADGER_EXCEPTIONS_RESCUE_RAKE', 'false')
     end
 
-    it "doesn't report the exception to NeetoBugtrapRubyWeb" do
+    it "doesn't report the exception to NeetoBugtrapWeb" do
       expect(run_command('rake neetobugtrap')).not_to be_successfully_executed
       assert_no_notification
     end
   end
 
   context "shell is attached" do
-    it "doesn't report the exception to NeetoBugtrapRubyWeb" do
+    it "doesn't report the exception to NeetoBugtrapWeb" do
       expect(run_command('rake neetobugtrap_autodetect_from_terminal')).not_to be_successfully_executed
       assert_no_notification
     end
@@ -32,7 +32,7 @@ feature "Rescuing exceptions in a rake task" do
         set_environment_variable('HONEYBADGER_EXCEPTIONS_RESCUE_RAKE', 'true')
       end
 
-      it "reports the exception to NeetoBugtrapRubyWeb" do
+      it "reports the exception to NeetoBugtrapWeb" do
         expect(run_command('rake neetobugtrap_autodetect_from_terminal')).not_to be_successfully_executed
         assert_notification('error' => {'class' => 'RuntimeError', 'message' => 'RuntimeError: Jim has left the building :('})
       end

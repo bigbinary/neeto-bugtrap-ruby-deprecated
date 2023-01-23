@@ -1,6 +1,6 @@
 require 'neeto-bugtrap-ruby/version'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Rack
     # Autoloading allows middleware classes to be referenced in applications
     # which include the optional Rack dependency without explicitly requiring

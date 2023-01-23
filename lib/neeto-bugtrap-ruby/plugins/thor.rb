@@ -1,7 +1,7 @@
 require 'neeto-bugtrap-ruby/plugin'
 require 'neeto-bugtrap-ruby/ruby'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Plugins
     module Thor
       def self.included(base)
@@ -16,7 +16,7 @@ module NeetoBugtrapRuby
       def invoke_command_with_neetobugtrap(*args)
         invoke_command_without_neetobugtrap(*args)
       rescue Exception => e
-        NeetoBugtrapRuby.notify(e)
+        NeetoBugtrap.notify(e)
         raise
       end
     end

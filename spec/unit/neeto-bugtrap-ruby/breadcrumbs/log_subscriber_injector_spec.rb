@@ -1,11 +1,11 @@
 require 'neeto-bugtrap-ruby/breadcrumbs/logging'
 
-describe NeetoBugtrapRuby::Breadcrumbs::LogSubscriberInjector do
+describe NeetoBugtrap::Breadcrumbs::LogSubscriberInjector do
   LOGGING_LEVELS = %w(info debug warn error fatal unknown)
 
   let(:logger) do
     Class.new do
-      prepend NeetoBugtrapRuby::Breadcrumbs::LogSubscriberInjector
+      prepend NeetoBugtrap::Breadcrumbs::LogSubscriberInjector
 
       LOGGING_LEVELS.each do |level|
         define_method(level) do |message = nil, &block|

@@ -1,6 +1,6 @@
 require 'neeto-bugtrap-ruby/config'
 
-describe NeetoBugtrapRuby::Config::Yaml do
+describe NeetoBugtrap::Config::Yaml do
   subject { described_class.new(path, env) }
   let(:path) { FIXTURES_PATH.join('neetobugtrap.yml') }
   let(:env) { 'production' }
@@ -67,13 +67,13 @@ logging:
 
   context "when file is not found" do
     it "raises a ConfigError" do
-      expect { described_class.new('foo.yml') }.to raise_error(NeetoBugtrapRuby::Config::ConfigError)
+      expect { described_class.new('foo.yml') }.to raise_error(NeetoBugtrap::Config::ConfigError)
     end
   end
 
   context "when file is a directory" do
     it "raises a ConfigError" do
-      expect { described_class.new(FIXTURES_PATH) }.to raise_error(NeetoBugtrapRuby::Config::ConfigError)
+      expect { described_class.new(FIXTURES_PATH) }.to raise_error(NeetoBugtrap::Config::ConfigError)
     end
   end
 
@@ -92,7 +92,7 @@ logging:
 
     context "invalid" do
       let(:yaml) { 'foo' }
-      specify { expect { subject }.to raise_error(NeetoBugtrapRuby::Config::ConfigError) }
+      specify { expect { subject }.to raise_error(NeetoBugtrap::Config::ConfigError) }
     end
 
     context "valid" do
@@ -115,7 +115,7 @@ logging:
     end
 
     it "re-raises the exception" do
-      expect { subject }.to raise_error(NeetoBugtrapRuby::Config::ConfigError)
+      expect { subject }.to raise_error(NeetoBugtrap::Config::ConfigError)
     end
   end
 
@@ -131,7 +131,7 @@ YAML
     end
 
     it "raises a config error" do
-      expect { described_class.new(config_path) }.to raise_error(NeetoBugtrapRuby::Config::ConfigError)
+      expect { described_class.new(config_path) }.to raise_error(NeetoBugtrap::Config::ConfigError)
     end
 
     it "raises an exception with a helpful backtrace", if: RUBY_PLATFORM !~ /java/ do

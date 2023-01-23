@@ -3,7 +3,7 @@ require 'neeto-bugtrap-ruby/config'
 
 LOG_SEVERITIES = [:debug, :info, :warn, :error, :fatal].freeze
 
-describe NeetoBugtrapRuby::Logging::Base do
+describe NeetoBugtrap::Logging::Base do
   LOG_SEVERITIES.each do |severity|
     it { should respond_to severity }
   end
@@ -15,7 +15,7 @@ describe NeetoBugtrapRuby::Logging::Base do
   end
 end
 
-describe NeetoBugtrapRuby::Logging::StandardLogger do
+describe NeetoBugtrap::Logging::StandardLogger do
   it "injects neetobugtrap as progname" do
     logger_dbl = instance_double(Logger, add: nil)
     logger = described_class.new(logger_dbl)
@@ -24,7 +24,7 @@ describe NeetoBugtrapRuby::Logging::StandardLogger do
   end
 end
 
-describe NeetoBugtrapRuby::Logging::BootLogger.instance do
+describe NeetoBugtrap::Logging::BootLogger.instance do
   LOG_SEVERITIES.each do |severity|
     it { should respond_to severity }
 
@@ -37,7 +37,7 @@ describe NeetoBugtrapRuby::Logging::BootLogger.instance do
   end
 end
 
-describe NeetoBugtrapRuby::Logging::FormattedLogger do
+describe NeetoBugtrap::Logging::FormattedLogger do
   let(:logger) { Logger.new(File::NULL) }
 
   subject { described_class.new(logger) }
@@ -52,8 +52,8 @@ describe NeetoBugtrapRuby::Logging::FormattedLogger do
   end
 end
 
-describe NeetoBugtrapRuby::Logging::ConfigLogger do
-  let(:config) { NeetoBugtrapRuby::Config.new(debug: true, :'logging.tty_level' => tty_level) }
+describe NeetoBugtrap::Logging::ConfigLogger do
+  let(:config) { NeetoBugtrap::Config.new(debug: true, :'logging.tty_level' => tty_level) }
   let(:logger) { Logger.new(File::NULL) }
   let(:tty_level) { 'ERROR' }
 

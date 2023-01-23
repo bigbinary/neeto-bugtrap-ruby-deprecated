@@ -2,15 +2,15 @@ require 'neeto-bugtrap-ruby/plugins/faktory'
 require 'neeto-bugtrap-ruby/config'
 
 describe "Faktory Dependency" do
-  let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true) }
+  let(:config) { NeetoBugtrap::Config.new(logger: NULL_LOGGER, debug: true) }
 
   before do
-    NeetoBugtrapRuby::Plugin.instances[:faktory].reset!
+    NeetoBugtrap::Plugin.instances[:faktory].reset!
   end
 
   context "when faktory is not installed" do
     it "fails quietly" do
-      expect { NeetoBugtrapRuby::Plugin.instances[:faktory].load!(config) }.not_to raise_error
+      expect { NeetoBugtrap::Plugin.instances[:faktory].load!(config) }.not_to raise_error
     end
   end
 
@@ -34,7 +34,7 @@ describe "Faktory Dependency" do
     after { Object.send(:remove_const, :Faktory) }
 
     it "adds the error handler" do
-      NeetoBugtrapRuby::Plugin.instances[:faktory].load!(config)
+      NeetoBugtrap::Plugin.instances[:faktory].load!(config)
       expect(faktory_config.error_handlers).not_to be_empty
     end
 
@@ -42,14 +42,14 @@ describe "Faktory Dependency" do
       let(:exception) { RuntimeError.new('boom') }
 
       before do
-        NeetoBugtrapRuby::Plugin.instances[:faktory].load!(config)
+        NeetoBugtrap::Plugin.instances[:faktory].load!(config)
       end
 
       context "not within job execution" do
         let(:handler_context) { {context: 'Failed Hard', event: {} } }
 
         it "notifies NeetoBugtrap" do
-          expect(NeetoBugtrapRuby).to receive(:notify).with(exception, { parameters: handler_context }).once
+          expect(NeetoBugtrap).to receive(:notify).with(exception, { parameters: handler_context }).once
           faktory_config.error_handlers[0].call(exception, handler_context)
         end
       end
@@ -70,7 +70,7 @@ describe "Faktory Dependency" do
         }}
 
         it "notifies NeetoBugtrap" do
-          expect(NeetoBugtrapRuby).to receive(:notify).with(exception, error_payload).once
+          expect(NeetoBugtrap).to receive(:notify).with(exception, error_payload).once
           faktory_config.error_handlers[0].call(exception, handler_context)
         end
 
@@ -78,10 +78,10 @@ describe "Faktory Dependency" do
           let(:job) { retried_invocation }
           let(:retry_limit) { 1 }
           let(:attempt) { 0 }
-          let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true, :'faktory.attempt_threshold' => 5) }
+          let(:config) { NeetoBugtrap::Config.new(logger: NULL_LOGGER, debug: true, :'faktory.attempt_threshold' => 5) }
 
           it "doesn't notify NeetoBugtrap" do
-            expect(NeetoBugtrapRuby).not_to receive(:notify)
+            expect(NeetoBugtrap).not_to receive(:notify)
             faktory_config.error_handlers[0].call(exception, handler_context)
           end
 
@@ -90,7 +90,7 @@ describe "Faktory Dependency" do
             let(:retry_limit) { 0 }
 
             it "notifies NeetoBugtrap" do
-              expect(NeetoBugtrapRuby).to receive(:notify).with(exception, error_payload).once
+              expect(NeetoBugtrap).to receive(:notify).with(exception, error_payload).once
               faktory_config.error_handlers[0].call(exception, handler_context)
             end
           end
@@ -100,7 +100,7 @@ describe "Faktory Dependency" do
             let(:retry_limit) { 3 }
 
             it "notifies NeetoBugtrap" do
-              expect(NeetoBugtrapRuby).to receive(:notify).with(exception, error_payload).once
+              expect(NeetoBugtrap).to receive(:notify).with(exception, error_payload).once
               faktory_config.error_handlers[0].call(exception, handler_context)
             end
           end
@@ -110,7 +110,7 @@ describe "Faktory Dependency" do
             let(:retry_limit) { 10 }
 
             it "notifies NeetoBugtrap" do
-              expect(NeetoBugtrapRuby).to receive(:notify).with(exception, error_payload).once
+              expect(NeetoBugtrap).to receive(:notify).with(exception, error_payload).once
               faktory_config.error_handlers[0].call(exception, handler_context)
             end
           end

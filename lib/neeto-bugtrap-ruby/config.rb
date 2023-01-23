@@ -12,9 +12,9 @@ require 'neeto-bugtrap-ruby/util/http'
 require 'neeto-bugtrap-ruby/util/revision'
 require 'neeto-bugtrap-ruby/logging'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   # @api private
-  # The Config class is used to manage NeetoBugtrapRuby's initialization and
+  # The Config class is used to manage NeetoBugtrap's initialization and
   # configuration.
   class Config
     extend Forwardable
@@ -55,7 +55,7 @@ module NeetoBugtrapRuby
       init_logging!
       init_backend!
 
-      logger.info(sprintf('Initializing NeetoBugtrapRuby Error Tracker for Ruby. Ship it! version=%s framework=%s', NeetoBugtrapRuby::VERSION, detected_framework))
+      logger.info(sprintf('Initializing NeetoBugtrap Error Tracker for Ruby. Ship it! version=%s framework=%s', NeetoBugtrap::VERSION, detected_framework))
       logger.warn('Development mode is enabled. Data will not be reported until you deploy your app.') if warn_development?
 
       self

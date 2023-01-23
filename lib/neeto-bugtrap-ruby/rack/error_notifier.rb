@@ -3,10 +3,10 @@ require 'rack/request'
 
 require 'neeto-bugtrap-ruby/ruby'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Rack
     # Middleware for Rack applications. Any errors raised by the upstream
-    # application will be delivered to NeetoBugtrapRuby and re-raised.
+    # application will be delivered to NeetoBugtrap and re-raised.
     #
     # @example
     #   require 'neeto-bugtrap-ruby/rack/error_notifier'
@@ -15,7 +15,7 @@ module NeetoBugtrapRuby
     #     run lambda { |env| raise "Rack down" }
     #   end
     #
-    #   use NeetoBugtrapRuby::Rack::ErrorNotifier
+    #   use NeetoBugtrap::Rack::ErrorNotifier
     #
     #   run app
     class ErrorNotifier
@@ -53,7 +53,7 @@ module NeetoBugtrapRuby
       def_delegator :config, :logger
 
       def agent
-        @agent || NeetoBugtrapRuby::Agent.instance
+        @agent || NeetoBugtrap::Agent.instance
       end
 
       def ignored_user_agent?(env)

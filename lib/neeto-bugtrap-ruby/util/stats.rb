@@ -1,4 +1,4 @@
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Util
     class Stats
       HAS_MEM = File.exist?("/proc/meminfo")

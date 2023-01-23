@@ -2,7 +2,7 @@
 
 require 'neeto-bugtrap-ruby/util/sanitizer'
 
-describe NeetoBugtrapRuby::Util::Sanitizer do
+describe NeetoBugtrap::Util::Sanitizer do
   its(:max_depth) { should eq 20 }
 
   describe "#sanitize" do

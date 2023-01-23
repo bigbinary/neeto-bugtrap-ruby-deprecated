@@ -3,13 +3,13 @@ require 'net/http'
 
 require 'neeto-bugtrap-ruby/logging'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   # A concurrent queue to notify the backend.
   # @api private
   class Worker
     extend Forwardable
 
-    include NeetoBugtrapRuby::Logging::Helper
+    include NeetoBugtrap::Logging::Helper
 
     # Sub-class thread so we have a named thread (useful for debugging in Thread.list).
     class Thread < ::Thread; end
@@ -171,7 +171,7 @@ module NeetoBugtrapRuby
       send_now(msg)
 
       if shutdown? && throttled?
-        warn { sprintf('Unable to report %s error(s) to NeetoBugtrapRubyWeb (currently throttled)', queue.size) } if queue.size > 1
+        warn { sprintf('Unable to report %s error(s) to NeetoBugtrapWeb (currently throttled)', queue.size) } if queue.size > 1
         kill!
         return
       end

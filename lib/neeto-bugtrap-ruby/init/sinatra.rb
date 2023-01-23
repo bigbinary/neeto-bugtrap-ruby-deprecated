@@ -1,7 +1,7 @@
 require 'sinatra/base'
 require 'neeto-bugtrap-ruby/ruby'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Init
     module Sinatra
       ::Sinatra::Base.class_eval do
@@ -12,7 +12,7 @@ module NeetoBugtrapRuby
             # Sinatra is a special case. Sinatra starts the web application in an at_exit
             # handler. And, since we require sinatra before requiring HB, the only way to
             # setup our at_exit callback is in the sinatra build callback neeto-bugtrap-ruby/init/sinatra.rb
-            NeetoBugtrapRuby.install_at_exit_callback
+            NeetoBugtrap.install_at_exit_callback
             build_without_neetobugtrap(*args, &block)
           end
           alias :build_without_neetobugtrap :build
@@ -20,15 +20,15 @@ module NeetoBugtrapRuby
 
           def configure_neetobugtrap
             return unless defined?(neetobugtrap_api_key)
-            NeetoBugtrapRuby.configure do |config|
+            NeetoBugtrap.configure do |config|
               config.api_key = neetobugtrap_api_key
             end
           end
 
           def install_neetobugtrap
-            config = NeetoBugtrapRuby.config
+            config = NeetoBugtrap.config
             return unless config[:'sinatra.enabled']
-            install_neetobugtrap_middleware(NeetoBugtrapRuby::Rack::ErrorNotifier) if config[:'exceptions.enabled']
+            install_neetobugtrap_middleware(NeetoBugtrap::Rack::ErrorNotifier) if config[:'exceptions.enabled']
           end
 
           def install_neetobugtrap_middleware(klass)
@@ -42,10 +42,10 @@ module NeetoBugtrapRuby
   end
 end
 
-NeetoBugtrapRuby.init!({
+NeetoBugtrap.init!({
   env: ENV['APP_ENV'] || ENV['RACK_ENV'],
   framework: :sinatra,
   :'logging.path' => 'STDOUT'
 })
 
-NeetoBugtrapRuby.load_plugins!
+NeetoBugtrap.load_plugins!

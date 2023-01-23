@@ -21,8 +21,8 @@ module Helpers
     BacktracedException.new(opts)
   end
 
-  def stub_notice(config = NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER))
-    NeetoBugtrapRuby::Notice.new(config, {}).tap do |notice|
+  def stub_notice(config = NeetoBugtrap::Config.new(logger: NULL_LOGGER))
+    NeetoBugtrap::Notice.new(config, {}).tap do |notice|
       allow(notice).to receive(:ignore?).and_return(false)
       allow(notice).to receive(:to_json).and_return('{"foo":"bar"}')
       yield(notice) if block_given?
@@ -31,7 +31,7 @@ module Helpers
 
   def stub_notice!(*args, &block)
     stub_notice(*args, &block).tap do |notice|
-      allow(NeetoBugtrapRuby::Notice).to receive(:new).and_return(notice)
+      allow(NeetoBugtrap::Notice).to receive(:new).and_return(notice)
     end
   end
 end

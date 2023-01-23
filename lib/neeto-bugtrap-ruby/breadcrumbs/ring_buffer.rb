@@ -1,4 +1,4 @@
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Breadcrumbs
     class RingBuffer
       # Simple ring buffer implementation that keeps item count constrained using

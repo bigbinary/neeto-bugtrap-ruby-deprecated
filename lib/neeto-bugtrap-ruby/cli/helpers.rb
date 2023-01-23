@@ -1,4 +1,4 @@
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module CLI
     module Helpers
       module BackendCmd

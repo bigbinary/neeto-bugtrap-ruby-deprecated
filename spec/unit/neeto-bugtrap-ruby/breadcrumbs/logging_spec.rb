@@ -1,9 +1,9 @@
 require 'neeto-bugtrap-ruby/breadcrumbs/logging'
 
-describe NeetoBugtrapRuby::Breadcrumbs::LogWrapper do
+describe NeetoBugtrap::Breadcrumbs::LogWrapper do
   let(:logger) do
     Class.new do
-      prepend NeetoBugtrapRuby::Breadcrumbs::LogWrapper
+      prepend NeetoBugtrap::Breadcrumbs::LogWrapper
 
       attr_reader :severity, :message, :progname
 
@@ -23,25 +23,25 @@ describe NeetoBugtrapRuby::Breadcrumbs::LogWrapper do
 
   it 'adds a breadcrumb' do
     expect(subject).to receive(:format_severity).and_return("debug")
-    expect(NeetoBugtrapRuby).to receive(:add_breadcrumb).with("Message", hash_including(category: :log, metadata: hash_including(severity: "debug", progname: "none")))
+    expect(NeetoBugtrap).to receive(:add_breadcrumb).with("Message", hash_including(category: :log, metadata: hash_including(severity: "debug", progname: "none")))
 
     subject.add("test", "Message", "none")
   end
 
   it 'handles non-string objects' do
-    expect(NeetoBugtrapRuby).to receive(:add_breadcrumb).with("{}", anything)
+    expect(NeetoBugtrap).to receive(:add_breadcrumb).with("{}", anything)
     subject.add("DEBUG", {})
   end
 
   it 'does not mutate the message' do
-    subject.add("DEBUG", {}, 'NeetoBugtrapRuby')
+    subject.add("DEBUG", {}, 'NeetoBugtrap')
     expect(subject.severity).to eq('DEBUG')
     expect(subject.message).to eq({})
-    expect(subject.progname).to eq('NeetoBugtrapRuby')
+    expect(subject.progname).to eq('NeetoBugtrap')
   end
 
   describe "ignores messages on" do
-    before { expect(NeetoBugtrapRuby).to_not receive(:add_breadcrumb) }
+    before { expect(NeetoBugtrap).to_not receive(:add_breadcrumb) }
 
     it 'nil message' do
       subject.add("test", nil)

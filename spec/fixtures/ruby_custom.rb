@@ -1,13 +1,13 @@
 require 'neeto-bugtrap-ruby/ruby'
 
-agent = NeetoBugtrapRuby::Agent.new({
+agent = NeetoBugtrap::Agent.new({
   api_key: 'asdf',
   backend: 'debug',
   debug: true,
   logger: Logger.new(STDOUT)
 })
 
-agent.notify(error_class: 'CustomNeetoBugtrapRubyException', error_message: 'Test message')
+agent.notify(error_class: 'CustomNeetoBugtrapException', error_message: 'Test message')
 
 agent.flush
 

@@ -1,4 +1,4 @@
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module CLI
     class Heroku < Thor
       class_option :app, aliases: :'-a', type: :string, default: nil, desc: 'Specify optional Heroku APP'
@@ -29,9 +29,9 @@ module NeetoBugtrapRuby
         say(run(cmd))
       end
 
-      desc 'install API_KEY', 'Install NeetoBugtrapRuby on Heroku using API_KEY'
+      desc 'install API_KEY', 'Install NeetoBugtrap on Heroku using API_KEY'
       def install(api_key)
-        say("Installing NeetoBugtrapRuby #{VERSION} for Heroku")
+        say("Installing NeetoBugtrap #{VERSION} for Heroku")
 
         app = options[:app] || detect_heroku_app(false)
         say("Adding config HONEYBADGER_API_KEY=#{api_key} to Heroku.", :magenta)

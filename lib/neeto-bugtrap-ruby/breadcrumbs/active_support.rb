@@ -1,6 +1,6 @@
 require 'neeto-bugtrap-ruby/util/sql'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Breadcrumbs
     class ActiveSupport
       def self.default_notifications

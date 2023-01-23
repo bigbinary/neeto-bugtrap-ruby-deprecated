@@ -1,4 +1,4 @@
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Util
     class SQL
       EscapedQuotes = /(\\"|\\')/.freeze

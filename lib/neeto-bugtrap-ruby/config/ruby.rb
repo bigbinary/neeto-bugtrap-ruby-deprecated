@@ -1,4 +1,4 @@
-module NeetoBugtrapRuby
+module NeetoBugtrap
   class Config
     class Mash
       KEYS = DEFAULTS.keys.map(&:to_s).freeze

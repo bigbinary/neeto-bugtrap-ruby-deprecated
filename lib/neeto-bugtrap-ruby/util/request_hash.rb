@@ -1,6 +1,6 @@
 require 'set'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Util
     # Constructs a request hash from a Rack::Request matching the /v1/notices
     # API specification.

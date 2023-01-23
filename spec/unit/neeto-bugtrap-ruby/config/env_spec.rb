@@ -1,6 +1,6 @@
 require 'neeto-bugtrap-ruby/config'
 
-describe NeetoBugtrapRuby::Config::Env do
+describe NeetoBugtrap::Config::Env do
   subject { described_class.new(env) }
 
   let(:env) { {} }

@@ -1,7 +1,7 @@
 require 'neeto-bugtrap-ruby/plugin'
 require 'neeto-bugtrap-ruby/backtrace'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Plugins
     module LocalVariables
       module ExceptionExtension
@@ -11,7 +11,7 @@ module NeetoBugtrapRuby
         end
 
         def set_backtrace_with_neetobugtrap(*args, &block)
-          if caller.none? { |loc| loc.match(::NeetoBugtrapRuby::Backtrace::Line::INPUT_FORMAT) && Regexp.last_match(1) == __FILE__ }
+          if caller.none? { |loc| loc.match(::NeetoBugtrap::Backtrace::Line::INPUT_FORMAT) && Regexp.last_match(1) == __FILE__ }
             @__neetobugtrap_bindings_stack = binding.callers.drop(1)
           end
 

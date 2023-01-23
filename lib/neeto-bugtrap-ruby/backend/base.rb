@@ -4,7 +4,7 @@ require 'json'
 
 require 'neeto-bugtrap-ruby/logging'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Backend
     class Response
       NOT_BLANK = /\S/
@@ -70,7 +70,7 @@ module NeetoBugtrapRuby
     class Base
       extend Forwardable
 
-      include NeetoBugtrapRuby::Logging::Helper
+      include NeetoBugtrap::Logging::Helper
 
       def initialize(config)
         @config = config

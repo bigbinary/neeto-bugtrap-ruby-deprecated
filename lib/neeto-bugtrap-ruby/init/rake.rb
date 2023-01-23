@@ -1,8 +1,8 @@
 require 'neeto-bugtrap-ruby/ruby'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   # @api private
-  # Patch Rake::Application to handle errors with NeetoBugtrapRuby
+  # Patch Rake::Application to handle errors with NeetoBugtrap
   module RakeHandler
     def self.included(klass)
       klass.class_eval do
@@ -13,10 +13,10 @@ module NeetoBugtrapRuby
     end
 
     def display_error_message_with_neetobugtrap(ex)
-      NeetoBugtrapRuby.notify(ex, origin: :rake, component: reconstruct_command_line)
+      NeetoBugtrap.notify(ex, origin: :rake, component: reconstruct_command_line)
       display_error_message_without_neetobugtrap(ex)
     ensure
-      NeetoBugtrapRuby.clear!
+      NeetoBugtrap.clear!
     end
 
     def reconstruct_command_line
@@ -61,6 +61,6 @@ end
 
 Rake.application.instance_eval do
   class << self
-    include NeetoBugtrapRuby::RakeHandler
+    include NeetoBugtrap::RakeHandler
   end
 end

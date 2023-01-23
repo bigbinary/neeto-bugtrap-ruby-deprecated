@@ -1,23 +1,23 @@
 require 'forwardable'
 require 'neeto-bugtrap-ruby/agent'
 
-# NeetoBugtrapRuby's public API is made up of two parts: the {NeetoBugtrapRuby} singleton
+# NeetoBugtrap's public API is made up of two parts: the {NeetoBugtrap} singleton
 # module, and the {Agent} class. The singleton module delegates its methods to
 # a global agent instance, {Agent#instance}; this allows methods to be accessed
-# directly, for example when calling +NeetoBugtrapRuby.notify+:
+# directly, for example when calling +NeetoBugtrap.notify+:
 #
 #   begin
 #     raise 'testing an error report'
 #   rescue => err
-#     NeetoBugtrapRuby.notify(err)
+#     NeetoBugtrap.notify(err)
 #   end
 #
 # Custom agents may also be created by users who want to report to multiple
-# NeetoBugtrapRuby projects in the same app (or have fine-grained control over
+# NeetoBugtrap projects in the same app (or have fine-grained control over
 # configuration), however most users will use the global agent.
 #
-# @see NeetoBugtrapRuby::Agent
-module NeetoBugtrapRuby
+# @see NeetoBugtrap::Agent
+module NeetoBugtrap
   extend Forwardable
   extend self
 
@@ -25,28 +25,28 @@ module NeetoBugtrapRuby
   #   @!method $2(...)
   #     Forwards to {$1}.
   #     @see Agent#$2
-  def_delegator :'NeetoBugtrapRuby::Agent.instance', :check_in
-  def_delegator :'NeetoBugtrapRuby::Agent.instance', :context
-  def_delegator :'NeetoBugtrapRuby::Agent.instance', :configure
-  def_delegator :'NeetoBugtrapRuby::Agent.instance', :get_context
-  def_delegator :'NeetoBugtrapRuby::Agent.instance', :flush
-  def_delegator :'NeetoBugtrapRuby::Agent.instance', :stop
-  def_delegator :'NeetoBugtrapRuby::Agent.instance', :exception_filter
-  def_delegator :'NeetoBugtrapRuby::Agent.instance', :exception_fingerprint
-  def_delegator :'NeetoBugtrapRuby::Agent.instance', :backtrace_filter
-  def_delegator :'NeetoBugtrapRuby::Agent.instance', :add_breadcrumb
-  def_delegator :'NeetoBugtrapRuby::Agent.instance', :breadcrumbs
-  def_delegator :'NeetoBugtrapRuby::Agent.instance', :clear!
-  def_delegator :'NeetoBugtrapRuby::Agent.instance', :track_deployment
+  def_delegator :'NeetoBugtrap::Agent.instance', :check_in
+  def_delegator :'NeetoBugtrap::Agent.instance', :context
+  def_delegator :'NeetoBugtrap::Agent.instance', :configure
+  def_delegator :'NeetoBugtrap::Agent.instance', :get_context
+  def_delegator :'NeetoBugtrap::Agent.instance', :flush
+  def_delegator :'NeetoBugtrap::Agent.instance', :stop
+  def_delegator :'NeetoBugtrap::Agent.instance', :exception_filter
+  def_delegator :'NeetoBugtrap::Agent.instance', :exception_fingerprint
+  def_delegator :'NeetoBugtrap::Agent.instance', :backtrace_filter
+  def_delegator :'NeetoBugtrap::Agent.instance', :add_breadcrumb
+  def_delegator :'NeetoBugtrap::Agent.instance', :breadcrumbs
+  def_delegator :'NeetoBugtrap::Agent.instance', :clear!
+  def_delegator :'NeetoBugtrap::Agent.instance', :track_deployment
 
   # @!macro [attach] def_delegator
   #   @!method $2(...)
   #     @api private
   #     Forwards to {$1}.
   #     @see Agent#$2
-  def_delegator :'NeetoBugtrapRuby::Agent.instance', :config
-  def_delegator :'NeetoBugtrapRuby::Agent.instance', :init!
-  def_delegator :'NeetoBugtrapRuby::Agent.instance', :with_rack_env
+  def_delegator :'NeetoBugtrap::Agent.instance', :config
+  def_delegator :'NeetoBugtrap::Agent.instance', :init!
+  def_delegator :'NeetoBugtrap::Agent.instance', :with_rack_env
 
   # @!method notify(...)
   # Forwards to {Agent.instance}.
@@ -68,22 +68,22 @@ module NeetoBugtrapRuby
   # @api private
   def install_at_exit_callback
     at_exit do
-      if $! && !ignored_exception?($!) && NeetoBugtrapRuby.config[:'exceptions.notify_at_exit']
-        NeetoBugtrapRuby.notify($!, component: 'at_exit', sync: true)
+      if $! && !ignored_exception?($!) && NeetoBugtrap.config[:'exceptions.notify_at_exit']
+        NeetoBugtrap.notify($!, component: 'at_exit', sync: true)
       end
 
-      NeetoBugtrapRuby.stop if NeetoBugtrapRuby.config[:'send_data_at_exit']
+      NeetoBugtrap.stop if NeetoBugtrap.config[:'send_data_at_exit']
     end
   end
 
   # @deprecated
   def start(config = {})
     raise NoMethodError, <<-WARNING
-`NeetoBugtrapRuby.start` is no longer necessary and has been removed.
+`NeetoBugtrap.start` is no longer necessary and has been removed.
 
-  Use `NeetoBugtrapRuby.configure` to explicitly configure the agent from Ruby moving forward:
+  Use `NeetoBugtrap.configure` to explicitly configure the agent from Ruby moving forward:
 
-  NeetoBugtrapRuby.configure do |config|
+  NeetoBugtrap.configure do |config|
     config.api_key = 'project api key'
     config.exceptions.ignore += [CustomError]
   end

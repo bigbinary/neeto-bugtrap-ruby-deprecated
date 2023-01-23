@@ -3,9 +3,9 @@ require 'set'
 
 require 'neeto-bugtrap-ruby/conversions'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Util
-    # Sanitizer sanitizes data for sending to NeetoBugtrapRuby's API. The filters
+    # Sanitizer sanitizes data for sending to NeetoBugtrap's API. The filters
     # are based on Rails' HTTP parameter filter.
     class Sanitizer
       COOKIE_PAIRS = /[;,]\s?/

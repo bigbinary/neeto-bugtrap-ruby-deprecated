@@ -1,6 +1,6 @@
 require "neeto-bugtrap-ruby/util/sql"
 
-describe NeetoBugtrapRuby::Util::SQL do
+describe NeetoBugtrap::Util::SQL do
   describe "#obfuscate" do
     it "works with non UTF-8 strings" do
       expect {

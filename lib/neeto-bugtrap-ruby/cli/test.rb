@@ -3,13 +3,13 @@ require 'forwardable'
 require 'neeto-bugtrap-ruby/cli/main'
 require 'pathname'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module CLI
     class Test
       extend Forwardable
 
       TEST_EXCEPTION = begin
-                         exception_name = ENV['EXCEPTION'] || 'NeetoBugtrapRubyTestingException'
+                         exception_name = ENV['EXCEPTION'] || 'NeetoBugtrapTestingException'
                          Object.const_get(exception_name)
                        rescue
                          Object.const_set(exception_name, Class.new(Exception))
@@ -45,14 +45,14 @@ module NeetoBugtrapRuby
           require 'neeto-bugtrap-ruby/init/ruby'
         end
 
-        if NeetoBugtrapRuby.config.get(:api_key).to_s =~ BLANK
-          say("Unable to send test: NeetoBugtrapRuby API key is missing.", :red)
+        if NeetoBugtrap.config.get(:api_key).to_s =~ BLANK
+          say("Unable to send test: NeetoBugtrap API key is missing.", :red)
           exit(1)
         end
 
-        NeetoBugtrapRuby.config.set(:report_data, !options[:dry_run])
-        test_backend = TestBackend.new(NeetoBugtrapRuby.config.backend)
-        NeetoBugtrapRuby.config.backend = test_backend
+        NeetoBugtrap.config.set(:report_data, !options[:dry_run])
+        test_backend = TestBackend.new(NeetoBugtrap.config.backend)
+        NeetoBugtrap.config.backend = test_backend
 
         at_exit do
           # Exceptions will already be reported when exiting.
@@ -77,14 +77,14 @@ module NeetoBugtrapRuby
       end
 
       def test_exception_class
-        exception_name = ENV['EXCEPTION'] || 'NeetoBugtrapRubyTestingException'
+        exception_name = ENV['EXCEPTION'] || 'NeetoBugtrapTestingException'
         Object.const_get(exception_name)
       rescue
         Object.const_set(exception_name, Class.new(Exception))
       end
 
       def run_standalone_test
-        NeetoBugtrapRuby.notify(TEST_EXCEPTION)
+        NeetoBugtrap.notify(TEST_EXCEPTION)
       end
 
       def run_rails_test
@@ -116,7 +116,7 @@ module NeetoBugtrapRuby
         end
 
         eval(<<-CONTROLLER)
-        class NeetoBugtrapRuby::TestController < ApplicationController
+        class NeetoBugtrap::TestController < ApplicationController
           # This is to bypass any filters that may prevent access to the action.
           if respond_to?(:prepend_before_action)
             prepend_before_action :test_neetobugtrap
@@ -124,8 +124,8 @@ module NeetoBugtrapRuby
             prepend_before_filter :test_neetobugtrap
           end
           def test_neetobugtrap
-            puts "Raising '#{NeetoBugtrapRuby::CLI::Test::TEST_EXCEPTION.class.name}' to simulate application failure."
-            raise NeetoBugtrapRuby::CLI::Test::TEST_EXCEPTION
+            puts "Raising '#{NeetoBugtrap::CLI::Test::TEST_EXCEPTION.class.name}' to simulate application failure."
+            raise NeetoBugtrap::CLI::Test::TEST_EXCEPTION
           end
           # Ensure we actually have an action to go to.
           def verify; end
@@ -157,15 +157,15 @@ module NeetoBugtrapRuby
       end
 
       def verify_test
-        NeetoBugtrapRuby.flush
+        NeetoBugtrap.flush
 
         if calling = TestBackend.callings[:notices].find {|c| c[0].exception.eql?(TEST_EXCEPTION) }
           notice, response = *calling
 
           if !response.success?
-            host = NeetoBugtrapRuby.config.get(:'connection.host')
+            host = NeetoBugtrap.config.get(:'connection.host')
             say(<<-MSG, :red)
-!! --- NeetoBugtrapRuby test failed ------------------------------------------------ !!
+!! --- NeetoBugtrap test failed ------------------------------------------------ !!
 
 The error notifier is installed, but we encountered an error:
 
@@ -190,7 +190,7 @@ MSG
         end
 
         say(<<-MSG, :red)
-!! --- NeetoBugtrapRuby test failed ------------------------------------------------ !!
+!! --- NeetoBugtrap test failed ------------------------------------------------ !!
 
 Error: The test exception was not reported; the application may not be
 configured properly.
@@ -200,8 +200,8 @@ This is usually caused by one of the following issues:
   - There was a problem loading your application. Check your logs to see if a
     different exception is being raised.
   - The exception is being rescued before it reaches our Rack middleware. If
-    you're using `rescue` or `rescue_from` you may need to notify NeetoBugtrapRuby
-    manually: `NeetoBugtrapRuby.notify(exception)`.
+    you're using `rescue` or `rescue_from` you may need to notify NeetoBugtrap
+    manually: `NeetoBugtrap.notify(exception)`.
   - The neeto-bugtrap-ruby gem is misconfigured. Check the settings in your
     neetobugtrap.yml file.
 MSG
@@ -227,10 +227,10 @@ MSG
         end
 
         <<-MSG
-⚡ --- NeetoBugtrapRuby is installed! -----------------------------------------------
+⚡ --- NeetoBugtrap is installed! -----------------------------------------------
 
 Good news: You're one deploy away from seeing all of your exceptions in
-NeetoBugtrapRuby. For now, we've generated a test exception for you:
+NeetoBugtrap. For now, we've generated a test exception for you:
 
   #{notice_url}
 
@@ -238,7 +238,7 @@ Optional steps:
 
   - Show a feedback form on your error page:
     https://docs.honeybadger.io/gem-feedback
-  - Show a UUID or link to NeetoBugtrapRuby on your error page:
+  - Show a UUID or link to NeetoBugtrap on your error page:
     https://docs.honeybadger.io/gem-informer
   - Track deployments (if you're using Capistrano, we already did this):
     https://docs.honeybadger.io/gem-deploys
@@ -249,14 +249,14 @@ If you ever need help:
   - Check out our documentation: https://docs.honeybadger.io/
   - Email the founders: support@honeybadger.io
 
-Most people don't realize that NeetoBugtrapRuby is a small, bootstrapped company. We
+Most people don't realize that NeetoBugtrap is a small, bootstrapped company. We
 really couldn't do this without you. Thank you for allowing us to do what we
 love: making developers awesome.
 
 Happy 'badgering!
 
 Sincerely,
-The NeetoBugtrapRuby Crew
+The NeetoBugtrap Crew
 https://www.honeybadger.io/about/
 
 ⚡ --- End --------------------------------------------------------------------

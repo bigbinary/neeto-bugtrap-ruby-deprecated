@@ -4,7 +4,7 @@ require 'thor'
 
 require 'neeto-bugtrap-ruby/cli/main'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   # @api private
   module CLI
     def self.start(*args)

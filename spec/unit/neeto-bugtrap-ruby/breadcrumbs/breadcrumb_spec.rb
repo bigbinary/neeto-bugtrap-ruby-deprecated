@@ -1,7 +1,7 @@
 require 'timecop'
 require 'neeto-bugtrap-ruby/breadcrumbs/ring_buffer'
 
-describe NeetoBugtrapRuby::Breadcrumbs::Breadcrumb do
+describe NeetoBugtrap::Breadcrumbs::Breadcrumb do
   let(:category) { :test }
   let(:message) { "A test message" }
   let(:metadata) {{ a: "foo" }}

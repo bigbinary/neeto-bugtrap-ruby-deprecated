@@ -1,7 +1,7 @@
 require 'socket'
 require 'neeto-bugtrap-ruby/breadcrumbs/active_support'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   class Config
     class Boolean; end
 
@@ -33,7 +33,7 @@ module NeetoBugtrapRuby
 
     OPTIONS = {
       api_key: {
-        description: 'The API key for your NeetoBugtrapRuby project.',
+        description: 'The API key for your NeetoBugtrap project.',
         default: nil,
         type: String
       },
@@ -214,7 +214,7 @@ module NeetoBugtrapRuby
       },
       :'user_informer.info' => {
         description: 'Replacement string for HTML comment in templates.',
-        default: 'NeetoBugtrapRuby Error {{error_id}}'.freeze,
+        default: 'NeetoBugtrap Error {{error_id}}'.freeze,
         type: String
       },
       :'feedback.enabled' => {

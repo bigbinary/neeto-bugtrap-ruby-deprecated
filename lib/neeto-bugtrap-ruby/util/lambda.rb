@@ -1,4 +1,4 @@
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Util
     class Lambda
       AWS_ENV_MAP = {

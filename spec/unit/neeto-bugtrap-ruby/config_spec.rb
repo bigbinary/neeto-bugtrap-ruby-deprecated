@@ -2,14 +2,14 @@ require 'neeto-bugtrap-ruby/config'
 require 'neeto-bugtrap-ruby/backend/base'
 require 'net/http'
 
-describe NeetoBugtrapRuby::Config do
+describe NeetoBugtrap::Config do
   specify { expect(subject[:env]).to eq nil }
   specify { expect(subject[:'delayed_job.attempt_threshold']).to eq 0 }
   specify { expect(subject[:debug]).to eq false }
 
   describe "#init!" do
     let(:env) { {} }
-    let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER) }
+    let(:config) { NeetoBugtrap::Config.new(logger: NULL_LOGGER) }
 
     it "returns the config object" do
       expect(config.init!).to eq(config)
@@ -46,7 +46,7 @@ describe NeetoBugtrapRuby::Config do
 
       it "creates a log file" do
         expect(log_file.exist?).to eq false
-        NeetoBugtrapRuby::Config.new.init!(:'logging.path' => log_file)
+        NeetoBugtrap::Config.new.init!(:'logging.path' => log_file)
         expect(log_file.exist?).to eq true
       end
     end
@@ -55,14 +55,14 @@ describe NeetoBugtrapRuby::Config do
       it "overrides configured logger" do
         allow(NULL_LOGGER).to receive(:add)
         expect(NULL_LOGGER).to receive(:add).with(Logger::Severity::ERROR, /foo/, "neetobugtrap")
-        config = NeetoBugtrapRuby::Config.new.init!(logger: NULL_LOGGER)
+        config = NeetoBugtrap::Config.new.init!(logger: NULL_LOGGER)
         config.logger.error('foo')
       end
     end
 
     context "when the config path is defined" do
       let(:config_file) { TMP_DIR.join('neetobugtrap.yml') }
-      let(:instance) { NeetoBugtrapRuby::Config.new(:'config.path' => config_file) }
+      let(:instance) { NeetoBugtrap::Config.new(:'config.path' => config_file) }
 
       before { File.write(config_file, '') }
       after { File.unlink(config_file) }
@@ -74,18 +74,18 @@ describe NeetoBugtrapRuby::Config do
       context "when a config error occurs while loading file" do
         before do
           allow(instance.logger).to receive(:add)
-          allow(NeetoBugtrapRuby::Config::Yaml).to receive(:new).and_raise(NeetoBugtrapRuby::Config::ConfigError.new('ouch'))
+          allow(NeetoBugtrap::Config::Yaml).to receive(:new).and_raise(NeetoBugtrap::Config::ConfigError.new('ouch'))
         end
 
         it "raises the exception" do
-          expect { init_instance }.to raise_error(NeetoBugtrapRuby::Config::ConfigError)
+          expect { init_instance }.to raise_error(NeetoBugtrap::Config::ConfigError)
         end
       end
 
       context "when a generic error occurs while loading file" do
         before do
           allow(instance.logger).to receive(:add)
-          allow(NeetoBugtrapRuby::Config::Yaml).to receive(:new).and_raise(RuntimeError.new('ouch'))
+          allow(NeetoBugtrap::Config::Yaml).to receive(:new).and_raise(RuntimeError.new('ouch'))
         end
 
         it "raises the exception" do
@@ -96,12 +96,12 @@ describe NeetoBugtrapRuby::Config do
   end
 
   describe "#get" do
-    let(:instance) { NeetoBugtrapRuby::Config.new({logger: NULL_LOGGER, debug: true}.merge!(opts)) }
+    let(:instance) { NeetoBugtrap::Config.new({logger: NULL_LOGGER, debug: true}.merge!(opts)) }
     let(:opts) { {} }
 
     context "when a normal option doesn't exist" do
       it 'returns the default option value' do
-        expect(instance.get(:development_environments)).to eq NeetoBugtrapRuby::Config::DEFAULTS[:development_environments]
+        expect(instance.get(:development_environments)).to eq NeetoBugtrap::Config::DEFAULTS[:development_environments]
       end
     end
 
@@ -115,11 +115,11 @@ describe NeetoBugtrapRuby::Config do
   end
 
   describe "#ignored_classes" do
-    let(:instance) { NeetoBugtrapRuby::Config.new({logger: NULL_LOGGER, debug: true}.merge!(opts)) }
+    let(:instance) { NeetoBugtrap::Config.new({logger: NULL_LOGGER, debug: true}.merge!(opts)) }
     let(:opts) { { :'exceptions.ignore' => ['foo']} }
 
     it "returns the exceptions.ignore option value plus defaults" do
-      expect(instance.ignored_classes).to eq(NeetoBugtrapRuby::Config::DEFAULTS[:'exceptions.ignore'] | ['foo'])
+      expect(instance.ignored_classes).to eq(NeetoBugtrap::Config::DEFAULTS[:'exceptions.ignore'] | ['foo'])
     end
 
     context "when exceptions.ignore_only is configured" do
@@ -201,30 +201,30 @@ describe NeetoBugtrapRuby::Config do
   end
 
   describe "#default_backend" do
-    its(:default_backend) { should be_a NeetoBugtrapRuby::Backend::Server }
+    its(:default_backend) { should be_a NeetoBugtrap::Backend::Server }
 
     context "when disabled explicitly" do
       before { subject[:report_data] = false }
-      its(:default_backend) { should be_a NeetoBugtrapRuby::Backend::Null }
+      its(:default_backend) { should be_a NeetoBugtrap::Backend::Null }
     end
 
     context "when environment is not a development environment" do
       before { subject[:env] = 'production' }
-      its(:default_backend) { should be_a NeetoBugtrapRuby::Backend::Server }
+      its(:default_backend) { should be_a NeetoBugtrap::Backend::Server }
 
       context "when disabled explicitly" do
         before { subject[:report_data] = false }
-        its(:default_backend) { should be_a NeetoBugtrapRuby::Backend::Null }
+        its(:default_backend) { should be_a NeetoBugtrap::Backend::Null }
       end
     end
 
     context "when environment is a development environment" do
       before { subject[:env] = 'development' }
-      its(:default_backend) { should be_a NeetoBugtrapRuby::Backend::Null }
+      its(:default_backend) { should be_a NeetoBugtrap::Backend::Null }
 
       context "when enabled explicitly" do
         before { subject[:report_data] = true }
-        its(:default_backend) { should be_a NeetoBugtrapRuby::Backend::Server }
+        its(:default_backend) { should be_a NeetoBugtrap::Backend::Server }
       end
     end
   end
@@ -257,7 +257,7 @@ describe NeetoBugtrapRuby::Config do
         INIT_LOGGER = Logger.new(File::NULL)
         CONFIGURE_LOGGER = Logger.new(File::NULL)
 
-        neetobugtrap = NeetoBugtrapRuby::Config.new.init!(logger: INIT_LOGGER)
+        neetobugtrap = NeetoBugtrap::Config.new.init!(logger: INIT_LOGGER)
 
         neetobugtrap.configure do |config|
           config.logger = CONFIGURE_LOGGER

@@ -1,12 +1,12 @@
 require 'neeto-bugtrap-ruby/plugin'
 require 'neeto-bugtrap-ruby/ruby'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Plugins
     module Faktory
       class Middleware
         def call(worker, job)
-          NeetoBugtrapRuby.clear!
+          NeetoBugtrap.clear!
           yield
         end
       end
@@ -42,7 +42,7 @@ module NeetoBugtrapRuby
                 opts[:action] = 'perform'
               end
 
-              NeetoBugtrapRuby.notify(ex, opts)
+              NeetoBugtrap.notify(ex, opts)
             end
           end
         end

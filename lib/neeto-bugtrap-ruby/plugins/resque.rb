@@ -1,35 +1,35 @@
 require 'neeto-bugtrap-ruby/plugin'
 require 'neeto-bugtrap-ruby/ruby'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Plugins
     module Resque
       module Extension
         # Executed before +on_failure+ hook; the flush is necessary so that
         # errors reported within jobs get sent before the worker dies.
         def around_perform_with_neetobugtrap(*args)
-          NeetoBugtrapRuby.flush { yield }
+          NeetoBugtrap.flush { yield }
         end
 
         def after_perform_with_neetobugtrap(*args)
-          NeetoBugtrapRuby.clear!
+          NeetoBugtrap.clear!
         end
 
         # Error notifications must be synchronous as the +on_failure+ hook is
         # executed after +around_perform+.
         def on_failure_with_neetobugtrap(e, *args)
-          NeetoBugtrapRuby.notify(e, parameters: { job_arguments: args }, sync: true) if send_exception_to_neetobugtrap?(e, args)
+          NeetoBugtrap.notify(e, parameters: { job_arguments: args }, sync: true) if send_exception_to_neetobugtrap?(e, args)
         ensure
-          NeetoBugtrapRuby.clear!
+          NeetoBugtrap.clear!
         end
 
         def send_exception_to_neetobugtrap?(e, args)
           return true unless respond_to?(:retry_criteria_valid?)
-          return true if ::NeetoBugtrapRuby.config[:'resque.resque_retry.send_exceptions_when_retrying']
+          return true if ::NeetoBugtrap.config[:'resque.resque_retry.send_exceptions_when_retrying']
 
           !retry_criteria_valid?(e)
         rescue => e
-          NeetoBugtrapRuby.notify(e, parameters: { job_arguments: args }, sync: true)
+          NeetoBugtrap.notify(e, parameters: { job_arguments: args }, sync: true)
         end
       end
 
@@ -43,7 +43,7 @@ module NeetoBugtrapRuby
           payload_class_without_neetobugtrap.tap do |klass|
             unless klass.respond_to?(:around_perform_with_neetobugtrap)
               klass.instance_eval do
-                extend(::NeetoBugtrapRuby::Plugins::Resque::Extension)
+                extend(::NeetoBugtrap::Plugins::Resque::Extension)
               end
             end
           end
@@ -54,7 +54,7 @@ module NeetoBugtrapRuby
         requirement { defined?(::Resque::Job) }
 
         requirement do
-          if resque_neetobugtrap = defined?(::Resque::Failure::NeetoBugtrapRuby)
+          if resque_neetobugtrap = defined?(::Resque::Failure::NeetoBugtrap)
             logger.warn("Support for Resque has been moved " \
                         "to the neetobugtrap gem. Please remove " \
                         "resque-neetobugtrap from your " \

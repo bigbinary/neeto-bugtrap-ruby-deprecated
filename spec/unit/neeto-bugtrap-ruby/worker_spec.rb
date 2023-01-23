@@ -6,16 +6,16 @@ require 'neeto-bugtrap-ruby/config'
 require 'neeto-bugtrap-ruby/backend'
 require 'neeto-bugtrap-ruby/notice'
 
-describe NeetoBugtrapRuby::Worker do
+describe NeetoBugtrap::Worker do
   let!(:instance) { described_class.new(config) }
-  let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true, backend: 'null') }
+  let(:config) { NeetoBugtrap::Config.new(logger: NULL_LOGGER, debug: true, backend: 'null') }
   let(:obj) { double('Badger', id: :foo, to_json: '{}') }
 
   subject { instance }
 
   after do
     Thread.list.each do |thread|
-      next unless thread.kind_of?(NeetoBugtrapRuby::Worker::Thread)
+      next unless thread.kind_of?(NeetoBugtrap::Worker::Thread)
       Thread.kill(thread)
     end
   end
@@ -87,10 +87,10 @@ describe NeetoBugtrapRuby::Worker do
       subject { instance.send(:backend) }
 
       before do
-        allow(NeetoBugtrapRuby::Backend::Null).to receive(:new).with(config).and_return(config.backend)
+        allow(NeetoBugtrap::Backend::Null).to receive(:new).with(config).and_return(config.backend)
       end
 
-      it { should be_a NeetoBugtrapRuby::Backend::Base }
+      it { should be_a NeetoBugtrap::Backend::Base }
 
       it "is initialized from config" do
         should eq config.backend
@@ -221,7 +221,7 @@ describe NeetoBugtrapRuby::Worker do
 
     context "when throttled during shutdown" do
       before do
-        allow(subject.send(:backend)).to receive(:notify).with(:notices, obj).and_return(NeetoBugtrapRuby::Backend::Response.new(429) )
+        allow(subject.send(:backend)).to receive(:notify).with(:notices, obj).and_return(NeetoBugtrap::Backend::Response.new(429) )
       end
 
       it "shuts down immediately" do
@@ -269,7 +269,7 @@ describe NeetoBugtrapRuby::Worker do
     end
 
     context "when 429" do
-      let(:response) { NeetoBugtrapRuby::Backend::Response.new(429) }
+      let(:response) { NeetoBugtrap::Backend::Response.new(429) }
 
       it "adds throttle" do
         expect { handle_response }.to change(instance, :throttle_interval).by(0.05)
@@ -277,7 +277,7 @@ describe NeetoBugtrapRuby::Worker do
     end
 
     context "when 402" do
-      let(:response) { NeetoBugtrapRuby::Backend::Response.new(402) }
+      let(:response) { NeetoBugtrap::Backend::Response.new(402) }
 
       it "shuts down the worker" do
         expect(instance).to receive(:suspend)
@@ -291,7 +291,7 @@ describe NeetoBugtrapRuby::Worker do
     end
 
     context "when 403" do
-      let(:response) { NeetoBugtrapRuby::Backend::Response.new(403, %({"error":"unauthorized"})) }
+      let(:response) { NeetoBugtrap::Backend::Response.new(403, %({"error":"unauthorized"})) }
 
       it "shuts down the worker" do
         expect(instance).to receive(:suspend)
@@ -305,7 +305,7 @@ describe NeetoBugtrapRuby::Worker do
     end
 
     context "when 201" do
-      let(:response) { NeetoBugtrapRuby::Backend::Response.new(201) }
+      let(:response) { NeetoBugtrap::Backend::Response.new(201) }
 
       context "and there is no throttle" do
         it "doesn't change throttle" do
@@ -328,7 +328,7 @@ describe NeetoBugtrapRuby::Worker do
     end
 
     context "when unknown" do
-      let(:response) { NeetoBugtrapRuby::Backend::Response.new(418) }
+      let(:response) { NeetoBugtrap::Backend::Response.new(418) }
 
       it "warns the logger" do
         expect(config.logger).to receive(:warn).with(/failed/)
@@ -337,7 +337,7 @@ describe NeetoBugtrapRuby::Worker do
     end
 
     context "when error" do
-      let(:response) { NeetoBugtrapRuby::Backend::Response.new(:error, nil, 'test error message') }
+      let(:response) { NeetoBugtrap::Backend::Response.new(:error, nil, 'test error message') }
 
       it "warns the logger" do
         expect(config.logger).to receive(:warn).with(/test error message/)

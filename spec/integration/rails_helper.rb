@@ -36,13 +36,13 @@ def load_rails_hooks(spec)
   end
 
   spec.before(:each) do
-    NeetoBugtrapRuby.configure do |config|
+    NeetoBugtrap.configure do |config|
       config.api_key = 'gem testing'
       config.backend = 'test'
     end
   end
 
   spec.after(:each) do
-    NeetoBugtrapRuby::Backend::Test.notifications[:notices].clear
+    NeetoBugtrap::Backend::Test.notifications[:notices].clear
   end
 end

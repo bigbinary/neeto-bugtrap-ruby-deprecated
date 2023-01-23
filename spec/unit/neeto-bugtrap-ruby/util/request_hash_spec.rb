@@ -1,6 +1,6 @@
 require 'neeto-bugtrap-ruby/util/request_hash'
 
-describe NeetoBugtrapRuby::Util::RequestHash, if: defined?(Rack) do
+describe NeetoBugtrap::Util::RequestHash, if: defined?(Rack) do
   let(:rack_env) { Rack::MockRequest.env_for('/') }
 
   subject { described_class.from_env(rack_env) }

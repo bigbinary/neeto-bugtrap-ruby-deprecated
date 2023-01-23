@@ -8,7 +8,7 @@ require 'neeto-bugtrap-ruby/version'
 require_relative 'tools/release'
 
 NAME = Dir['*.gemspec'].first.split('.').first.freeze
-VERSION = NeetoBugtrapRuby::VERSION
+VERSION = NeetoBugtrap::VERSION
 GEM_FILE = "#{NAME}-#{VERSION}.gem".freeze
 GEMSPEC_FILE = "#{NAME}.gemspec".freeze
 

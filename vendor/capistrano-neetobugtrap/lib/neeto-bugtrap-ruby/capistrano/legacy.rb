@@ -1,6 +1,6 @@
 require 'capistrano'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Capistrano
     def self.load_into(configuration)
       configuration.load do
@@ -43,5 +43,5 @@ module NeetoBugtrapRuby
 end
 
 if Capistrano::Configuration.instance
-  NeetoBugtrapRuby::Capistrano.load_into(Capistrano::Configuration.instance)
+  NeetoBugtrap::Capistrano.load_into(Capistrano::Configuration.instance)
 end

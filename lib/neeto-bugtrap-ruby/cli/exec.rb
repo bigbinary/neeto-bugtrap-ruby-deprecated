@@ -8,14 +8,14 @@ require 'open3'
 require 'ostruct'
 require 'thor/shell'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module CLI
     class Exec
       extend Forwardable
       include Helpers::BackendCmd
 
       FAILED_TEMPLATE = <<-MSG
-NeetoBugtrapRuby detected failure or error output for the command:
+NeetoBugtrap detected failure or error output for the command:
 `<%= args.join(' ') %>`
 
 PROCESS ID: <%= pid %>
@@ -30,14 +30,14 @@ STANDARD OUTPUT:
 MSG
 
       NO_EXEC_TEMPLATE = <<-MSG
-NeetoBugtrapRuby failed to execute the following command:
+NeetoBugtrap failed to execute the following command:
 `<%= args.join(' ') %>`
 
 The command was not executable. Try adjusting permissions on the file.
 MSG
 
       NOT_FOUND_TEMPLATE = <<-MSG
-NeetoBugtrapRuby failed to execute the following command:
+NeetoBugtrap failed to execute the following command:
 `<%= args.join(' ') %>`
 
 The command was not found. Make sure it exists in your PATH.

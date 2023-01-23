@@ -3,13 +3,13 @@ require 'singleton'
 require 'delegate'
 require 'forwardable'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   # @api private
   module Logging
-    PREFIX = '** [NeetoBugtrapRuby] '.freeze
+    PREFIX = '** [NeetoBugtrap] '.freeze
     LOGGER_PROG = "neetobugtrap".freeze
 
-    # Logging helper methods. Requires a NeetoBugtrapRuby::Config @config instance
+    # Logging helper methods. Requires a NeetoBugtrap::Config @config instance
     # variable to exist and/or #logger to be defined. Each method is
     # defined/block captured in this module rather than delegating to the
     # logger directly to avoid extra object allocation.
@@ -131,7 +131,7 @@ module NeetoBugtrapRuby
       def add(severity, msg)
         return true if suppress_tty?(severity)
 
-        # There is no debug level in NeetoBugtrapRuby. Debug logs will be logged at
+        # There is no debug level in NeetoBugtrap. Debug logs will be logged at
         # the info level if the debug config option is on.
         if severity == Logger::Severity::DEBUG
           return true if suppress_debug?

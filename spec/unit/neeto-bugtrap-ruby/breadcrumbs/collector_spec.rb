@@ -1,9 +1,9 @@
 require 'neeto-bugtrap-ruby/breadcrumbs/breadcrumb'
 require 'neeto-bugtrap-ruby/breadcrumbs/collector'
 
-describe NeetoBugtrapRuby::Breadcrumbs::Collector do
+describe NeetoBugtrap::Breadcrumbs::Collector do
   let(:buffer) { double("Buffer") }
-  let(:config) { NeetoBugtrapRuby::Config.new(api_key: "fake api key", logger: NULL_LOGGER, :'breadcrumbs.enabled' => true) }
+  let(:config) { NeetoBugtrap::Config.new(api_key: "fake api key", logger: NULL_LOGGER, :'breadcrumbs.enabled' => true) }
   subject { described_class.new(config, buffer) }
 
   context 'buffer delegation' do
@@ -27,7 +27,7 @@ describe NeetoBugtrapRuby::Breadcrumbs::Collector do
     end
 
     context "breadcrumbs disabled in config" do
-      let(:config) { NeetoBugtrapRuby::Config.new(api_key:'fake api key', logger: NULL_LOGGER, :'breadcrumbs.enabled' => false) }
+      let(:config) { NeetoBugtrap::Config.new(api_key:'fake api key', logger: NULL_LOGGER, :'breadcrumbs.enabled' => false) }
 
       it 'does not call buffer' do
         crumb = double("Crumb")
@@ -90,9 +90,9 @@ describe NeetoBugtrapRuby::Breadcrumbs::Collector do
   end
 
   describe "#trail" do
-    let(:active_breadcrumb) { instance_double(NeetoBugtrapRuby::Breadcrumbs::Breadcrumb, active?: true) }
+    let(:active_breadcrumb) { instance_double(NeetoBugtrap::Breadcrumbs::Breadcrumb, active?: true) }
     let(:buffer) {[
-      instance_double(NeetoBugtrapRuby::Breadcrumbs::Breadcrumb, active?: false),
+      instance_double(NeetoBugtrap::Breadcrumbs::Breadcrumb, active?: false),
       active_breadcrumb,
     ]}
 

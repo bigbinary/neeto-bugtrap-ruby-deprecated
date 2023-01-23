@@ -3,7 +3,7 @@ require 'neeto-bugtrap-ruby/cli/main'
 require 'neeto-bugtrap-ruby/cli/helpers'
 require 'neeto-bugtrap-ruby/util/http'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module CLI
     class Deploy
       extend Forwardable

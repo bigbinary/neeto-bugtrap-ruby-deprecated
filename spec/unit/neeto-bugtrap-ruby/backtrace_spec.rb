@@ -3,8 +3,8 @@ require 'neeto-bugtrap-ruby/backtrace'
 require 'neeto-bugtrap-ruby/config'
 require 'neeto-bugtrap-ruby/notice'
 
-describe NeetoBugtrapRuby::Backtrace do
-  let(:config) { NeetoBugtrapRuby::Config.new }
+describe NeetoBugtrap::Backtrace do
+  let(:config) { NeetoBugtrap::Config.new }
 
   it "parses a backtrace into lines" do
     array = [
@@ -12,7 +12,7 @@ describe NeetoBugtrapRuby::Backtrace do
       "app/controllers/users_controller.rb:8:in `index'"
     ]
 
-    backtrace = NeetoBugtrapRuby::Backtrace.parse(array)
+    backtrace = NeetoBugtrap::Backtrace.parse(array)
 
     line = backtrace.lines.first
     expect(line.number).to eq '13'
@@ -31,7 +31,7 @@ describe NeetoBugtrapRuby::Backtrace do
       "C:/Program Files/Server/app/controllers/users_controller.rb:8:in `index'"
     ]
 
-    backtrace = NeetoBugtrapRuby::Backtrace.parse(array)
+    backtrace = NeetoBugtrap::Backtrace.parse(array)
 
     line = backtrace.lines.first
     expect(line.number).to eq '13'
@@ -49,7 +49,7 @@ describe NeetoBugtrapRuby::Backtrace do
       double(to_s: "app/models/user.rb:13:in `magic'"),
       double(to_s: "app/controllers/users_controller.rb:8:in `index'")
     ])
-    backtrace = NeetoBugtrapRuby::Backtrace.parse(array_thing, filters: [lambda {|l| l.sub('foo', 'bar') }])
+    backtrace = NeetoBugtrap::Backtrace.parse(array_thing, filters: [lambda {|l| l.sub('foo', 'bar') }])
     line = backtrace.lines.first
 
     expect(line.number).to eq '13'
@@ -61,13 +61,13 @@ describe NeetoBugtrapRuby::Backtrace do
     one = build_backtrace_array
     two = one.dup
 
-    expect(NeetoBugtrapRuby::Backtrace.parse(one)).to eq NeetoBugtrapRuby::Backtrace.parse(two)
+    expect(NeetoBugtrap::Backtrace.parse(one)).to eq NeetoBugtrap::Backtrace.parse(two)
   end
 
   it "parses massive one-line exceptions into multiple lines" do
-    original_backtrace = NeetoBugtrapRuby::Backtrace.
+    original_backtrace = NeetoBugtrap::Backtrace.
       parse(["one:1:in `one'\n   two:2:in `two'\n      three:3:in `three`"])
-    expected_backtrace = NeetoBugtrapRuby::Backtrace.
+    expected_backtrace = NeetoBugtrap::Backtrace.
       parse(["one:1:in `one'", "two:2:in `two'", "three:3:in `three`"])
 
     expect(expected_backtrace).to eq original_backtrace
@@ -82,7 +82,7 @@ describe NeetoBugtrapRuby::Backtrace do
         begin
           raise StandardError
         rescue => e
-          puts NeetoBugtrapRuby::Notice.new(exception: e).backtrace.to_json
+          puts NeetoBugtrap::Notice.new(exception: e).backtrace.to_json
         end
       RUBY
 
@@ -97,7 +97,7 @@ describe NeetoBugtrapRuby::Backtrace do
         expect(File).to receive(:open).with(file).and_yield(StringIO.new(source))
       end
 
-      @backtrace = NeetoBugtrapRuby::Backtrace.parse(array)
+      @backtrace = NeetoBugtrap::Backtrace.parse(array)
     end
 
     it "includes a snippet from the source file for each line of the backtrace" do
@@ -116,7 +116,7 @@ describe NeetoBugtrapRuby::Backtrace do
 
       expect(@backtrace.lines[2].source.keys.size).to eq(3)
       expect(@backtrace.lines[2].source[6]).to match(/rescue/)
-      expect(@backtrace.lines[2].source[7]).to match(/NeetoBugtrapRuby/)
+      expect(@backtrace.lines[2].source[7]).to match(/NeetoBugtrap/)
       expect(@backtrace.lines[2].source[8]).to match(/end/)
     end
   end
@@ -127,14 +127,14 @@ describe NeetoBugtrapRuby::Backtrace do
       "app/controllers/users_controller.rb:8:in `index'"
     ]
 
-    backtrace = NeetoBugtrapRuby::Backtrace.parse(array)
+    backtrace = NeetoBugtrap::Backtrace.parse(array)
 
     expect(backtrace.lines[0].source).to be_empty
     expect(backtrace.lines[1].source).to be_empty
   end
 
   it "has an empty application trace by default" do
-    backtrace = NeetoBugtrapRuby::Backtrace.parse(build_backtrace_array)
+    backtrace = NeetoBugtrap::Backtrace.parse(build_backtrace_array)
     expect(backtrace.application_lines).to be_empty
   end
 
@@ -143,13 +143,13 @@ describe NeetoBugtrapRuby::Backtrace do
       @project_root = '/some/path'
       config[:root] = @project_root
 
-      @backtrace_with_root = NeetoBugtrapRuby::Backtrace.parse(
+      @backtrace_with_root = NeetoBugtrap::Backtrace.parse(
         ["#{@project_root}/app/models/user.rb:7:in `latest'",
          "#{@project_root}/app/controllers/users_controller.rb:13:in `index'",
          "#{@project_root}/vendor/plugins/foo/bar.rb:42:in `baz'",
          "/lib/something.rb:41:in `open'"],
          :filters => default_filters, :config => config)
-      @backtrace_without_root = NeetoBugtrapRuby::Backtrace.parse(
+      @backtrace_without_root = NeetoBugtrap::Backtrace.parse(
         ["[PROJECT_ROOT]/app/models/user.rb:7:in `latest'",
          "[PROJECT_ROOT]/app/controllers/users_controller.rb:13:in `index'",
          "[PROJECT_ROOT]/vendor/plugins/foo/bar.rb:42:in `baz'",
@@ -177,12 +177,12 @@ describe NeetoBugtrapRuby::Backtrace do
     end
 
     it "filters out the project root" do
-      backtrace_with_root = NeetoBugtrapRuby::Backtrace.parse(
+      backtrace_with_root = NeetoBugtrap::Backtrace.parse(
         ["#{@project_root}/app/models/user.rb:7:in `latest'",
          "#{@project_root}/app/controllers/users_controller.rb:13:in `index'",
          "/lib/app/something.rb:41:in `open'"],
          :filters => default_filters, :config => config)
-         backtrace_without_root = NeetoBugtrapRuby::Backtrace.parse(
+         backtrace_without_root = NeetoBugtrap::Backtrace.parse(
            ["[PROJECT_ROOT]/app/models/user.rb:7:in `latest'",
             "[PROJECT_ROOT]/app/controllers/users_controller.rb:13:in `index'",
             "/lib/app/something.rb:41:in `open'"])
@@ -202,10 +202,10 @@ describe NeetoBugtrapRuby::Backtrace do
                    "/lib/something.rb:41:in `open'"]
 
       backtrace_with_root =
-        NeetoBugtrapRuby::Backtrace.parse(backtrace, :filters => default_filters, :config => config)
+        NeetoBugtrap::Backtrace.parse(backtrace, :filters => default_filters, :config => config)
 
       backtrace_without_root =
-        NeetoBugtrapRuby::Backtrace.parse(backtrace)
+        NeetoBugtrap::Backtrace.parse(backtrace)
 
       expect(backtrace_without_root).to eq backtrace_with_root
     end
@@ -215,8 +215,8 @@ describe NeetoBugtrapRuby::Backtrace do
     inside_notifier  = ['lib/neeto-bugtrap-ruby.rb:13:in `voodoo`']
     outside_notifier = ['users_controller:8:in `index`']
 
-    without_inside = NeetoBugtrapRuby::Backtrace.parse(outside_notifier)
-    with_inside    = NeetoBugtrapRuby::Backtrace.parse(inside_notifier + outside_notifier,
+    without_inside = NeetoBugtrap::Backtrace.parse(outside_notifier)
+    with_inside    = NeetoBugtrap::Backtrace.parse(inside_notifier + outside_notifier,
                                                   :filters => default_filters)
 
     expect(without_inside).to eq with_inside
@@ -224,20 +224,20 @@ describe NeetoBugtrapRuby::Backtrace do
 
   it "runs filters on the backtrace" do
     filters = [lambda { |line| line.sub('foo', 'bar') }]
-    input = NeetoBugtrapRuby::Backtrace.parse(["foo:13:in `one'", "baz:14:in `two'"],
+    input = NeetoBugtrap::Backtrace.parse(["foo:13:in `one'", "baz:14:in `two'"],
                                          :filters => filters)
-    expected = NeetoBugtrapRuby::Backtrace.parse(["bar:13:in `one'", "baz:14:in `two'"])
+    expected = NeetoBugtrap::Backtrace.parse(["bar:13:in `one'", "baz:14:in `two'"])
     expect(expected).to eq input
   end
 
   it "aliases #to_ary as #to_a" do
-    backtrace = NeetoBugtrapRuby::Backtrace.parse(build_backtrace_array)
+    backtrace = NeetoBugtrap::Backtrace.parse(build_backtrace_array)
 
     expect(backtrace.to_a).to eq backtrace.to_ary
   end
 
   it "generates json from to_array template" do
-    backtrace = NeetoBugtrapRuby::Backtrace.parse(build_backtrace_array)
+    backtrace = NeetoBugtrap::Backtrace.parse(build_backtrace_array)
     array = [{'foo' => 'bar'}]
     expect(backtrace).to receive(:to_ary).once.and_return(array)
     json = backtrace.to_json
@@ -254,6 +254,6 @@ describe NeetoBugtrapRuby::Backtrace do
   end
 
   def default_filters
-    NeetoBugtrapRuby::Notice::BACKTRACE_FILTERS
+    NeetoBugtrap::Notice::BACKTRACE_FILTERS
   end
 end

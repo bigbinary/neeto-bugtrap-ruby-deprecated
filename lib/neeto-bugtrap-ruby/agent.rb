@@ -9,28 +9,28 @@ require 'neeto-bugtrap-ruby/logging'
 require 'neeto-bugtrap-ruby/worker'
 require 'neeto-bugtrap-ruby/breadcrumbs'
 
-module NeetoBugtrapRuby
-  # The NeetoBugtrapRuby agent contains all the methods for interacting with the
-  # NeetoBugtrapRuby service. It can be used to send notifications to multiple
+module NeetoBugtrap
+  # The NeetoBugtrap agent contains all the methods for interacting with the
+  # NeetoBugtrap service. It can be used to send notifications to multiple
   # projects in large apps. The global agent instance ({Agent.instance}) should
-  # always be accessed through the {NeetoBugtrapRuby} singleton.
+  # always be accessed through the {NeetoBugtrap} singleton.
   #
   # === Context
   #
   # Context is global by default, meaning agents created via
-  # +NeetoBugtrapRuby::Agent.new+ will share context (added via
-  # +NeetoBugtrapRuby.context+ or {NeetoBugtrapRuby::Agent#context}) with other agents.
+  # +NeetoBugtrap::Agent.new+ will share context (added via
+  # +NeetoBugtrap.context+ or {NeetoBugtrap::Agent#context}) with other agents.
   # This also includes the Rack environment when using the
-  # {NeetoBugtrapRuby::Rack::ErrorNotifier} middleware. To localize context for a
+  # {NeetoBugtrap::Rack::ErrorNotifier} middleware. To localize context for a
   # custom agent, use the +local_context: true+ option when initializing.
   #
   # @example
   #
   #   # Standard usage:
-  #   OtherBadger = NeetoBugtrapRuby::Agent.new
+  #   OtherBadger = NeetoBugtrap::Agent.new
   #
   #   # With local context:
-  #   OtherBadger = NeetoBugtrapRuby::Agent.new(local_context: true)
+  #   OtherBadger = NeetoBugtrap::Agent.new(local_context: true)
   #
   #   OtherBadger.configure do |config|
   #     config.api_key = 'project api key'
@@ -85,13 +85,13 @@ module NeetoBugtrapRuby
     #   begin
     #     fail 'oops'
     #   rescue => exception
-    #     NeetoBugtrapRuby.notify(exception, context: {
+    #     NeetoBugtrap.notify(exception, context: {
     #       my_data: 'value'
     #     }) # => '-1dfb92ae-9b01-42e9-9c13-31205b70744a'
     #   end
     #
     #   # Custom notification:
-    #   NeetoBugtrapRuby.notify('Something went wrong.', {
+    #   NeetoBugtrap.notify('Something went wrong.', {
     #     error_class: 'MyClass',
     #     context: {my_data: 'value'}
     #   }) # => '06220c5a-b471-41e5-baeb-de247da45a56'
@@ -116,7 +116,7 @@ module NeetoBugtrapRuby
     # @option opts [String]    :url The HTTP request URL (optional).
     # @option opts [Exception] :cause The cause for this error (optional).
     #
-    # @return [String] UUID reference to the notice within NeetoBugtrapRuby.
+    # @return [String] UUID reference to the notice within NeetoBugtrap.
     # @return [false] when ignored.
     def notify(exception_or_opts, opts = {})
       opts = opts.dup
@@ -135,7 +135,7 @@ module NeetoBugtrapRuby
       validate_notify_opts!(opts)
 
       add_breadcrumb(
-        "NeetoBugtrapRuby Notice",
+        "NeetoBugtrap Notice",
         metadata: opts,
         category: "notice"
       ) if config[:'breadcrumbs.enabled']
@@ -184,7 +184,7 @@ module NeetoBugtrapRuby
     # Perform a synchronous check_in.
     #
     # @example
-    #   NeetoBugtrapRuby.check_in('1MqIo1')
+    #   NeetoBugtrap.check_in('1MqIo1')
     #
     # @param [String] id The unique check in id (e.g. '1MqIo1') or the check in url.
     #
@@ -200,7 +200,7 @@ module NeetoBugtrapRuby
     # Track a new deployment
     #
     # @example
-    #   NeetoBugtrapRuby.track_deployment(revision: 'be2ceb6')
+    #   NeetoBugtrap.track_deployment(revision: 'be2ceb6')
     #
     # @param [String] :environment The environment name. Defaults to the current configured environment.
     # @param [String] :revision The VCS revision being deployed. Defaults to the currently configured revision.
@@ -223,11 +223,11 @@ module NeetoBugtrapRuby
     # Save global context for the current request.
     #
     # @example
-    #   NeetoBugtrapRuby.context({my_data: 'my value'})
+    #   NeetoBugtrap.context({my_data: 'my value'})
     #
     #   # Inside a Rails controller:
     #   before_action do
-    #     NeetoBugtrapRuby.context({user_id: current_user.id})
+    #     NeetoBugtrap.context({user_id: current_user.id})
     #   end
     #
     #   # Explicit conversion
@@ -238,18 +238,18 @@ module NeetoBugtrapRuby
     #   end
     #
     #   user = User.first
-    #   NeetoBugtrapRuby.context(user)
+    #   NeetoBugtrap.context(user)
     #
     #   # Clearing global context:
-    #   NeetoBugtrapRuby.context.clear!
+    #   NeetoBugtrap.context.clear!
     #
-    # @param [Hash] context A Hash of data which will be sent to NeetoBugtrapRuby
+    # @param [Hash] context A Hash of data which will be sent to NeetoBugtrap
     #   when an error occurs. If the object responds to +#to_neetobugtrap_context+,
     #   the return value of that method will be used (explicit conversion). Can
     #   include any key/value, but a few keys have a special meaning in
-    #   NeetoBugtrapRuby.
+    #   NeetoBugtrap.
     #
-    # @option context [String] :user_id The user ID used by NeetoBugtrapRuby
+    # @option context [String] :user_id The user ID used by NeetoBugtrap
     #   to aggregate user data across occurrences on the error page (optional).
     # @option context [String] :user_email The user email address (optional).
     # @option context [String] :tags The comma-separated list of tags.
@@ -271,8 +271,8 @@ module NeetoBugtrapRuby
     # Get global context for the current request.
     #
     # @example
-    #   NeetoBugtrapRuby.context({my_data: 'my value'})
-    #   NeetoBugtrapRuby.get_context # => {my_data: 'my value'}
+    #   NeetoBugtrap.context({my_data: 'my value'})
+    #   NeetoBugtrap.get_context # => {my_data: 'my value'}
     #
     # @return [Hash, nil]
     def get_context
@@ -295,7 +295,7 @@ module NeetoBugtrapRuby
     # to the notice.
     #
     # @example
-    #   NeetoBugtrapRuby.add_breadcrumb("Email Sent", metadata: { user: user.id, message: message })
+    #   NeetoBugtrap.add_breadcrumb("Email Sent", metadata: { user: user.id, message: message })
     #
     # @param message [String] The message you want to send with the breadcrumb
     # @param params [Hash] extra options for breadcrumb building
@@ -327,27 +327,27 @@ module NeetoBugtrapRuby
     #   # Without a block:
     #   it "sends a notification to NeetoBugtrap" do
     #     expect {
-    #       NeetoBugtrapRuby.notify(StandardError.new('test backend'))
-    #       NeetoBugtrapRuby.flush
-    #     }.to change(NeetoBugtrapRuby::Backend::Test.notifications[:notices], :size).by(0)
+    #       NeetoBugtrap.notify(StandardError.new('test backend'))
+    #       NeetoBugtrap.flush
+    #     }.to change(NeetoBugtrap::Backend::Test.notifications[:notices], :size).by(0)
     #   end
     #
     #   # With a block:
-    #   it "sends a notification to NeetoBugtrapRuby" do
+    #   it "sends a notification to NeetoBugtrap" do
     #     expect {
-    #       NeetoBugtrapRuby.flush do
+    #       NeetoBugtrap.flush do
     #         49.times do
-    #           NeetoBugtrapRuby.notify(StandardError.new('test backend'))
+    #           NeetoBugtrap.notify(StandardError.new('test backend'))
     #         end
     #       end
-    #     }.to change(NeetoBugtrapRuby::Backend::Test.notifications[:notices], :size).by(49)
+    #     }.to change(NeetoBugtrap::Backend::Test.notifications[:notices], :size).by(49)
     #   end
     #
     # @yield An optional block to execute (exceptions will propagate after
     #   data is flushed).
     #
     # @return [Object, Boolean] value of block if block is given, otherwise true
-    #   on success or false if NeetoBugtrapRuby isn't running.
+    #   on success or false if NeetoBugtrap isn't running.
     def flush
       return true unless block_given?
       yield
@@ -355,10 +355,10 @@ module NeetoBugtrapRuby
       worker.flush
     end
 
-    # Stops the NeetoBugtrapRuby service.
+    # Stops the NeetoBugtrap service.
     #
     # @example
-    #   NeetoBugtrapRuby.stop # => nil
+    #   NeetoBugtrap.stop # => nil
     def stop(force = false)
       worker.shutdown(force)
       true
@@ -367,10 +367,10 @@ module NeetoBugtrapRuby
     # @api private
     attr_reader :config
 
-    # Configure the NeetoBugtrapRuby agent via Ruby.
+    # Configure the NeetoBugtrap agent via Ruby.
     #
     # @example
-    #   NeetoBugtrapRuby.configure do |config|
+    #   NeetoBugtrap.configure do |config|
     #     config.api_key = 'project api key'
     #     config.exceptions.ignore += [CustomError]
     #   end
@@ -381,16 +381,16 @@ module NeetoBugtrapRuby
 
     # DEPRECATED: Callback to ignore exceptions.
     #
-    # See public API documentation for {NeetoBugtrapRuby::Notice} for available attributes.
+    # See public API documentation for {NeetoBugtrap::Notice} for available attributes.
     #
     # @example
     #   # Ignoring based on error message:
-    #   NeetoBugtrapRuby.exception_filter do |notice|
+    #   NeetoBugtrap.exception_filter do |notice|
     #     notice.error_message =~ /sensitive data/
     #   end
     #
     #   # Ignore an entire class of exceptions:
-    #   NeetoBugtrapRuby.exception_filter do |notice|
+    #   NeetoBugtrap.exception_filter do |notice|
     #     notice.exception.class < MyError
     #   end
     #
@@ -399,13 +399,13 @@ module NeetoBugtrapRuby
     def_delegator :config, :exception_filter
 
     # DEPRECATED: Callback to add a custom grouping strategy for exceptions. The return
-    # value is hashed and sent to NeetoBugtrapRuby. Errors with the same fingerprint
+    # value is hashed and sent to NeetoBugtrap. Errors with the same fingerprint
     # will be grouped.
     #
-    # See public API documentation for {NeetoBugtrapRuby::Notice} for available attributes.
+    # See public API documentation for {NeetoBugtrap::Notice} for available attributes.
     #
     # @example
-    #   NeetoBugtrapRuby.exception_fingerprint do |notice|
+    #   NeetoBugtrap.exception_fingerprint do |notice|
     #     [notice.error_class, notice.component, notice.backtrace.to_s].join(':')
     #   end
     #
@@ -415,10 +415,10 @@ module NeetoBugtrapRuby
 
     # DEPRECATED: Callback to filter backtrace lines. One use for this is to make
     # additional [PROJECT_ROOT] or [GEM_ROOT] substitutions, which are used by
-    # NeetoBugtrapRuby when grouping errors and displaying application traces.
+    # NeetoBugtrap when grouping errors and displaying application traces.
     #
     # @example
-    #   NeetoBugtrapRuby.backtrace_filter do |line|
+    #   NeetoBugtrap.backtrace_filter do |line|
     #     line.gsub(/^\/my\/unknown\/bundle\/path/, "[GEM_ROOT]")
     #   end
     #
@@ -453,7 +453,7 @@ module NeetoBugtrapRuby
     def validate_notify_opts!(opts)
       return if opts.has_key?(:exception)
       return if opts.has_key?(:error_message)
-      msg = sprintf('`NeetoBugtrapRuby.notify` was called with invalid arguments. You must pass either an Exception or options Hash containing the `:error_message` key. location=%s', caller[caller.size-1])
+      msg = sprintf('`NeetoBugtrap.notify` was called with invalid arguments. You must pass either an Exception or options Hash containing the `:error_message` key. location=%s', caller[caller.size-1])
       raise ArgumentError.new(msg) if config.dev?
       warn(msg)
     end

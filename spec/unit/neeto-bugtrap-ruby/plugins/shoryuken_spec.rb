@@ -2,15 +2,15 @@ require 'neeto-bugtrap-ruby/plugins/shoryuken'
 require 'neeto-bugtrap-ruby/config'
 
 RSpec.describe "Shoryuken Dependency" do
-  let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true) }
+  let(:config) { NeetoBugtrap::Config.new(logger: NULL_LOGGER, debug: true) }
 
   before do
-    NeetoBugtrapRuby::Plugin.instances[:shoryuken].reset!
+    NeetoBugtrap::Plugin.instances[:shoryuken].reset!
   end
 
   context "when shoryuken is not installed" do
     it "fails quietly" do
-      expect { NeetoBugtrapRuby::Plugin.instances[:shoryuken].load!(config) }.not_to raise_error
+      expect { NeetoBugtrap::Plugin.instances[:shoryuken].load!(config) }.not_to raise_error
     end
   end
 
@@ -33,13 +33,13 @@ RSpec.describe "Shoryuken Dependency" do
     after { Object.send(:remove_const, :Shoryuken) }
 
     it "adds the server middleware" do
-      expect(chain).to receive(:add).with(NeetoBugtrapRuby::Plugins::Shoryuken::Middleware)
-      NeetoBugtrapRuby::Plugin.instances[:shoryuken].load!(config)
+      expect(chain).to receive(:add).with(NeetoBugtrap::Plugins::Shoryuken::Middleware)
+      NeetoBugtrap::Plugin.instances[:shoryuken].load!(config)
     end
   end
 end
 
-class TestShoryukenWorker < NeetoBugtrapRuby::Plugins::Shoryuken::Middleware; end
+class TestShoryukenWorker < NeetoBugtrap::Plugins::Shoryuken::Middleware; end
 
 RSpec.describe TestShoryukenWorker do
   let(:sqs_msg) do
@@ -52,7 +52,7 @@ RSpec.describe TestShoryukenWorker do
 
   shared_examples_for "notifies NeetoBugtrap" do
     it do
-      expect(NeetoBugtrapRuby).to receive(:notify).with(kind_of(RuntimeError),
+      expect(NeetoBugtrap).to receive(:notify).with(kind_of(RuntimeError),
                                                    hash_including(parameters: { body: { "key" => "value" } }))
 
       expect { job_execution }.to raise_error(RuntimeError)
@@ -61,7 +61,7 @@ RSpec.describe TestShoryukenWorker do
 
   shared_examples_for "batch notifies NeetoBugtrap" do
     it do
-      expect(NeetoBugtrapRuby).to receive(:notify).with(kind_of(RuntimeError),
+      expect(NeetoBugtrap).to receive(:notify).with(kind_of(RuntimeError),
                                                    hash_including(parameters:
                                                                     { batch: [
                                                                         { "key" => "value" },
@@ -76,7 +76,7 @@ RSpec.describe TestShoryukenWorker do
 
   shared_examples_for "doesn't notify NeetoBugtrap" do
     it do
-      expect(NeetoBugtrapRuby).to_not receive(:notify)
+      expect(NeetoBugtrap).to_not receive(:notify)
       expect { job_execution }.to raise_error(RuntimeError)
     end
   end
@@ -95,8 +95,8 @@ RSpec.describe TestShoryukenWorker do
     end
 
     context "when an attempt threshold is configured" do
-      before { ::NeetoBugtrapRuby.config[:'shoryuken.attempt_threshold'] = 2 }
-      after { ::NeetoBugtrapRuby.config[:'shoryuken.attempt_threshold'] = 0 }
+      before { ::NeetoBugtrap.config[:'shoryuken.attempt_threshold'] = 2 }
+      after { ::NeetoBugtrap.config[:'shoryuken.attempt_threshold'] = 0 }
 
       include_examples "doesn't notify NeetoBugtrap"
 

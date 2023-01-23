@@ -3,6 +3,6 @@ feature "Creating a custom agent" do
 
   it "reports the exception to NeetoBugtrap" do
     expect(run_command(crash_cmd)).not_to be_successfully_executed
-    assert_notification('error' => {'class' => 'CustomNeetoBugtrapRubyException', 'message' => 'Test message'})
+    assert_notification('error' => {'class' => 'CustomNeetoBugtrapException', 'message' => 'Test message'})
   end
 end

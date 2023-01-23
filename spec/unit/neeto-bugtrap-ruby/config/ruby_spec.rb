@@ -1,9 +1,9 @@
 require 'neeto-bugtrap-ruby/config'
 
-describe NeetoBugtrapRuby::Config::Ruby do
+describe NeetoBugtrap::Config::Ruby do
   subject { described_class.new(config) }
 
-  let(:config) { NeetoBugtrapRuby::Config.new(api_key: 'foo', :'user_informer.enabled' => true) }
+  let(:config) { NeetoBugtrap::Config.new(api_key: 'foo', :'user_informer.enabled' => true) }
 
   it { should respond_to(:api_key) }
 

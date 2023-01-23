@@ -7,12 +7,12 @@ require 'openssl'
 require 'neeto-bugtrap-ruby/version'
 require 'neeto-bugtrap-ruby/logging'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Util
     class HTTP
       extend Forwardable
 
-      include NeetoBugtrapRuby::Logging::Helper
+      include NeetoBugtrap::Logging::Helper
 
       HEADERS = {
         'Content-type'.freeze => 'application/json'.freeze,

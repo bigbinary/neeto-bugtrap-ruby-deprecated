@@ -1,6 +1,6 @@
 require 'neeto-bugtrap-ruby/breadcrumbs/ring_buffer'
 
-describe NeetoBugtrapRuby::Breadcrumbs::RingBuffer do
+describe NeetoBugtrap::Breadcrumbs::RingBuffer do
   describe "#add" do
     it 'adds items' do
       subject.add!(:a)

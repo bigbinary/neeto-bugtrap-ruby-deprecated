@@ -1,7 +1,7 @@
 require 'neeto-bugtrap-ruby/plugin'
 require 'neeto-bugtrap-ruby/breadcrumbs/logging'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Plugins
     # @api private
     #
@@ -12,11 +12,11 @@ module NeetoBugtrapRuby
     #
     # All log messages within the execution path will automatically be appened
     # to the breadcrumb trace. You can disable all log events in the
-    # NeetoBugtrapRuby config:
+    # NeetoBugtrap config:
     #
     # @example
     #
-    #   NeetoBugtrapRuby.configure do |config|
+    #   NeetoBugtrap.configure do |config|
     #     config.breadcrumbs.logging.enabled = false
     #   end
     #
@@ -28,13 +28,13 @@ module NeetoBugtrapRuby
     # to alter the current defaults:
     #
     # @example
-    #   notifications = NeetoBugtrapRuby::Breadcrumbs::ActiveSupport.default_notifications
+    #   notifications = NeetoBugtrap::Breadcrumbs::ActiveSupport.default_notifications
     #   notifications.delete("sql.active_record")
     #   notifications["enqueue.active_job"][:exclude_when] = lambda do |data|
     #     data[:job].topic == "salmon_activity"
     #   end
     #
-    #   NeetoBugtrapRuby.configure do |config|
+    #   NeetoBugtrap.configure do |config|
     #     config.breadcrumbs.active_support_notifications = notifications
     #   end
     #
@@ -50,10 +50,10 @@ module NeetoBugtrapRuby
           config[:'breadcrumbs.active_support_notifications'].each do |name, config|
             RailsBreadcrumbs.subscribe_to_notification(name, config)
           end
-          ActiveSupport::LogSubscriber.prepend(NeetoBugtrapRuby::Breadcrumbs::LogSubscriberInjector) if config[:'breadcrumbs.logging.enabled']
+          ActiveSupport::LogSubscriber.prepend(NeetoBugtrap::Breadcrumbs::LogSubscriberInjector) if config[:'breadcrumbs.logging.enabled']
         end
 
-        ::Logger.prepend(NeetoBugtrapRuby::Breadcrumbs::LogWrapper) if config[:'breadcrumbs.logging.enabled']
+        ::Logger.prepend(NeetoBugtrap::Breadcrumbs::LogWrapper) if config[:'breadcrumbs.logging.enabled']
       end
     end
 
@@ -91,7 +91,7 @@ module NeetoBugtrapRuby
 
         data[:duration] = duration if duration
 
-        NeetoBugtrapRuby.add_breadcrumb(
+        NeetoBugtrap.add_breadcrumb(
           message,
           category: notification_config[:category] || :custom,
           metadata: data

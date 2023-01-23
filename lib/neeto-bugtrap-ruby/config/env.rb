@@ -1,6 +1,6 @@
 require 'set'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   class Config
     module Env
       CONFIG_KEY = /\AHONEYBADGER_(.+)\Z/.freeze

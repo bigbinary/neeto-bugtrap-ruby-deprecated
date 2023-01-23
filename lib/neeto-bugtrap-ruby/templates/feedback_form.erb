@@ -29,7 +29,7 @@ function neetobugtrapFeedbackResponse(data) {
   }
 }
 
-function sendNeetoBugtrapRubyFeedback() {
+function sendNeetoBugtrapFeedback() {
   try {
     var script = document.createElement('script');
     var form = document.getElementById('neetobugtrap_feedback_form');
@@ -38,7 +38,7 @@ function sendNeetoBugtrapRubyFeedback() {
     return false;
   } catch(e) {
     if (window.console) {
-      console.log('Error caught while processing NeetoBugtrapRuby feedback form: ' + e);
+      console.log('Error caught while processing NeetoBugtrap feedback form: ' + e);
       console.log('Submitting form normally...');
     }
     return true;
@@ -50,7 +50,7 @@ function sendNeetoBugtrapRubyFeedback() {
   <p><strong><%= I18n.t('neetobugtrap.feedback.thanks', :default => 'Thanks for the feedback!') %></strong></p>
 </div>
 
-<form action="<%= action %>" method="POST" id="neetobugtrap_feedback_form" onsubmit="return sendNeetoBugtrapRubyFeedback();">
+<form action="<%= action %>" method="POST" id="neetobugtrap_feedback_form" onsubmit="return sendNeetoBugtrapFeedback();">
   <input type="hidden" name="token" id="neetobugtrap_feedback_token" value="<%= error_id %>">
 
   <h2><%= I18n.t('neetobugtrap.feedback.heading', :default => 'Care to help us fix this?') %></h2>
@@ -81,4 +81,4 @@ function sendNeetoBugtrapRubyFeedback() {
   </p>
 </form>
 
-<p><a id="neetobugtrap_feedback_link" href="https://www.neetobugtrap.io/" target="_blank" title="Exception, uptime, and performance monitoring for Ruby.">Powered by NeetoBugtrapRuby</a></p>
+<p><a id="neetobugtrap_feedback_link" href="https://www.neetobugtrap.io/" target="_blank" title="Exception, uptime, and performance monitoring for Ruby.">Powered by NeetoBugtrap</a></p>

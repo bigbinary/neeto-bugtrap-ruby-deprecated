@@ -14,13 +14,13 @@ class TestSanitizer
   end
 end
 
-describe NeetoBugtrapRuby::Util::RequestPayload do
+describe NeetoBugtrap::Util::RequestPayload do
   let(:sanitizer) { TestSanitizer.new }
 
   describe "::build" do
     subject { described_class.build }
 
-    NeetoBugtrapRuby::Util::RequestPayload::DEFAULTS.each_pair do |key, value|
+    NeetoBugtrap::Util::RequestPayload::DEFAULTS.each_pair do |key, value|
       it "defaults #{ key } to default value" do
         expect(subject[key]).to eq value
       end

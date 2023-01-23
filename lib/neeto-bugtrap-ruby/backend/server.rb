@@ -6,7 +6,7 @@ require 'openssl'
 require 'neeto-bugtrap-ruby/backend/base'
 require 'neeto-bugtrap-ruby/util/http'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Backend
     class Server < Base
       ENDPOINTS = {

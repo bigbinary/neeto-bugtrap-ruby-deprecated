@@ -1,7 +1,7 @@
 require 'neeto-bugtrap-ruby/plugin'
 require 'neeto-bugtrap-ruby/agent'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Plugins
     module Passenger
       Plugin.register do
@@ -14,7 +14,7 @@ module NeetoBugtrapRuby
 
           ::PhusionPassenger.on_event(:stopping_worker_process) do
             logger.debug('Stopping passenger worker process')
-            NeetoBugtrapRuby.stop
+            NeetoBugtrap.stop
           end
         end
       end

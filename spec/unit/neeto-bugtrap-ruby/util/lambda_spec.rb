@@ -1,6 +1,6 @@
 require 'neeto-bugtrap-ruby/util/lambda'
 
-describe NeetoBugtrapRuby::Util::Lambda do
+describe NeetoBugtrap::Util::Lambda do
   subject { described_class }
 
   describe ".lambda_execution?" do

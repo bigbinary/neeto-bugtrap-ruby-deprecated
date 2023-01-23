@@ -1,14 +1,14 @@
 require 'forwardable'
 
-module NeetoBugtrapRuby
-  # +NeetoBugtrapRuby::Plugin+ defines the API for registering plugins with
-  # NeetoBugtrapRuby. Each plugin has requirements which must be satisfied before
+module NeetoBugtrap
+  # +NeetoBugtrap::Plugin+ defines the API for registering plugins with
+  # NeetoBugtrap. Each plugin has requirements which must be satisfied before
   # executing the plugin's execution block(s). This allows us to detect
   # optional dependencies and load the plugin for each dependency only if it's
   # present in the application.
   #
   # See the plugins/ directory for examples of official plugins. If you're
-  # interested in developing a plugin for NeetoBugtrapRuby, see the Integration
+  # interested in developing a plugin for NeetoBugtrap, see the Integration
   # Guide: https://docs.honeybadger.io/ruby/gem-reference/integration.html
   #
   # @example
@@ -16,10 +16,10 @@ module NeetoBugtrapRuby
   #   require 'neeto-bugtrap-ruby/plugin'
   #   require 'neeto-bugtrap-ruby/ruby'
   #
-  #   module NeetoBugtrapRuby
+  #   module NeetoBugtrap
   #     module Plugins
   #       # Register your plugin with an optional name. If the name (such as
-  #       # "my_framework") is not provided, NeetoBugtrapRuby will try to infer the name
+  #       # "my_framework") is not provided, NeetoBugtrap will try to infer the name
   #       # from the current file.
   #       Plugin.register 'my_framework' do
   #         requirement do
@@ -34,7 +34,7 @@ module NeetoBugtrapRuby
   #           # blocks return true. An exception in this block will disable the plugin.
   #           # Multiple execution blocks are supported.
   #           MyFramework.on_exception do |exception|
-  #             NeetoBugtrapRuby.notify(exception)
+  #             NeetoBugtrap.notify(exception)
   #           end
   #         end
   #       end
@@ -53,11 +53,11 @@ module NeetoBugtrapRuby
         @@instances
       end
 
-      # Register a new plugin with NeetoBugtrapRuby. See {#requirement} and {#execution}.
+      # Register a new plugin with NeetoBugtrap. See {#requirement} and {#execution}.
       #
       # @example
       #
-      #   NeetoBugtrapRuby::Plugin.register 'my_framework' do
+      #   NeetoBugtrap::Plugin.register 'my_framework' do
       #     requirement { }
       #     execution { }
       #   end
@@ -124,10 +124,10 @@ module NeetoBugtrapRuby
     #
     # @example
     #
-    #   NeetoBugtrapRuby::Plugin.register 'my_framework' do
+    #   NeetoBugtrap::Plugin.register 'my_framework' do
     #     requirement { defined?(MyFramework) }
     #
-    #     # NeetoBugtrapRuby's configuration object is available inside
+    #     # NeetoBugtrap's configuration object is available inside
     #     # requirement blocks. It should generally not be used outside of
     #     # internal plugins. See +Config+.
     #     requirement { config[:'my_framework.enabled'] }
@@ -145,15 +145,15 @@ module NeetoBugtrapRuby
     #
     # @example
     #
-    #   NeetoBugtrapRuby::Plugin.register 'my_framework' do
+    #   NeetoBugtrap::Plugin.register 'my_framework' do
     #     requirement { defined?(MyFramework) }
     #
     #     execution do
-    #       MyFramework.on_exception {|err| NeetoBugtrapRuby.notify(err) }
+    #       MyFramework.on_exception {|err| NeetoBugtrap.notify(err) }
     #     end
     #
     #     execution do
-    #       # NeetoBugtrapRuby's configuration object is available inside
+    #       # NeetoBugtrap's configuration object is available inside
     #       # execution blocks. It should generally not be used outside of
     #       # internal plugins. See +Config+.
     #       MyFramework.use_middleware(MyMiddleware) if config[:'my_framework.use_middleware']

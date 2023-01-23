@@ -6,7 +6,7 @@ describe 'Rails Breadcrumbs integration', if: RAILS_PRESENT, type: :request do
   before(:all) do
     # Clear the thread local so it reload correctly
     Thread.current[:__nb_breadcrumbs] = nil
-    NeetoBugtrapRuby.configure do |config|
+    NeetoBugtrap.configure do |config|
       config.breadcrumbs.enabled = true
     end
   end
@@ -34,7 +34,7 @@ describe 'Rails Breadcrumbs integration', if: RAILS_PRESENT, type: :request do
   end
 
   def notices
-    NeetoBugtrapRuby::Backend::Test.notifications[:notices]
+    NeetoBugtrap::Backend::Test.notifications[:notices]
   end
 
   def get_trail(notice)
@@ -42,7 +42,7 @@ describe 'Rails Breadcrumbs integration', if: RAILS_PRESENT, type: :request do
   end
 
   it "creates log event" do
-    NeetoBugtrapRuby.flush { get "/breadcrumbs/log_breadcrumb_event" }
+    NeetoBugtrap.flush { get "/breadcrumbs/log_breadcrumb_event" }
     expect(notices.first).to contain_breadcrumb_including({
       category: "log",
       message: "test log event",
@@ -51,7 +51,7 @@ describe 'Rails Breadcrumbs integration', if: RAILS_PRESENT, type: :request do
   end
 
   it "creates active_record event", skip: SKIP_ACTIVE_RECORD do
-    NeetoBugtrapRuby.flush { get "/breadcrumbs/active_record_event" }
+    NeetoBugtrap.flush { get "/breadcrumbs/active_record_event" }
     expect(notices.first).to contain_breadcrumb_including({
       category: "query",
       message: /Active Record - .*/,
@@ -62,7 +62,7 @@ describe 'Rails Breadcrumbs integration', if: RAILS_PRESENT, type: :request do
   end
 
   it "creates active_job event" do
-    NeetoBugtrapRuby.flush { get "/breadcrumbs/active_job_event" }
+    NeetoBugtrap.flush { get "/breadcrumbs/active_job_event" }
     expect(notices.first).to contain_breadcrumb_including({
       category: "job",
       message: "Active Job Enqueue"
@@ -70,7 +70,7 @@ describe 'Rails Breadcrumbs integration', if: RAILS_PRESENT, type: :request do
   end
 
   it "creates cache event" do
-    NeetoBugtrapRuby.flush { get "/breadcrumbs/cache_event" }
+    NeetoBugtrap.flush { get "/breadcrumbs/cache_event" }
     expect(notices.first).to contain_breadcrumb_including({
       category: "query",
       message: "Active Support Cache Read"

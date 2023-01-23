@@ -1,7 +1,7 @@
 require 'delayed_job'
 require 'neeto-bugtrap-ruby/ruby'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Plugins
     module DelayedJob
       class Plugin < ::Delayed::Plugin
@@ -24,7 +24,7 @@ module NeetoBugtrapRuby
                 action    = 'perform'
               end
 
-              ::NeetoBugtrapRuby.context(
+              ::NeetoBugtrap.context(
                 :component     => component,
                 :action        => action,
                 :job_id        => job.id,
@@ -36,17 +36,17 @@ module NeetoBugtrapRuby
 
               block.call(job)
             rescue Exception => error
-              ::NeetoBugtrapRuby.notify(
+              ::NeetoBugtrap.notify(
                 :component     => component,
                 :action        => action,
                 :error_class   => error.class.name,
                 :error_message => "#{ error.class.name }: #{ error.message }",
                 :backtrace     => error.backtrace,
                 :exception     => error
-              ) if job.attempts.to_i >= ::NeetoBugtrapRuby.config[:'delayed_job.attempt_threshold'].to_i
+              ) if job.attempts.to_i >= ::NeetoBugtrap.config[:'delayed_job.attempt_threshold'].to_i
               raise error
             ensure
-              ::NeetoBugtrapRuby.clear!
+              ::NeetoBugtrap.clear!
             end
           end
         end

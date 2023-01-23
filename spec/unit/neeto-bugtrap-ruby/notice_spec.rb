@@ -5,16 +5,16 @@ require 'neeto-bugtrap-ruby/config'
 require 'neeto-bugtrap-ruby/plugins/local_variables'
 require 'timecop'
 
-describe NeetoBugtrapRuby::Notice do
+describe NeetoBugtrap::Notice do
   let(:config) { build_config }
 
   def build_config(opts = {})
-    NeetoBugtrapRuby::Config.new({logger: NULL_LOGGER, api_key: 'asdf'}.merge(opts))
+    NeetoBugtrap::Config.new({logger: NULL_LOGGER, api_key: 'asdf'}.merge(opts))
   end
 
   def build_notice(opts = {})
     config = opts[:config] || build_config
-    NeetoBugtrapRuby::Notice.new(config, opts)
+    NeetoBugtrap::Notice.new(config, opts)
   end
 
   def assert_accepts_exception_attribute(attribute, args = {}, &block)
@@ -560,8 +560,8 @@ describe NeetoBugtrapRuby::Notice do
     it 'filters breadcrumb metadata' do
       config[:'request.filter_keys'] = ['password']
       config[:'breadcrumbs.enabled'] = true
-      coll = NeetoBugtrapRuby::Breadcrumbs::Collector.new(config)
-      bc = NeetoBugtrapRuby::Breadcrumbs::Breadcrumb.new(message: "test", metadata: { deep: {}, password: "my-password" })
+      coll = NeetoBugtrap::Breadcrumbs::Collector.new(config)
+      bc = NeetoBugtrap::Breadcrumbs::Breadcrumb.new(message: "test", metadata: { deep: {}, password: "my-password" })
       coll.add!(bc)
       notice = build_notice(breadcrumbs: coll)
 
@@ -642,7 +642,7 @@ describe NeetoBugtrapRuby::Notice do
         begin
           raise StandardError
         rescue => e
-          puts NeetoBugtrapRuby::Notice.new(exception: e).backtrace.to_json
+          puts NeetoBugtrap::Notice.new(exception: e).backtrace.to_json
         end
       RUBY
 
@@ -657,7 +657,7 @@ describe NeetoBugtrapRuby::Notice do
 
     it "passes its backtrace filters for parsing" do
       allow(config).to receive(:backtrace_filter).and_return('foo')
-      expect(NeetoBugtrapRuby::Backtrace).to receive(:parse).with(@backtrace_array, hash_including(filters: array_including('foo'))).and_return(double(to_a: []))
+      expect(NeetoBugtrap::Backtrace).to receive(:parse).with(@backtrace_array, hash_including(filters: array_including('foo'))).and_return(double(to_a: []))
       build_notice({exception: @exception, config: config}).to_json
     end
 
@@ -665,7 +665,7 @@ describe NeetoBugtrapRuby::Notice do
       allow(config).to receive(:backtrace_filter).and_return('foo')
 
       @backtrace_array.each do |line|
-        expect(NeetoBugtrapRuby::Backtrace::Line).to receive(:parse).with(line, hash_including({filters: array_including('foo'), config: config}))
+        expect(NeetoBugtrap::Backtrace::Line).to receive(:parse).with(line, hash_including({filters: array_including('foo'), config: config}))
       end
 
       build_notice({exception: @exception, callbacks: config, config: config}).to_json
@@ -688,7 +688,7 @@ describe NeetoBugtrapRuby::Notice do
     let(:exception) { build_exception({ backtrace: backtrace }) }
 
     it "returns the parsed backtrace" do
-      expect(NeetoBugtrapRuby::Backtrace).to receive(:parse).once.and_call_original
+      expect(NeetoBugtrap::Backtrace).to receive(:parse).once.and_call_original
       notice =  build_notice({exception: exception, config: config})
       expect(notice.parsed_backtrace.first[:number]).to eq '3'
       expect(notice.parsed_backtrace.first[:file]).to eq 'my/file/backtrace.rb'

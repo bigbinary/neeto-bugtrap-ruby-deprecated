@@ -1,6 +1,6 @@
 require 'neeto-bugtrap-ruby/backend/null'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module Backend
     # Logs the notice payload rather than sending it. The purpose of this
     # backend is primarily for programmatically inspecting JSON payloads in

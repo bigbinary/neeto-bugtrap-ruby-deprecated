@@ -2,15 +2,15 @@ require 'neeto-bugtrap-ruby/plugins/sidekiq'
 require 'neeto-bugtrap-ruby/config'
 
 describe "Sidekiq Dependency" do
-  let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true) }
+  let(:config) { NeetoBugtrap::Config.new(logger: NULL_LOGGER, debug: true) }
 
   before do
-    NeetoBugtrapRuby::Plugin.instances[:sidekiq].reset!
+    NeetoBugtrap::Plugin.instances[:sidekiq].reset!
   end
 
   context "when sidekiq is not installed" do
     it "fails quietly" do
-      expect { NeetoBugtrapRuby::Plugin.instances[:sidekiq].load!(config) }.not_to raise_error
+      expect { NeetoBugtrap::Plugin.instances[:sidekiq].load!(config) }.not_to raise_error
     end
   end
 
@@ -40,12 +40,12 @@ describe "Sidekiq Dependency" do
       end
 
       it "adds the server middleware" do
-        expect(chain).to receive(:prepend).with(NeetoBugtrapRuby::Plugins::Sidekiq::Middleware)
-        NeetoBugtrapRuby::Plugin.instances[:sidekiq].load!(config)
+        expect(chain).to receive(:prepend).with(NeetoBugtrap::Plugins::Sidekiq::Middleware)
+        NeetoBugtrap::Plugin.instances[:sidekiq].load!(config)
       end
 
       it "doesn't add the error handler" do
-        NeetoBugtrapRuby::Plugin.instances[:sidekiq].load!(config)
+        NeetoBugtrap::Plugin.instances[:sidekiq].load!(config)
         expect(sidekiq.error_handlers).to be_empty
       end
     end
@@ -56,7 +56,7 @@ describe "Sidekiq Dependency" do
       end
 
       it "adds the error handler" do
-        NeetoBugtrapRuby::Plugin.instances[:sidekiq].load!(config)
+        NeetoBugtrap::Plugin.instances[:sidekiq].load!(config)
         expect(sidekiq.error_handlers).not_to be_empty
       end
 
@@ -67,7 +67,7 @@ describe "Sidekiq Dependency" do
         let(:job) { { 'retry' => retry_config, 'retry_count' => attempt == 1 ? nil : attempt - 1} }
 
         before do
-          NeetoBugtrapRuby::Plugin.instances[:sidekiq].load!(config)
+          NeetoBugtrap::Plugin.instances[:sidekiq].load!(config)
         end
 
         context 'Sidekiq 4.2.3 and later' do
@@ -75,16 +75,16 @@ describe "Sidekiq Dependency" do
           let(:job_context) { {context: 'Job raised exception', job: job } }
 
           it "notifies NeetoBugtrap" do
-            expect(NeetoBugtrapRuby).to receive(:notify).with(exception, { parameters: job_context, component: nil }).once
+            expect(NeetoBugtrap).to receive(:notify).with(exception, { parameters: job_context, component: nil }).once
             sidekiq.error_handlers[0].call(exception, job_context)
           end
 
           context "when an attempt threshold is configured" do
             let(:attempt) { 1 }
-            let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true, :'sidekiq.attempt_threshold' => 3) }
+            let(:config) { NeetoBugtrap::Config.new(logger: NULL_LOGGER, debug: true, :'sidekiq.attempt_threshold' => 3) }
 
             it "doesn't notify NeetoBugtrap" do
-              expect(NeetoBugtrapRuby).not_to receive(:notify)
+              expect(NeetoBugtrap).not_to receive(:notify)
               sidekiq.error_handlers[0].call(exception, job_context)
             end
 
@@ -93,7 +93,7 @@ describe "Sidekiq Dependency" do
               let(:attempt) { 2 }
 
               it "notifies NeetoBugtrap" do
-                expect(NeetoBugtrapRuby).to receive(:notify).with(exception, { parameters: job_context, component: nil }).once
+                expect(NeetoBugtrap).to receive(:notify).with(exception, { parameters: job_context, component: nil }).once
                 sidekiq.error_handlers[0].call(exception, job_context)
               end
             end
@@ -103,7 +103,7 @@ describe "Sidekiq Dependency" do
               let(:attempt) { 2 }
 
               it "notifies NeetoBugtrap" do
-                expect(NeetoBugtrapRuby).to receive(:notify).with(exception, { parameters: job_context, component: nil }).once
+                expect(NeetoBugtrap).to receive(:notify).with(exception, { parameters: job_context, component: nil }).once
                 sidekiq.error_handlers[0].call(exception, job_context)
               end
             end
@@ -112,7 +112,7 @@ describe "Sidekiq Dependency" do
               let(:attempt) { 3 }
 
               it "notifies NeetoBugtrap" do
-                expect(NeetoBugtrapRuby).to receive(:notify).with(exception, { parameters: job_context, component: nil }).once
+                expect(NeetoBugtrap).to receive(:notify).with(exception, { parameters: job_context, component: nil }).once
                 sidekiq.error_handlers[0].call(exception, job_context)
               end
             end
@@ -122,7 +122,7 @@ describe "Sidekiq Dependency" do
             let(:job) { { 'class' => 'HardWorker' } }
 
             it "includes the class as a component" do
-              expect(NeetoBugtrapRuby).to receive(:notify).with(exception, { parameters: job_context, component: 'HardWorker', action: 'perform' }).once
+              expect(NeetoBugtrap).to receive(:notify).with(exception, { parameters: job_context, component: 'HardWorker', action: 'perform' }).once
               sidekiq.error_handlers[0].call(exception, job_context)
             end
           end
@@ -131,7 +131,7 @@ describe "Sidekiq Dependency" do
             let(:job) { { 'class' => 'HardWorker', 'wrapped' => 'WrappedWorker' } }
 
             it "includes the class as a component" do
-              expect(NeetoBugtrapRuby).to receive(:notify).with(exception, { parameters: job_context, component: 'WrappedWorker', action: 'perform' }).once
+              expect(NeetoBugtrap).to receive(:notify).with(exception, { parameters: job_context, component: 'WrappedWorker', action: 'perform' }).once
               sidekiq.error_handlers[0].call(exception, job_context)
             end
           end
@@ -142,16 +142,16 @@ describe "Sidekiq Dependency" do
           let(:job_context) { job }
 
           it "notifies NeetoBugtrap" do
-            expect(NeetoBugtrapRuby).to receive(:notify).with(exception, { parameters: job_context, component: nil }).once
+            expect(NeetoBugtrap).to receive(:notify).with(exception, { parameters: job_context, component: nil }).once
             sidekiq.error_handlers[0].call(exception, job_context)
           end
 
           context "when an attempt threshold is configured" do
             let(:attempt) { 1 }
-            let(:config) { NeetoBugtrapRuby::Config.new(logger: NULL_LOGGER, debug: true, :'sidekiq.attempt_threshold' => 3) }
+            let(:config) { NeetoBugtrap::Config.new(logger: NULL_LOGGER, debug: true, :'sidekiq.attempt_threshold' => 3) }
 
             it "doesn't notify NeetoBugtrap" do
-              expect(NeetoBugtrapRuby).not_to receive(:notify)
+              expect(NeetoBugtrap).not_to receive(:notify)
               sidekiq.error_handlers[0].call(exception, job_context)
             end
 
@@ -160,7 +160,7 @@ describe "Sidekiq Dependency" do
               let(:retry_config) { 1 }
 
               it "notifies NeetoBugtrap" do
-                expect(NeetoBugtrapRuby).to receive(:notify).with(exception, { parameters: job_context, component: nil }).once
+                expect(NeetoBugtrap).to receive(:notify).with(exception, { parameters: job_context, component: nil }).once
                 sidekiq.error_handlers[0].call(exception, job_context)
               end
             end
@@ -169,7 +169,7 @@ describe "Sidekiq Dependency" do
               let(:attempt) { 3 }
 
               it "notifies NeetoBugtrap" do
-                expect(NeetoBugtrapRuby).to receive(:notify).with(exception, { parameters: job_context, component: nil }).once
+                expect(NeetoBugtrap).to receive(:notify).with(exception, { parameters: job_context, component: nil }).once
                 sidekiq.error_handlers[0].call(exception, job_context)
               end
             end

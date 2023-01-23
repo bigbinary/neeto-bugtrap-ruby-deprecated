@@ -1,7 +1,7 @@
 require 'neeto-bugtrap-ruby/backend/base'
 require 'neeto-bugtrap-ruby/config'
 
-describe NeetoBugtrapRuby::Backend::Response do
+describe NeetoBugtrap::Backend::Response do
   context "when successful" do
     subject { described_class.new(201) }
     its(:error) { should be_nil }
@@ -37,8 +37,8 @@ describe NeetoBugtrapRuby::Backend::Response do
   end
 end
 
-describe NeetoBugtrapRuby::Backend::Base do
-  let(:config) { NeetoBugtrapRuby::Config.new }
+describe NeetoBugtrap::Backend::Base do
+  let(:config) { NeetoBugtrap::Config.new }
 
   subject { described_class.new(config) }
 

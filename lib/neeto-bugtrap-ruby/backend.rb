@@ -6,7 +6,7 @@ require 'neeto-bugtrap-ruby/backend/test'
 require 'neeto-bugtrap-ruby/backend/null'
 require 'neeto-bugtrap-ruby/backend/debug'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   # @api private
   module Backend
     class BackendError < StandardError; end

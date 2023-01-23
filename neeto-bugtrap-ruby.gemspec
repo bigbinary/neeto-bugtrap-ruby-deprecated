@@ -2,7 +2,7 @@ require File.expand_path('../lib/neeto-bugtrap-ruby/version.rb', __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = 'neeto-bugtrap-ruby'
-  s.version     = NeetoBugtrapRuby::VERSION
+  s.version     = NeetoBugtrap::VERSION
   s.platform    = Gem::Platform::RUBY
   s.summary     = 'Error reports you can be happy about.'
   s.description = 'Make managing application errors a more pleasant experience.'

@@ -11,7 +11,7 @@ require 'neeto-bugtrap-ruby/util/http'
 require 'neeto-bugtrap-ruby/version'
 require 'logger'
 
-module NeetoBugtrapRuby
+module NeetoBugtrap
   module CLI
     BLANK = /\A\s*\z/
 
@@ -24,7 +24,7 @@ module NeetoBugtrapRuby
 
     class Main < Thor
       def self.project_options
-        option :api_key,         required: false, aliases: :'-k', type: :string, desc: 'Api key of your NeetoBugtrapRuby application'
+        option :api_key,         required: false, aliases: :'-k', type: :string, desc: 'Api key of your NeetoBugtrap application'
         option :environment,     required: false, aliases: [:'-e', :'-env'], type: :string, desc: 'Environment this command is being executed in (i.e. "production", "staging")'
         option :skip_rails_load, required: false, type: :boolean, desc: 'Flag to skip rails initialization'
       end
@@ -32,12 +32,12 @@ module NeetoBugtrapRuby
       def help(*args, &block)
         if args.size == 0
           say(<<-WELCOME)
-⚡  NeetoBugtrapRuby v#{VERSION}
+⚡  NeetoBugtrap v#{VERSION}
 
-NeetoBugtrapRuby is your favorite error tracker for Ruby. When your app raises an
+NeetoBugtrap is your favorite error tracker for Ruby. When your app raises an
 exception we notify you with all the context you need to fix it.
 
-The NeetoBugtrapRuby CLI provides tools for interacting with NeetoBugtrapRuby via the
+The NeetoBugtrap CLI provides tools for interacting with NeetoBugtrap via the
 command line.
 
 If you need support, please drop us a line: support@honeybadger.io
@@ -47,7 +47,7 @@ WELCOME
         super
       end
 
-      desc 'install API_KEY', 'Install NeetoBugtrapRuby into a new project'
+      desc 'install API_KEY', 'Install NeetoBugtrap into a new project'
       def install(api_key)
         Install.new(options, api_key).run
       rescue => e
@@ -55,8 +55,8 @@ WELCOME
         exit(1)
       end
 
-      desc 'test', 'Send a test notification from NeetoBugtrapRuby'
-      option :dry_run, type: :boolean, aliases: :'-d', default: false, desc: 'Skip sending data to NeetoBugtrapRuby'
+      desc 'test', 'Send a test notification from NeetoBugtrap'
+      option :dry_run, type: :boolean, aliases: :'-d', default: false, desc: 'Skip sending data to NeetoBugtrap'
       option :file,    type: :string,  aliases: :'-f', default: nil, desc: 'Write the output to FILE'
       def test
         Test.new(options).run
@@ -65,7 +65,7 @@ WELCOME
         exit(1)
       end
 
-      desc 'deploy', 'Notify NeetoBugtrapRuby of deployment'
+      desc 'deploy', 'Notify NeetoBugtrap of deployment'
       project_options
       option :repository, required: true, type: :string, aliases: :'-r', desc: 'The address of your repository'
       option :revision,   required: true, type: :string, aliases: :'-s', desc: 'The revision/sha that is being deployed'
@@ -84,7 +84,7 @@ WELCOME
         exit(1)
       end
 
-      desc 'notify', 'Notify NeetoBugtrapRuby of an error'
+      desc 'notify', 'Notify NeetoBugtrap of an error'
       project_options
       option :class,       required: true, type: :string, aliases: :'-c', default: 'CLI Notification', desc: 'The class name of the error. (Default: CLI Notification)'
       option :message,     required: true, type: :string, aliases: :'-m', desc: 'The error message.'
@@ -107,7 +107,7 @@ WELCOME
         exit(1)
       end
 
-      desc 'exec', 'Execute a command. If the exit status is not 0, report the result to NeetoBugtrapRuby'
+      desc 'exec', 'Execute a command. If the exit status is not 0, report the result to NeetoBugtrap'
       project_options
       option :quiet, required: false, type: :boolean, aliases: :'-q', default: false, desc: 'Suppress all output unless notification fails.'
       def exec(*args)
@@ -129,7 +129,7 @@ WELCOME
         exit(1)
       end
 
-      desc 'heroku SUBCOMMAND ...ARGS', 'Manage NeetoBugtrapRuby on Heroku'
+      desc 'heroku SUBCOMMAND ...ARGS', 'Manage NeetoBugtrap on Heroku'
       subcommand 'heroku', Heroku
 
       private
@@ -141,7 +141,7 @@ WELCOME
       def build_config(options)
         load_env(options)
 
-        config = NeetoBugtrapRuby.config
+        config = NeetoBugtrap.config
         config.set(:report_data, true)
         config.set(:api_key, fetch_value(options, 'api_key')) if options.has_key?('api_key')
         config.set(:env, fetch_value(options, 'environment')) if options.has_key?('environment')
@@ -156,7 +156,7 @@ WELCOME
           load_rails_env_if_allowed(environment_rb, options)
         end
         # Ensure config is loaded (will be skipped if initialized by Rails).
-        NeetoBugtrapRuby.config.load!
+        NeetoBugtrap.config.load!
       end
 
       def load_rails_env_if_allowed(environment_rb, options)
@@ -182,7 +182,7 @@ WELCOME
         case e
         when *Util::HTTP::ERRORS
           say(<<-MSG, :red)
-!! --- Failed to notify NeetoBugtrapRuby ------------------------------------------- !!
+!! --- Failed to notify NeetoBugtrap ------------------------------------------- !!
 
 # What happened?
 
@@ -204,7 +204,7 @@ WELCOME
 MSG
         else
           say(<<-MSG, :red)
-!! --- NeetoBugtrapRuby command failed --------------------------------------------- !!
+!! --- NeetoBugtrap command failed --------------------------------------------- !!
 
 # What did you try to do?
 

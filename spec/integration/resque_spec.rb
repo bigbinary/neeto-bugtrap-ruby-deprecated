@@ -10,7 +10,7 @@ end
 if RESQUE_PRESENT
   require 'neeto-bugtrap-ruby'
 
-  ERROR = StandardError.new('This is a failure inside NeetoBugtrapRuby integration test suite')
+  ERROR = StandardError.new('This is a failure inside NeetoBugtrap integration test suite')
 
   class TestWorker
     @queue = :test
@@ -38,7 +38,7 @@ if RESQUE_PRESENT
     it "reports failed jobs to NeetoBugtrap" do
       job = Resque::Job.new(:jobs, {'class' => 'TestWorker', 'args' => nil})
 
-      expect(NeetoBugtrapRuby).to receive(:notify).once.with(ERROR, anything)
+      expect(NeetoBugtrap).to receive(:notify).once.with(ERROR, anything)
 
       worker.perform(job)
     end
@@ -46,7 +46,7 @@ if RESQUE_PRESENT
     it "reports DirtyExit to NeetoBugtrap" do
       job = Resque::Job.new(:jobs, {'class' => 'TestWorker', 'args' => nil})
 
-      expect(NeetoBugtrapRuby).to receive(:notify).once.with(kind_of(Resque::DirtyExit), anything)
+      expect(NeetoBugtrap).to receive(:notify).once.with(kind_of(Resque::DirtyExit), anything)
 
       worker.working_on(job)
       worker.unregister_worker
