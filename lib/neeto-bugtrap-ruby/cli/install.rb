@@ -48,7 +48,7 @@ module NeetoBugtrap
           File.open(path, 'w+') do |file|
             file.write(<<-CONFIG)
 ---
-# For more options, see https://docs.honeybadger.io/lib/ruby/gem-reference/configuration
+# For more options, see https://docs.neetobugtrap.com/lib/ruby/gem-reference/configuration
 
 api_key: '#{api_key}'
 

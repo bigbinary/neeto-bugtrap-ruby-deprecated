@@ -9,7 +9,7 @@ module NeetoBugtrap
   #
   # See the plugins/ directory for examples of official plugins. If you're
   # interested in developing a plugin for NeetoBugtrap, see the Integration
-  # Guide: https://docs.honeybadger.io/ruby/gem-reference/integration.html
+  # Guide: https://docs.neetobugtrap.com/ruby/gem-reference/integration.html
   #
   # @example
   #

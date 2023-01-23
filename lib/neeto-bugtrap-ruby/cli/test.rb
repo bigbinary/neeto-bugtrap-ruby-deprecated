@@ -212,7 +212,7 @@ MSG
           notices.each {|n| say("\n  - #{n.error_class}: #{n.error_message}", :red) }
         end
 
-        say("\nSee https://docs.honeybadger.io/gem-troubleshooting for more troubleshooting help.\n\n", :red)
+        say("\nSee https://docs.neetobugtrap.com/gem-troubleshooting for more troubleshooting help.\n\n", :red)
         say("!! --- End -------------------------------------------------------------------- !!", :red)
 
         exit(1)
@@ -237,16 +237,16 @@ NeetoBugtrap. For now, we've generated a test exception for you:
 Optional steps:
 
   - Show a feedback form on your error page:
-    https://docs.honeybadger.io/gem-feedback
+    https://docs.neetobugtrap.com/gem-feedback
   - Show a UUID or link to NeetoBugtrap on your error page:
-    https://docs.honeybadger.io/gem-informer
+    https://docs.neetobugtrap.com/gem-informer
   - Track deployments (if you're using Capistrano, we already did this):
-    https://docs.honeybadger.io/gem-deploys
+    https://docs.neetobugtrap.com/gem-deploys
 
 If you ever need help:
 
-  - Read the gem troubleshooting guide: https://docs.honeybadger.io/gem-troubleshooting
-  - Check out our documentation: https://docs.honeybadger.io/
+  - Read the gem troubleshooting guide: https://docs.neetobugtrap.com/gem-troubleshooting
+  - Check out our documentation: https://docs.neetobugtrap.com/
   - Email the founders: support@neetobugtrap.com
 
 Most people don't realize that NeetoBugtrap is a small, bootstrapped company. We
@@ -257,7 +257,7 @@ Happy 'badgering!
 
 Sincerely,
 The NeetoBugtrap Crew
-https://www.honeybadger.io/about/
+https://www.neetobugtrap.com/about/
 
 ⚡ --- End --------------------------------------------------------------------
 MSG

@@ -81,7 +81,7 @@ module NeetoBugtrap
 
     def backtrace_filter(&block)
       if block_given?
-        warn('DEPRECATED: backtrace_filter is deprecated. Please use before_notify instead. See https://docs.honeybadger.io/ruby/support/v4-upgrade#backtrace_filter')
+        warn('DEPRECATED: backtrace_filter is deprecated. Please use before_notify instead. See https://docs.neetobugtrap.com/ruby/support/v4-upgrade#backtrace_filter')
         self[:backtrace_filter] = block
       end
 
@@ -94,7 +94,7 @@ module NeetoBugtrap
 
     def exception_filter(&block)
       if block_given?
-        warn('DEPRECATED: exception_filter is deprecated. Please use before_notify instead. See https://docs.honeybadger.io/ruby/support/v4-upgrade#exception_filter')
+        warn('DEPRECATED: exception_filter is deprecated. Please use before_notify instead. See https://docs.neetobugtrap.com/ruby/support/v4-upgrade#exception_filter')
         self[:exception_filter] = block
       end
 
@@ -103,7 +103,7 @@ module NeetoBugtrap
 
     def exception_fingerprint(&block)
       if block_given?
-        warn('DEPRECATED: exception_fingerprint is deprecated. Please use before_notify instead. See https://docs.honeybadger.io/ruby/support/v4-upgrade#exception_fingerprint')
+        warn('DEPRECATED: exception_fingerprint is deprecated. Please use before_notify instead. See https://docs.neetobugtrap.com/ruby/support/v4-upgrade#exception_fingerprint')
         self[:exception_fingerprint] = block
       end
 
