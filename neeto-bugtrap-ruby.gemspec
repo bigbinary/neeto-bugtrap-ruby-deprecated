@@ -6,15 +6,9 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.summary     = 'Error reports you can be happy about.'
   s.description = 'Make managing application errors a more pleasant experience.'
-  s.authors     = ['Honeybadger Industries LLC']
-  s.email       = ['support@honeybadger.io']
-  s.homepage    = 'https://www.honeybadger.io/for/ruby/'
-  s.license     = 'MIT'
   s.metadata = {
     'bug_tracker_uri'   => 'https://github.com/bigbinary/neeto-bugtrap-ruby/issues',
     'changelog_uri'     => 'https://github.com/bigbinary/neeto-bugtrap-ruby/blob/master/CHANGELOG.md',
-    'documentation_uri' => 'https://docs.honeybadger.io/lib/ruby/',
-    'homepage_uri'      => 'https://www.honeybadger.io/for/ruby/',
     'source_code_uri'   => 'https://github.com/bigbinary/neeto-bugtrap-ruby'
   }
 
@@ -28,7 +22,6 @@ Gem::Specification.new do |s|
   s.files += Dir['vendor/**/*.{rb,rake,cap}']
   s.files += Dir['resources/**/*.crt']
   s.files += Dir['*.md']
-  s.files += ['LICENSE']
 
   s.require_paths = ['lib', 'vendor/capistrano-neetobugtrap/lib']
 
