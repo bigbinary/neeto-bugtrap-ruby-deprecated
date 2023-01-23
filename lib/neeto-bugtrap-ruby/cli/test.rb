@@ -176,7 +176,7 @@ To fix this issue, please try the following:
   - Make sure the gem is configured properly.
   - Retry executing this command a few times.
   - Make sure you can connect to #{host} (`curl https://#{host}/v1/notices`).
-  - Email support@honeybadger.io for help. Include as much debug info as you
+  - Email support@neetobugtrap.com for help. Include as much debug info as you
     can for a faster resolution!
 
 !! --- End -------------------------------------------------------------------- !!
@@ -247,7 +247,7 @@ If you ever need help:
 
   - Read the gem troubleshooting guide: https://docs.honeybadger.io/gem-troubleshooting
   - Check out our documentation: https://docs.honeybadger.io/
-  - Email the founders: support@honeybadger.io
+  - Email the founders: support@neetobugtrap.com
 
 Most people don't realize that NeetoBugtrap is a small, bootstrapped company. We
 really couldn't do this without you. Thank you for allowing us to do what we

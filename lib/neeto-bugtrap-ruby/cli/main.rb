@@ -40,7 +40,7 @@ exception we notify you with all the context you need to fix it.
 The NeetoBugtrap CLI provides tools for interacting with NeetoBugtrap via the
 command line.
 
-If you need support, please drop us a line: support@honeybadger.io
+If you need support, please drop us a line: support@neetobugtrap.com
 
 WELCOME
         end
@@ -197,7 +197,7 @@ WELCOME
 
   - Retry the command.
   - Make sure you can connect to api.neetobugtrap.com (`curl https://api.neetobugtrap.com/v1/notices`).
-  - If you continue to see this message, email us at support@honeybadger.io
+  - If you continue to see this message, email us at support@neetobugtrap.com
     (don't forget to attach this output!)
 
 !! --- End -------------------------------------------------------------------- !!
@@ -225,7 +225,7 @@ MSG
   - If you're calling the `install` or `test` command in a Rails app, make sure
     you can boot the Rails console: `bundle exec rails console`.
   - Retry the command.
-  - If you continue to see this message, email us at support@honeybadger.io
+  - If you continue to see this message, email us at support@neetobugtrap.com
     (don't forget to attach this output!)
 
 !! --- End -------------------------------------------------------------------- !!

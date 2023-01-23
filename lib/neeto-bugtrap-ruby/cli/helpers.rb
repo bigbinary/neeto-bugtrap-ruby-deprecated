@@ -16,7 +16,7 @@ To fix this issue, please try the following:
   - Make sure the gem is configured properly.
   - Retry executing this command a few times.
   - Make sure you can connect to #{host} (`curl https://#{host}/v1/notices`).
-  - Email support@honeybadger.io for help. Include as much debug info as you
+  - Email support@neetobugtrap.com for help. Include as much debug info as you
     can for a faster resolution!
 
 !! --- End -------------------------------------------------------------------- !!
