@@ -6,6 +6,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.summary     = 'Error reports you can be happy about.'
   s.description = 'Make managing application errors a more pleasant experience.'
+  s.authors     = ['Honeybadger Industries LLC']
   s.metadata = {
     'bug_tracker_uri'   => 'https://github.com/bigbinary/neeto-bugtrap-ruby/issues',
     'changelog_uri'     => 'https://github.com/bigbinary/neeto-bugtrap-ruby/blob/master/CHANGELOG.md',
