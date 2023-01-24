@@ -14,7 +14,7 @@ describe NeetoBugtrap::Util::HTTP do
 
   it "sends a user agent with version number" do
     http  = stub_http
-    expect(http).to receive(:post).with(kind_of(String), kind_of(String), hash_including({'User-Agent' => "HB-Ruby #{NeetoBugtrap::VERSION}; #{RUBY_VERSION}; #{RUBY_PLATFORM}"}))
+    expect(http).to receive(:post).with(kind_of(String), kind_of(String), hash_including({'User-Agent' => "NB-Ruby #{NeetoBugtrap::VERSION}; #{RUBY_VERSION}; #{RUBY_PLATFORM}"}))
     http_post
   end
 

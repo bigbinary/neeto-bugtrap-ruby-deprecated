@@ -18,7 +18,7 @@ module NeetoBugtrap
         'Content-type'.freeze => 'application/json'.freeze,
         'Content-Encoding'.freeze => 'deflate'.freeze,
         'Accept'.freeze => 'text/json, application/json'.freeze,
-        'User-Agent'.freeze => "HB-Ruby #{VERSION}; #{RUBY_VERSION}; #{RUBY_PLATFORM}".freeze
+        'User-Agent'.freeze => "NB-Ruby #{VERSION}; #{RUBY_VERSION}; #{RUBY_PLATFORM}".freeze
       }.freeze
 
       ERRORS = [Timeout::Error,
