@@ -1,7 +1,7 @@
 require 'ruby-prof'
 require 'neeto-bugtrap-ruby'
 
-if NeetoBugtrap.start({:api_key => 'badgers', :debug => true, :backend => 'null'})
+if NeetoBugtrap.start({:api_key => 'bugtraps', :debug => true, :backend => 'null'})
   RubyProf.start and NeetoBugtrap::Agent.at_exit do
     result = RubyProf.stop
     printer = RubyProf::FlatPrinter.new(result)

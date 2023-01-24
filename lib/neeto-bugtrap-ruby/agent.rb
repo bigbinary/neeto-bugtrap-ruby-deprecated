@@ -27,19 +27,19 @@ module NeetoBugtrap
   # @example
   #
   #   # Standard usage:
-  #   OtherBadger = NeetoBugtrap::Agent.new
+  #   OtherBugtrap = NeetoBugtrap::Agent.new
   #
   #   # With local context:
-  #   OtherBadger = NeetoBugtrap::Agent.new(local_context: true)
+  #   OtherBugtrap = NeetoBugtrap::Agent.new(local_context: true)
   #
-  #   OtherBadger.configure do |config|
+  #   OtherBugtrap.configure do |config|
   #     config.api_key = 'project api key'
   #   end
   #
   #   begin
   #     # Risky operation
   #   rescue => e
-  #     OtherBadger.notify(e)
+  #     OtherBugtrap.notify(e)
   #   end
   class Agent
     extend Forwardable

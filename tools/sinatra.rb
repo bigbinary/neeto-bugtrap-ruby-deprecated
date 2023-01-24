@@ -3,7 +3,7 @@ require 'neeto-bugtrap-ruby'
 
 GC::Profiler.enable
 
-# class Badgers < Sinatra::Application
+# class Bugtraps < Sinatra::Application
 
 get '/' do
   'Hello world!'
@@ -15,4 +15,4 @@ end
 
 # end
 
-# Badgers.run!
+# Bugtraps.run!

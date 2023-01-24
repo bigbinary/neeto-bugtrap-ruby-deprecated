@@ -48,7 +48,7 @@ module NeetoBugtrap
           say("To install manually, try `neetobugtrap heroku install_deploy_notification#{app ? " -a #{app}" : ""} -k #{api_key} --environment ENVIRONMENT`", :yellow)
         end
 
-        say("Installation complete. Happy 'badgering!", :green)
+        say("Installation complete. Happy 'bugtraping!", :green)
       end
 
       private

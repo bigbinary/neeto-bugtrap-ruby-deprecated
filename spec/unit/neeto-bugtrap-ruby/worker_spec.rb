@@ -9,7 +9,7 @@ require 'neeto-bugtrap-ruby/notice'
 describe NeetoBugtrap::Worker do
   let!(:instance) { described_class.new(config) }
   let(:config) { NeetoBugtrap::Config.new(logger: NULL_LOGGER, debug: true, backend: 'null') }
-  let(:obj) { double('Badger', id: :foo, to_json: '{}') }
+  let(:obj) { double('Bugtrap', id: :foo, to_json: '{}') }
 
   subject { instance }
 

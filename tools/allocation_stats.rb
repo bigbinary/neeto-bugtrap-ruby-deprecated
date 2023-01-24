@@ -11,7 +11,7 @@ group_by = if ENV['GROUP']
 puts Benchmark.measure {
   stats = AllocationStats.trace do
     NeetoBugtrap.configure do |config|
-      config.api_key = 'badgers'
+      config.api_key = 'bugtraps'
       config.backend = 'null'
     end
 

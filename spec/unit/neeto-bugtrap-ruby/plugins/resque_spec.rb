@@ -32,7 +32,7 @@ describe TestWorker do
 
     it "clears the context" do
       expect {
-        NeetoBugtrap.context(badgers: true)
+        NeetoBugtrap.context(bugtraps: true)
         described_class.on_failure_with_neetobugtrap(error, 1, 2, 3)
       }.not_to change { NeetoBugtrap::ContextManager.current.get_context }.from(nil)
     end
@@ -119,7 +119,7 @@ describe TestWorker do
   describe "::after_perform_with_neetobugtrap" do
     it "clears the context" do
       expect {
-        NeetoBugtrap.context(badgers: true)
+        NeetoBugtrap.context(bugtraps: true)
         described_class.after_perform_with_neetobugtrap
       }.not_to change { NeetoBugtrap::ContextManager.current.get_context }.from(nil)
     end

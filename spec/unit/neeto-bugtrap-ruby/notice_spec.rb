@@ -575,7 +575,7 @@ describe NeetoBugtrap::Notice do
     it 'assigns the same values from each opt and setter method' do
       opts = {
         api_key: 'custom api key',
-        error_message: 'badgers!',
+        error_message: 'bugtraps!',
         error_class: 'MyError',
         backtrace: ["/path/to/file.rb:5 in `method'"],
         fingerprint: 'some unique string',
@@ -912,7 +912,7 @@ describe NeetoBugtrap::Notice do
     [CauseError, OriginalExceptionError, ContinuedExceptionError].each do |error_class|
       context "when raising #{error_class} without a cause" do
         it "includes empty cause in payload" do
-          exception = error_class.new('badgers!')
+          exception = error_class.new('bugtraps!')
           causes = build_notice(exception: exception).as_json[:error][:causes]
           expect(causes.size).to eq 0
         end
@@ -920,7 +920,7 @@ describe NeetoBugtrap::Notice do
 
       context "when raising #{error_class} with a cause" do
         it "includes the cause in the payload" do
-          exception = error_class.new('badgers!')
+          exception = error_class.new('bugtraps!')
           exception.cause = build_cause
           causes = build_notice(exception: exception).as_json[:error][:causes]
           expect(causes.size).to eq 1
@@ -930,7 +930,7 @@ describe NeetoBugtrap::Notice do
         end
 
         it "stops unwrapping at 5" do
-          exception = e = error_class.new('badgers!')
+          exception = e = error_class.new('bugtraps!')
 
           0.upto(6) do
             e.cause = c = error_class.new('expected cause')
@@ -943,7 +943,7 @@ describe NeetoBugtrap::Notice do
 
         context "and the :cause option is also present" do
           it "prefers the option" do
-            exception = error_class.new('badgers!')
+            exception = error_class.new('bugtraps!')
             exception.cause = build_cause
             causes = build_notice(exception: exception, cause: build_cause(message: 'this cause was passed explicitly')).as_json[:error][:causes]
 
@@ -956,7 +956,7 @@ describe NeetoBugtrap::Notice do
 
         context "and there is a current exception" do
           it "prefers the notice's exception's cause" do
-            exception = error_class.new('badgers!')
+            exception = error_class.new('bugtraps!')
             exception.cause = build_cause
 
             begin
@@ -975,7 +975,7 @@ describe NeetoBugtrap::Notice do
 
       context "when raising #{error_class} with a non-exception cause" do
         it "includes empty cause in payload" do
-          exception = error_class.new('badgers!')
+          exception = error_class.new('bugtraps!')
           exception.cause = "Some reason you werent expecting"
           causes = build_notice(exception: exception).as_json[:error][:causes]
           expect(causes.size).to eq 0

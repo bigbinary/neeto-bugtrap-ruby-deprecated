@@ -21,17 +21,17 @@ describe NeetoBugtrap::Backend::Response do
     end
 
     context "body is valid JSON" do
-      let(:body) { %({"error":"badgers"}) }
-      its(:error) { should eq "badgers" }
+      let(:body) { %({"error":"bugtraps"}) }
+      its(:error) { should eq "bugtraps" }
 
       context "but invalid object" do
-        let(:body) { %([{"error":"badgers"}]) }
+        let(:body) { %([{"error":"bugtraps"}]) }
         its(:error) { should be_nil }
       end
     end
 
     context "body is invalid JSON" do
-      let(:body) { %({"error":"badgers") }
+      let(:body) { %({"error":"bugtraps") }
       its(:error) { should be_nil }
     end
   end

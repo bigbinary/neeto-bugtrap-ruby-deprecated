@@ -253,7 +253,7 @@ Most people don't realize that NeetoBugtrap is a small, bootstrapped company. We
 really couldn't do this without you. Thank you for allowing us to do what we
 love: making developers awesome.
 
-Happy 'badgering!
+Happy 'bugtraping!
 
 Sincerely,
 The NeetoBugtrap Crew

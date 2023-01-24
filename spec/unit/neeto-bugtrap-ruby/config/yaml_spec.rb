@@ -32,7 +32,7 @@ describe NeetoBugtrap::Config::Yaml do
 api_key: "cobras"
 top: true
 logging:
-  api_key: "badgers"
+  api_key: "bugtraps"
   path: "log/my.log"
   level: "DEBUG"
       YAML
@@ -44,8 +44,8 @@ logging:
       it "merges all the options" do
         expect(subject[:'logging.path']).to eq 'log/my.log'
         expect(subject[:'logging.level']).to eq 'DEBUG'
-        expect(subject[:'logging.api_key']).to eq 'badgers'
-        expect(subject[:api_key]).to eq 'badgers'
+        expect(subject[:'logging.api_key']).to eq 'bugtraps'
+        expect(subject[:api_key]).to eq 'bugtraps'
         expect(subject[:top]).to eq true
       end
     end

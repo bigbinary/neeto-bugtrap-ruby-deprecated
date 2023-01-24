@@ -12,7 +12,7 @@ feature "Rescuing exceptions at exit" do
 
   it "reports the exception to NeetoBugtrap" do
     expect(run_command(crash_cmd)).not_to be_successfully_executed
-    assert_notification('error' => {'class' => 'RuntimeError', 'message' => 'RuntimeError: badgers!'})
+    assert_notification('error' => {'class' => 'RuntimeError', 'message' => 'RuntimeError: bugtraps!'})
   end
 
   it "ignores SystemExit" do

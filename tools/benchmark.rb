@@ -10,7 +10,7 @@ require 'neeto-bugtrap-ruby'
 require 'benchmark'
 
 benchmark = Benchmark.measure do
-  if NeetoBugtrap.start({:api_key => 'badgers', :backend => 'null'})
+  if NeetoBugtrap.start({:api_key => 'bugtraps', :backend => 'null'})
     1000.times do
       NeetoBugtrap.notify(error_class: 'RubyProf', error_message: 'Profiling NeetoBugtrap -- this should never actually be reported.')
     end

@@ -10,7 +10,7 @@ feature "Installing neetobugtrap via the cli" do
     it "outputs successful result" do
       expect(run_command('neetobugtrap install asdf')).to be_successfully_executed
       expect(all_output).to match /Writing configuration/i
-      expect(all_output).to match /Happy 'badgering/i
+      expect(all_output).to match /Happy 'bugtraping/i
       expect(all_output).not_to match /heroku/i
       expect(all_output).not_to match /Starting NeetoBugtrap/i
       if rails
@@ -55,7 +55,7 @@ YML
 
       it "outputs successful result" do
         expect(run_command('neetobugtrap install asdf')).to be_successfully_executed
-        expect(all_output).to match /Happy 'badgering/i
+        expect(all_output).to match /Happy 'bugtraping/i
       end
     end
 

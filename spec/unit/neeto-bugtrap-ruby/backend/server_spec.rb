@@ -27,12 +27,12 @@ describe NeetoBugtrap::Backend::Server do
 
     context "when payload has an api key" do
       before do
-        allow(payload).to receive(:api_key).and_return('badgers')
+        allow(payload).to receive(:api_key).and_return('bugtraps')
       end
 
       it "passes the payload api key in extra headers" do
         http = stub_http
-        expect(http).to receive(:post).with(anything, anything, hash_including({ 'X-API-Key' => 'badgers'}))
+        expect(http).to receive(:post).with(anything, anything, hash_including({ 'X-API-Key' => 'bugtraps'}))
         notify_backend
       end
     end

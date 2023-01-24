@@ -1,2 +1,2 @@
 require 'neeto-bugtrap-ruby'
-raise 'badgers!'
+raise 'bugtraps!'
