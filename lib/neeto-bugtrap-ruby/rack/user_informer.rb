@@ -23,7 +23,7 @@ module NeetoBugtrap
           new_body = []
           replace  = replacement(env['neetobugtrap.error_id'])
           body.each do |chunk|
-            new_body << chunk.gsub("<!-- HONEYBADGER ERROR -->", replace)
+            new_body << chunk.gsub("<!-- NEETOBUGTRAP ERROR -->", replace)
           end
           body.close if body.respond_to?(:close)
           headers['Content-Length'] = new_body.reduce(0) { |a,e| a += e.bytesize }.to_s

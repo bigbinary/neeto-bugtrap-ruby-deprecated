@@ -6,11 +6,11 @@ describe NeetoBugtrap::Config::Env do
   let(:env) { {} }
 
   before do
-    env['HONEYBADGER_API_KEY'] = 'asdf'
-    env['HONEYBADGER_EXCEPTIONS_ENABLED'] = 'false'
-    env['HONEYBADGER_ENV'] = 'production'
-    env['HONEYBADGER_LOGGING_PATH'] = 'log/'
-    env['HONEYBADGER_EXCEPTIONS_IGNORE'] = 'Foo, Bar, Baz'
+    env['NEETOBUGTRAP_API_KEY'] = 'asdf'
+    env['NEETOBUGTRAP_EXCEPTIONS_ENABLED'] = 'false'
+    env['NEETOBUGTRAP_ENV'] = 'production'
+    env['NEETOBUGTRAP_LOGGING_PATH'] = 'log/'
+    env['NEETOBUGTRAP_EXCEPTIONS_IGNORE'] = 'Foo, Bar, Baz'
   end
 
   it { should be_a Hash }
@@ -23,7 +23,7 @@ describe NeetoBugtrap::Config::Env do
 
   context "with invalid options" do
     before do
-      env['HONEYBADGER_BAD_OPTION'] = 'log/'
+      env['NEETOBUGTRAP_BAD_OPTION'] = 'log/'
     end
 
     specify { expect(subject).not_to have_key(:'bad_option') }
@@ -31,7 +31,7 @@ describe NeetoBugtrap::Config::Env do
 
   context "with ignorable type" do
     before do
-      env['HONEYBADGER_BREADCRUMBS_ACTIVE_SUPPORT_NOTIFICATIONS'] = '{}'
+      env['NEETOBUGTRAP_BREADCRUMBS_ACTIVE_SUPPORT_NOTIFICATIONS'] = '{}'
     end
 
     specify { expect(subject).not_to have_key(:'breadcrumbs.active_support_notifications') }

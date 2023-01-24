@@ -2,7 +2,7 @@ require 'neeto-bugtrap-ruby'
 
 
 feature "Running the exec cli command" do
-  before { set_environment_variable('HONEYBADGER_BACKEND', 'debug') }
+  before { set_environment_variable('NEETOBUGTRAP_BACKEND', 'debug') }
 
   it "quietly executes the requested command" do
     output = capture(:stdout) { NeetoBugtrap::CLI.start(%w[exec --api-key=test-api-key ls]) }

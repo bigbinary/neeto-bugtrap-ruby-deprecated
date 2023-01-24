@@ -7,7 +7,7 @@ describe NeetoBugtrap::Rack::UserFeedback do
   let(:main_app) do
     lambda do |env|
       env['neetobugtrap.error_id'] = neetobugtrap_id if defined?(neetobugtrap_id)
-      [200, {}, ["<!-- HONEYBADGER FEEDBACK -->"]]
+      [200, {}, ["<!-- NEETOBUGTRAP FEEDBACK -->"]]
     end
   end
   let(:informer_app) { NeetoBugtrap::Rack::UserFeedback.new(main_app, agent) }
@@ -47,7 +47,7 @@ describe NeetoBugtrap::Rack::UserFeedback do
 
   context "there is no neetobugtrap id" do
     it "does not modify the output" do
-      expect(result[2][0]).to eq '<!-- HONEYBADGER FEEDBACK -->'
+      expect(result[2][0]).to eq '<!-- NEETOBUGTRAP FEEDBACK -->'
     end
   end
 end

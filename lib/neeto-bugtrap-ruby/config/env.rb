@@ -3,7 +3,7 @@ require 'set'
 module NeetoBugtrap
   class Config
     module Env
-      CONFIG_KEY = /\AHONEYBADGER_(.+)\Z/.freeze
+      CONFIG_KEY = /\ANEETOBUGTRAP_(.+)\Z/.freeze
       CONFIG_MAPPING = Hash[DEFAULTS.keys.map {|k| [k.to_s.upcase.gsub(KEY_REPLACEMENT, '_'), k] }].freeze
       ARRAY_VALUES = Regexp.new('\s*,\s*').freeze
       IGNORED_TYPES = Set[Hash]

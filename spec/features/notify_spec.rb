@@ -1,7 +1,7 @@
 feature "Running the notify CLI command" do
   before do
-    set_environment_variable('HONEYBADGER_API_KEY', 'asdf')
-    set_environment_variable('HONEYBADGER_LOGGING_LEVEL', 'DEBUG')
+    set_environment_variable('NEETOBUGTRAP_API_KEY', 'asdf')
+    set_environment_variable('NEETOBUGTRAP_LOGGING_LEVEL', 'DEBUG')
   end
 
   it "requires the --message flag" do

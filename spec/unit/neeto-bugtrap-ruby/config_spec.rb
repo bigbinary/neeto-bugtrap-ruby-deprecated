@@ -22,7 +22,7 @@ describe NeetoBugtrap::Config do
       end
 
       it "prefers ENV to options" do
-        env['HONEYBADGER_API_KEY'] = 'dan'
+        env['NEETOBUGTRAP_API_KEY'] = 'dan'
         config.init!({api_key: 'muj'}, env)
         expect(config[:api_key]).to eq 'dan'
       end
@@ -33,7 +33,7 @@ describe NeetoBugtrap::Config do
       end
 
       it "prefers ENV to file" do
-        env['HONEYBADGER_API_KEY'] = 'foo'
+        env['NEETOBUGTRAP_API_KEY'] = 'foo'
         config.init!({:'config.path' => FIXTURES_PATH.join('neetobugtrap.yml'), api_key: 'bar'}, env)
         expect(config[:api_key]).to eq 'foo'
       end

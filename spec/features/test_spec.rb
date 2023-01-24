@@ -3,7 +3,7 @@ require 'neeto-bugtrap-ruby'
 feature "Running the test cli command" do
   scenario "in a standalone project" do
     it "displays expected debug output and sends notification" do
-      set_environment_variable('HONEYBADGER_API_KEY', 'asdf')
+      set_environment_variable('NEETOBUGTRAP_API_KEY', 'asdf')
       expect(run_command("neetobugtrap test")).to be_successfully_executed
       expect(all_output).not_to match /Detected Rails/i
       expect(all_output).to match /asdf/

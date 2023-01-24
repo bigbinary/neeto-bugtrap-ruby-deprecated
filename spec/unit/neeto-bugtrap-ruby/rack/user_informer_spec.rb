@@ -8,7 +8,7 @@ describe NeetoBugtrap::Rack::UserInformer do
   it 'modifies output if there is a neetobugtrap id' do
     main_app = lambda do |env|
       env['neetobugtrap.error_id'] = 1
-      [200, {}, ["<!-- HONEYBADGER ERROR -->"]]
+      [200, {}, ["<!-- NEETOBUGTRAP ERROR -->"]]
     end
     informer_app = NeetoBugtrap::Rack::UserInformer.new(main_app, agent)
 
@@ -20,12 +20,12 @@ describe NeetoBugtrap::Rack::UserInformer do
 
   it 'does not modify output if there is no neetobugtrap id' do
     main_app = lambda do |env|
-      [200, {}, ["<!-- HONEYBADGER ERROR -->"]]
+      [200, {}, ["<!-- NEETOBUGTRAP ERROR -->"]]
     end
     informer_app = NeetoBugtrap::Rack::UserInformer.new(main_app, agent)
 
     result = informer_app.call({})
 
-    expect(result[2][0]).to eq '<!-- HONEYBADGER ERROR -->'
+    expect(result[2][0]).to eq '<!-- NEETOBUGTRAP ERROR -->'
   end
 end

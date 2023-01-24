@@ -9,7 +9,7 @@ module NeetoBugtrap
       def install_deploy_notification
         app       = options.has_key?('app') ? options['app'] : detect_heroku_app(false)
         rails_env = options['environment'] || heroku_var('RAILS_ENV', app)
-        api_key   = options['api_key'] || heroku_var('HONEYBADGER_API_KEY', app)
+        api_key   = options['api_key'] || heroku_var('NEETOBUGTRAP_API_KEY', app)
 
         unless api_key =~ /\S/
           say("Unable to detect your API key from Heroku.", :red)
@@ -34,8 +34,8 @@ module NeetoBugtrap
         say("Installing NeetoBugtrap #{VERSION} for Heroku")
 
         app = options[:app] || detect_heroku_app(false)
-        say("Adding config HONEYBADGER_API_KEY=#{api_key} to Heroku.", :magenta)
-        unless write_heroku_env({'HONEYBADGER_API_KEY' => api_key}, app)
+        say("Adding config NEETOBUGTRAP_API_KEY=#{api_key} to Heroku.", :magenta)
+        unless write_heroku_env({'NEETOBUGTRAP_API_KEY' => api_key}, app)
           say('Unable to update heroku config. You may need to specify an app name with --app APP', :red)
           exit(1)
         end
@@ -107,7 +107,7 @@ module NeetoBugtrap
         cmd << "--app #{app}" if app
         output = run(cmd.join("\s"))
         return false unless $?.to_i == 0
-        Hash[output.scan(/(HONEYBADGER_[^:]+):\s*(\S.*)\s*$/)]
+        Hash[output.scan(/(NEETOBUGTRAP_[^:]+):\s*(\S.*)\s*$/)]
       end
 
       def set_env_from_heroku(app = nil)

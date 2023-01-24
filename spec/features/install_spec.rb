@@ -5,7 +5,7 @@ feature "Installing neetobugtrap via the cli" do
   shared_examples_for "cli installer" do |rails|
     let(:config) { NeetoBugtrap::Config.new(:api_key => 'asdf', :'config.path' => config_file) }
 
-    before { set_environment_variable('HONEYBADGER_BACKEND', 'debug') }
+    before { set_environment_variable('NEETOBUGTRAP_BACKEND', 'debug') }
 
     it "outputs successful result" do
       expect(run_command('neetobugtrap install asdf')).to be_successfully_executed
@@ -27,14 +27,14 @@ feature "Installing neetobugtrap via the cli" do
     end
 
     it "sends a test notification" do
-      set_environment_variable('HONEYBADGER_LOGGING_LEVEL', '1')
+      set_environment_variable('NEETOBUGTRAP_LOGGING_LEVEL', '1')
       expect(run_command('neetobugtrap install asdf')).to be_successfully_executed
       assert_notification('error' => {'class' => 'NeetoBugtrapTestingException'})
     end
 
     context "with the --no-test option" do
       it "skips the test notification" do
-        set_environment_variable('HONEYBADGER_LOGGING_LEVEL', '1')
+        set_environment_variable('NEETOBUGTRAP_LOGGING_LEVEL', '1')
         expect(run_command('neetobugtrap install asdf --no-test')).to be_successfully_executed
         assert_no_notification
       end

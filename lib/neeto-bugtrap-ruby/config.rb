@@ -306,7 +306,7 @@ module NeetoBugtrap
     end
 
     def config_paths
-      Array(ENV['HONEYBADGER_CONFIG_PATH'] || get(:'config.path')).map do |c|
+      Array(ENV['NEETOBUGTRAP_CONFIG_PATH'] || get(:'config.path')).map do |c|
         locate_absolute_path(c, self[:root])
       end
     end

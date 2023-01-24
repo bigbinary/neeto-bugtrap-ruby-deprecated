@@ -1,7 +1,7 @@
 require 'neeto-bugtrap-ruby'
 
 feature "Running the deploy cli command" do
-  before { set_environment_variable('HONEYBADGER_BACKEND', 'debug') }
+  before { set_environment_variable('NEETOBUGTRAP_BACKEND', 'debug') }
 
   it "notifies NeetoBugtrap of the deploy" do
     output = capture(:stdout) { NeetoBugtrap::CLI.start(%w[deploy --api-key=test-api-key --environment=test-env --revision=test-rev --repository=test-repo --user=test-user]) }

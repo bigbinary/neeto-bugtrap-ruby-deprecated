@@ -54,8 +54,8 @@ RSpec.configure do |config|
   end
 
   config.before(:each, type: :feature) do
-    set_environment_variable('HONEYBADGER_BACKEND', 'debug')
-    set_environment_variable('HONEYBADGER_LOGGING_PATH', 'STDOUT')
+    set_environment_variable('NEETOBUGTRAP_BACKEND', 'debug')
+    set_environment_variable('NEETOBUGTRAP_LOGGING_PATH', 'STDOUT')
   end
 
   config.include Helpers

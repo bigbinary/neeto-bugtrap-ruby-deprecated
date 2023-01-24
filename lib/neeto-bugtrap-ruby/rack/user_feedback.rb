@@ -32,7 +32,7 @@ module NeetoBugtrap
         if env['neetobugtrap.error_id'] && form = render_form(env['neetobugtrap.error_id'])
           new_body = []
           body.each do |chunk|
-            new_body << chunk.gsub("<!-- HONEYBADGER FEEDBACK -->", form)
+            new_body << chunk.gsub("<!-- NEETOBUGTRAP FEEDBACK -->", form)
           end
           body.close if body.respond_to?(:close)
           headers['Content-Length'] = new_body.reduce(0) { |a,e| a += e.bytesize }.to_s

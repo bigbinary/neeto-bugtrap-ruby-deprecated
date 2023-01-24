@@ -1,8 +1,8 @@
 feature "Rescuing exceptions in a rake task" do
   before do
     FileUtils.cp(FIXTURES_PATH.join('Rakefile'), current_dir)
-    set_environment_variable('HONEYBADGER_API_KEY', 'asdf')
-    set_environment_variable('HONEYBADGER_LOGGING_LEVEL', 'DEBUG')
+    set_environment_variable('NEETOBUGTRAP_API_KEY', 'asdf')
+    set_environment_variable('NEETOBUGTRAP_LOGGING_LEVEL', 'DEBUG')
   end
 
   it "reports the exception to NeetoBugtrap" do
@@ -12,7 +12,7 @@ feature "Rescuing exceptions in a rake task" do
 
   context "rake reporting is disabled" do
     before do
-      set_environment_variable('HONEYBADGER_EXCEPTIONS_RESCUE_RAKE', 'false')
+      set_environment_variable('NEETOBUGTRAP_EXCEPTIONS_RESCUE_RAKE', 'false')
     end
 
     it "doesn't report the exception to NeetoBugtrapWeb" do
@@ -29,7 +29,7 @@ feature "Rescuing exceptions in a rake task" do
 
     context "rake reporting is enabled" do
       before do
-        set_environment_variable('HONEYBADGER_EXCEPTIONS_RESCUE_RAKE', 'true')
+        set_environment_variable('NEETOBUGTRAP_EXCEPTIONS_RESCUE_RAKE', 'true')
       end
 
       it "reports the exception to NeetoBugtrapWeb" do
