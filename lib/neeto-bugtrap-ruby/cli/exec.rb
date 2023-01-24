@@ -59,7 +59,7 @@ MSG
           api_key: config.get(:api_key),
           notifier: NOTIFIER,
           error: {
-            class: 'honeybdager exec error',
+            class: 'neetobugtrap exec error',
             message: result.msg
           },
           request: {
