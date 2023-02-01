@@ -14,15 +14,15 @@ module Helpers
   end
 
   def build_exception(opts = {})
-    backtrace = ["test/honeybadger/rack_test.rb:15:in `build_exception'",
-                 "test/honeybadger/rack_test.rb:52:in `test_delivers_exception_from_rack'",
+    backtrace = ["test/neetobugtrap/rack_test.rb:15:in `build_exception'",
+                 "test/neetobugtrap/rack_test.rb:52:in `test_delivers_exception_from_rack'",
                  "/Users/josh/Developer/.rvm/gems/ruby-1.9.3-p0/gems/mocha-0.10.5/lib/mocha/integration/mini_test/version_230_to_262.rb:28:in `run'"]
     opts = {backtrace: backtrace}.merge(opts)
     BacktracedException.new(opts)
   end
 
-  def stub_notice(config = Honeybadger::Config.new(logger: NULL_LOGGER))
-    Honeybadger::Notice.new(config, {}).tap do |notice|
+  def stub_notice(config = NeetoBugtrap::Config.new(logger: NULL_LOGGER))
+    NeetoBugtrap::Notice.new(config, {}).tap do |notice|
       allow(notice).to receive(:ignore?).and_return(false)
       allow(notice).to receive(:to_json).and_return('{"foo":"bar"}')
       yield(notice) if block_given?
@@ -31,7 +31,7 @@ module Helpers
 
   def stub_notice!(*args, &block)
     stub_notice(*args, &block).tap do |notice|
-      allow(Honeybadger::Notice).to receive(:new).and_return(notice)
+      allow(NeetoBugtrap::Notice).to receive(:new).and_return(notice)
     end
   end
 end

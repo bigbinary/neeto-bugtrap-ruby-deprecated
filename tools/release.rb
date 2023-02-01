@@ -1,11 +1,11 @@
 require 'rubygems'
 require 'bundler/setup'
-require 'honeybadger/version'
+require 'neeto-bugtrap-ruby/version'
 
 module Release
   CHANGELOG_FILE    = 'CHANGELOG.md'.freeze
   CHANGELOG_HEADING = '## [Unreleased]'
-  EXIT_CMD          = 'bundle update honeybadger && git add -p'
+  EXIT_CMD          = 'bundle update neetobugtrap && git add -p'
 
   def self.run_before(version)
     bump_changelog(version)

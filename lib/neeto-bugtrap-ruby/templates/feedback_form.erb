@@ -1,0 +1,84 @@
+<style>
+#neetobugtrap_feedback_form *, #neetobugtrap_feedback_form *:before, #neetobugtrap_feedback_form *:after { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+#neetobugtrap_feedback_form h2 { font-size: 110%; line-height: 1.5em; }
+#neetobugtrap_feedback_form label { font-weight: bold; }
+#neetobugtrap_feedback_name, #neetobugtrap_feedback_email, #neetobugtrap_feedback_comment { width: 100%; padding: 0.5em; }
+#neetobugtrap_feedback_comment { height: 10em; }
+#neetobugtrap_feedback_form .neetobugtrap-feedback-phone { display: none; }
+#neetobugtrap_feedback_link { font-size: 90%; }
+</style>
+
+<script>
+function neetobugtrapFeedbackResponse(data) {
+  if (data['result'] == 'OK') {
+    var form = document.getElementById('neetobugtrap_feedback_form');
+    var success = document.getElementById('neetobugtrap_feedback_success');
+
+    form.style.display = 'none';
+    success.style.display = 'block';
+  } else {
+    var message;
+
+    if (data['error']) {
+      message = data['error'];
+    } else {
+      message = 'An unknown error occurred. Please try again.';
+    }
+
+    alert(message);
+  }
+}
+
+function sendNeetoBugtrapFeedback() {
+  try {
+    var script = document.createElement('script');
+    var form = document.getElementById('neetobugtrap_feedback_form');
+    script.src = '<%= action %>?format=js&token=<%= error_id %>&name=' + encodeURIComponent(form.name.value) + '&email=' + encodeURIComponent(form.email.value) + '&comment=' + encodeURIComponent(form.comment.value);
+    form.appendChild(script);
+    return false;
+  } catch(e) {
+    if (window.console) {
+      console.log('Error caught while processing NeetoBugtrap feedback form: ' + e);
+      console.log('Submitting form normally...');
+    }
+    return true;
+  }
+}
+</script>
+
+<div id="neetobugtrap_feedback_success" style="display:none;">
+  <p><strong><%= I18n.t('neetobugtrap.feedback.thanks', :default => 'Thanks for the feedback!') %></strong></p>
+</div>
+
+<form action="<%= action %>" method="POST" id="neetobugtrap_feedback_form" onsubmit="return sendNeetoBugtrapFeedback();">
+  <input type="hidden" name="token" id="neetobugtrap_feedback_token" value="<%= error_id %>">
+
+  <h2><%= I18n.t('neetobugtrap.feedback.heading', :default => 'Care to help us fix this?') %></h2>
+  <p><%= I18n.t('neetobugtrap.feedback.explanation', :default => 'Any information you can provide will help our technical team get to the bottom of this issue.') %></p>
+
+  <p class="neetobugtrap-feedback-name">
+    <label for="neetobugtrap_feedback_name"><%= I18n.t('neetobugtrap.feedback.labels.name', :default => 'Your name') %></label><br>
+    <input type="text" name="name" id="neetobugtrap_feedback_name" size="60">
+  </p>
+
+  <p class="neetobugtrap-feedback-phone">
+    <label for="neetobugtrap_feedback_phone"><%= I18n.t('neetobugtrap.feedback.labels.phone', :default => 'Your phone number') %></label><br>
+    <input type="text" name="phone" id="neetobugtrap_feedback_phone" size="60">
+  </p>
+
+  <p class="neetobugtrap-feedback-email">
+    <label for="neetobugtrap_feedback_email"><%= I18n.t('neetobugtrap.feedback.labels.email', :default => 'Your email address') %></label><br>
+    <input type="email" name="email" id="neetobugtrap_feedback_email" size="60">
+  </p>
+
+  <p class="neetobugtrap-feedback-comment">
+    <label for="neetobugtrap_feedback_comment"><%= I18n.t('neetobugtrap.feedback.labels.comment', :default => 'Comment (required)') %></label><br>
+    <textarea name="comment" id="neetobugtrap_feedback_comment" cols="50" rows="6" required></textarea>
+  </p>
+
+  <p class="neetobugtrap-feedback-submit">
+    <input type="submit" id="neetobugtrap_feedback_submit" value="<%= I18n.t('neetobugtrap.feedback.submit', :default => 'Send') %>">
+  </p>
+</form>
+
+<p><a id="neetobugtrap_feedback_link" href="https://www.neetobugtrap.io/" target="_blank" title="Exception, uptime, and performance monitoring for Ruby.">Powered by NeetoBugtrap</a></p>

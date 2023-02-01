@@ -1,5 +1,5 @@
 begin
-  # Require these early to work around https://github.com/jruby/jruby#6547 
+  # Require these early to work around https://github.com/jruby/jruby#6547
   #   can be pulled out > 9.2.14 of jruby.
   require 'i18n'
   require 'i18n/backend/simple'
@@ -12,7 +12,7 @@ begin
   SKIP_ACTIVE_RECORD = !!(defined?(JRUBY_VERSION) && Rails::VERSION::PRE == "alpha")
 
   require FIXTURES_PATH.join('rails', 'config', 'application.rb')
-  require 'honeybadger/init/rails'
+  require 'neeto-bugtrap-ruby/init/rails'
   require 'rspec/rails'
 rescue LoadError
   RAILS_PRESENT = false
@@ -36,13 +36,13 @@ def load_rails_hooks(spec)
   end
 
   spec.before(:each) do
-    Honeybadger.configure do |config|
+    NeetoBugtrap.configure do |config|
       config.api_key = 'gem testing'
       config.backend = 'test'
     end
   end
 
   spec.after(:each) do
-    Honeybadger::Backend::Test.notifications[:notices].clear
+    NeetoBugtrap::Backend::Test.notifications[:notices].clear
   end
 end

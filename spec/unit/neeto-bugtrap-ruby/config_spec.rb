@@ -1,0 +1,284 @@
+require 'neeto-bugtrap-ruby/config'
+require 'neeto-bugtrap-ruby/backend/base'
+require 'net/http'
+
+describe NeetoBugtrap::Config do
+  specify { expect(subject[:env]).to eq nil }
+  specify { expect(subject[:'delayed_job.attempt_threshold']).to eq 0 }
+  specify { expect(subject[:debug]).to eq false }
+
+  describe "#init!" do
+    let(:env) { {} }
+    let(:config) { NeetoBugtrap::Config.new(logger: NULL_LOGGER) }
+
+    it "returns the config object" do
+      expect(config.init!).to eq(config)
+    end
+
+    context "with multiple forms of config" do
+      it "overrides config with options" do
+        config.init!(report_data: true)
+        expect(config[:report_data]).to eq true
+      end
+
+      it "prefers ENV to options" do
+        env['NEETOBUGTRAP_API_KEY'] = 'dan'
+        config.init!({api_key: 'muj'}, env)
+        expect(config[:api_key]).to eq 'dan'
+      end
+
+      it "prefers file to options" do
+        config.init!(:'config.path' => FIXTURES_PATH.join('neetobugtrap.yml'), api_key: 'bar')
+        expect(config[:api_key]).to eq 'zxcv'
+      end
+
+      it "prefers ENV to file" do
+        env['NEETOBUGTRAP_API_KEY'] = 'foo'
+        config.init!({:'config.path' => FIXTURES_PATH.join('neetobugtrap.yml'), api_key: 'bar'}, env)
+        expect(config[:api_key]).to eq 'foo'
+      end
+    end
+
+    context "when a logging path is defined" do
+      let(:log_file) { TMP_DIR.join('neetobugtrap.log') }
+
+      before { log_file.delete if log_file.exist? }
+
+      it "creates a log file" do
+        expect(log_file.exist?).to eq false
+        NeetoBugtrap::Config.new.init!(:'logging.path' => log_file)
+        expect(log_file.exist?).to eq true
+      end
+    end
+
+    context "when options include logger" do
+      it "overrides configured logger" do
+        allow(NULL_LOGGER).to receive(:add)
+        expect(NULL_LOGGER).to receive(:add).with(Logger::Severity::ERROR, /foo/, "neetobugtrap")
+        config = NeetoBugtrap::Config.new.init!(logger: NULL_LOGGER)
+        config.logger.error('foo')
+      end
+    end
+
+    context "when the config path is defined" do
+      let(:config_file) { TMP_DIR.join('neetobugtrap.yml') }
+      let(:instance) { NeetoBugtrap::Config.new(:'config.path' => config_file) }
+
+      before { File.write(config_file, '') }
+      after { File.unlink(config_file) }
+
+      def init_instance
+        instance.init!
+      end
+
+      context "when a config error occurs while loading file" do
+        before do
+          allow(instance.logger).to receive(:add)
+          allow(NeetoBugtrap::Config::Yaml).to receive(:new).and_raise(NeetoBugtrap::Config::ConfigError.new('ouch'))
+        end
+
+        it "raises the exception" do
+          expect { init_instance }.to raise_error(NeetoBugtrap::Config::ConfigError)
+        end
+      end
+
+      context "when a generic error occurs while loading file" do
+        before do
+          allow(instance.logger).to receive(:add)
+          allow(NeetoBugtrap::Config::Yaml).to receive(:new).and_raise(RuntimeError.new('ouch'))
+        end
+
+        it "raises the exception" do
+          expect { init_instance }.to raise_error(RuntimeError)
+        end
+      end
+    end
+  end
+
+  describe "#get" do
+    let(:instance) { NeetoBugtrap::Config.new({logger: NULL_LOGGER, debug: true}.merge!(opts)) }
+    let(:opts) { {} }
+
+    context "when a normal option doesn't exist" do
+      it 'returns the default option value' do
+        expect(instance.get(:development_environments)).to eq NeetoBugtrap::Config::DEFAULTS[:development_environments]
+      end
+    end
+
+    context "when a normal option exists" do
+      let(:opts) { { :development_environments => ['foo']} }
+
+      it 'returns the option value' do
+        expect(instance.get(:development_environments)).to eq ['foo']
+      end
+    end
+  end
+
+  describe "#ignored_classes" do
+    let(:instance) { NeetoBugtrap::Config.new({logger: NULL_LOGGER, debug: true}.merge!(opts)) }
+    let(:opts) { { :'exceptions.ignore' => ['foo']} }
+
+    it "returns the exceptions.ignore option value plus defaults" do
+      expect(instance.ignored_classes).to eq(NeetoBugtrap::Config::DEFAULTS[:'exceptions.ignore'] | ['foo'])
+    end
+
+    context "when exceptions.ignore_only is configured" do
+      let(:opts) { { :'exceptions.ignore' => ['foo'], :'exceptions.ignore_only' => ['bar']} }
+
+      it "returns the override" do
+        expect(instance.ignored_classes).to eq(['bar'])
+      end
+    end
+  end
+
+  describe "#detected_framework" do
+    constants = [:Rails, :Sinatra, :Rack]
+    constants_backup = {}
+
+    before(:all) do
+      constants.each do |const|
+        if Object.const_defined?(const)
+          constants_backup[const] = Object.const_get(const)
+          Object.send(:remove_const, const)
+        end
+      end
+    end
+
+    after(:all) do
+      constants.each do |const|
+        Object.const_set(const, constants_backup[const]) if constants_backup[const]
+      end
+    end
+
+    context "by default" do
+      its(:detected_framework) { should eq :ruby }
+    end
+
+    context "framework is configured" do
+      before { subject[:framework] = 'rack' }
+
+      its(:detected_framework) { should eq :rack }
+    end
+
+    context "Rails is installed" do
+      before do
+        rails = Module.new
+        version = Module.new
+        version.const_set(:STRING, '4.1.5')
+        rails.const_set(:VERSION, version)
+        Object.const_set(:Rails, rails)
+      end
+
+      after { Object.send(:remove_const, :Rails) }
+
+      its(:detected_framework) { should eq :rails }
+      its(:framework_name) { should match /Rails 4\.1\.5/ }
+    end
+
+    context "Sinatra is installed" do
+      before do
+        sinatra = Module.new
+        sinatra.const_set(:VERSION, '1.4.5')
+        Object.const_set(:Sinatra, sinatra)
+      end
+
+      after { Object.send(:remove_const, :Sinatra) }
+
+      its(:detected_framework) { should eq :sinatra }
+      its(:framework_name) { should match /Sinatra 1\.4\.5/ }
+    end
+
+    context "Rack is installed" do
+      before do
+        Object.const_set(:Rack, Module.new { def self.release; '1.0'; end; })
+      end
+
+      after { Object.send(:remove_const, :Rack) }
+
+      its(:detected_framework) { should eq :rack }
+      its(:framework_name) { should match /Rack 1\.0/ }
+    end
+  end
+
+  describe "#default_backend" do
+    its(:default_backend) { should be_a NeetoBugtrap::Backend::Server }
+
+    context "when disabled explicitly" do
+      before { subject[:report_data] = false }
+      its(:default_backend) { should be_a NeetoBugtrap::Backend::Null }
+    end
+
+    context "when environment is not a development environment" do
+      before { subject[:env] = 'production' }
+      its(:default_backend) { should be_a NeetoBugtrap::Backend::Server }
+
+      context "when disabled explicitly" do
+        before { subject[:report_data] = false }
+        its(:default_backend) { should be_a NeetoBugtrap::Backend::Null }
+      end
+    end
+
+    context "when environment is a development environment" do
+      before { subject[:env] = 'development' }
+      its(:default_backend) { should be_a NeetoBugtrap::Backend::Null }
+
+      context "when enabled explicitly" do
+        before { subject[:report_data] = true }
+        its(:default_backend) { should be_a NeetoBugtrap::Backend::Server }
+      end
+    end
+  end
+
+  describe "#root_regexp" do
+    let(:instance) { described_class.new(root: root) }
+
+    subject { instance.root_regexp }
+
+    context "when root is missing" do
+      let(:root) { nil }
+      it { should be_nil }
+    end
+
+    context "when root is present" do
+      let(:root) { '/bar' }
+      it { should match '/bar/baz' }
+      it { should_not match '/foo/bar/baz' }
+    end
+
+    context "when root is blank" do
+      let(:root) { '' }
+      it { should be_nil }
+    end
+  end
+
+  describe "#configure" do
+    context "when the app has already been initialized" do
+      it "overrides the logger with the configured logger" do
+        INIT_LOGGER = Logger.new(File::NULL)
+        CONFIGURE_LOGGER = Logger.new(File::NULL)
+
+        neetobugtrap = NeetoBugtrap::Config.new.init!(logger: INIT_LOGGER)
+
+        neetobugtrap.configure do |config|
+          config.logger = CONFIGURE_LOGGER
+        end
+
+        expect(CONFIGURE_LOGGER).to receive(:add).with(Logger::Severity::ERROR, /foo/, "neetobugtrap")
+
+        neetobugtrap.logger.error('foo')
+      end
+    end
+
+    it "configures multiple before_notify hooks" do
+      subject.configure do |config|
+        config.before_notify {|n| n }
+      end
+
+      subject.configure do |config|
+        config.before_notify {|n| n }
+      end
+
+      expect(subject.before_notify_hooks.size).to eq(2)
+    end
+  end
+end

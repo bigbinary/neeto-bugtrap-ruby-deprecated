@@ -10,7 +10,7 @@ require 'webmock/rspec'
 ENV['RACK_ENV'] = nil
 ENV['RAILS_ENV'] = nil
 
-require 'honeybadger/ruby'
+require 'neeto-bugtrap-ruby/ruby'
 
 begin
   require 'i18n'
@@ -50,22 +50,22 @@ RSpec.configure do |config|
   config.include FeatureHelpers, type: :feature
 
   config.before(:all, type: :feature) do
-    require "honeybadger/cli"
+    require "neeto-bugtrap-ruby/cli"
   end
 
   config.before(:each, type: :feature) do
-    set_environment_variable('HONEYBADGER_BACKEND', 'debug')
-    set_environment_variable('HONEYBADGER_LOGGING_PATH', 'STDOUT')
+    set_environment_variable('NEETOBUGTRAP_BACKEND', 'debug')
+    set_environment_variable('NEETOBUGTRAP_LOGGING_PATH', 'STDOUT')
   end
 
   config.include Helpers
 
   config.before(:all) do
-    Honeybadger::Agent.instance = Honeybadger::Agent.new(Honeybadger::Config.new(backend: 'null', logger: NULL_LOGGER))
+    NeetoBugtrap::Agent.instance = NeetoBugtrap::Agent.new(NeetoBugtrap::Config.new(backend: 'null', logger: NULL_LOGGER))
   end
 
   config.after(:each) do
-    Honeybadger.clear!
+    NeetoBugtrap.clear!
   end
 
   begin
@@ -74,7 +74,7 @@ RSpec.configure do |config|
     require 'rack'
   rescue LoadError
     puts 'Excluding specs which depend on Rack.'
-    config.exclude_pattern = 'spec/unit/honeybadger/rack/*_spec.rb'
+    config.exclude_pattern = 'spec/unit/neeto-bugtrap-ruby/rack/*_spec.rb'
   end
 
   config.before(:each, framework: :rails) do

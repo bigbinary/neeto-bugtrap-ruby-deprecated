@@ -1,4 +1,4 @@
-require 'honeybadger'
+require 'neeto-bugtrap-ruby'
 
 CRASHES = {
   "system_exit" => ->{ exit -1 },

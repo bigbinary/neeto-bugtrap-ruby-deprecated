@@ -1,16 +1,16 @@
-require 'honeybadger'
+require 'neeto-bugtrap-ruby'
 
 feature "Running the deploy cli command" do
-  before { set_environment_variable('HONEYBADGER_BACKEND', 'debug') }
+  before { set_environment_variable('NEETOBUGTRAP_BACKEND', 'debug') }
 
-  it "notifies Honeybadger of the deploy" do
-    output = capture(:stdout) { Honeybadger::CLI.start(%w[deploy --api-key=test-api-key --environment=test-env --revision=test-rev --repository=test-repo --user=test-user]) }
+  it "notifies NeetoBugtrap of the deploy" do
+    output = capture(:stdout) { NeetoBugtrap::CLI.start(%w[deploy --api-key=test-api-key --environment=test-env --revision=test-rev --repository=test-repo --user=test-user]) }
     expect(output).to match(/Deploy notification complete/)
   end
 
   context "when the options are invalid" do
     it "notifies the user" do
-      output = capture(:stdout) { expect{Honeybadger::CLI.start(%w[deploy --api-key= --environment=test-env --revision=test-rev --repository=test-repo --user=test-user])}.to raise_error(SystemExit) }
+      output = capture(:stdout) { expect{NeetoBugtrap::CLI.start(%w[deploy --api-key= --environment=test-env --revision=test-rev --repository=test-repo --user=test-user])}.to raise_error(SystemExit) }
       expect(output).to match(/required.+api-key/i)
     end
   end
@@ -20,7 +20,7 @@ feature "Running the deploy cli command" do
 
     it "notifies the user" do
 
-      cmd = run_command("honeybadger deploy --api-key=test-api-key --environment=test-env --revision=test-rev --repository=test-repo --user=test-user")
+      cmd = run_command("neetobugtrap deploy --api-key=test-api-key --environment=test-env --revision=test-rev --repository=test-repo --user=test-user")
       expect(cmd).not_to be_successfully_executed
       expect(cmd.output).to match(/request failed/i)
     end
@@ -28,7 +28,7 @@ feature "Running the deploy cli command" do
 
   context "when Rails is not detected due to a missing environment.rb" do
     it "skips rails initialization without logging" do
-      output = capture(:stdout) { Honeybadger::CLI.start(%w[deploy --api-key=test-api-key --environment=test-env --revision=test-rev --repository=test-repo --user=test-user --skip-rails-load]) }
+      output = capture(:stdout) { NeetoBugtrap::CLI.start(%w[deploy --api-key=test-api-key --environment=test-env --revision=test-rev --repository=test-repo --user=test-user --skip-rails-load]) }
       expect(output).not_to match(/Skipping Rails initialization/i)
     end
   end
@@ -46,15 +46,15 @@ feature "Running the deploy cli command" do
     after { Dir.chdir(@_previous_dir) }
 
     it "skips rails initialization when true" do
-      output = capture(:stdout) { Honeybadger::CLI::Main.start(%w[deploy --skip-rails-load --api-key=test-api-key --environment=test-env --revision=test-rev --repository=test-repo --user=test-user]) }
+      output = capture(:stdout) { NeetoBugtrap::CLI::Main.start(%w[deploy --skip-rails-load --api-key=test-api-key --environment=test-env --revision=test-rev --repository=test-repo --user=test-user]) }
       expect(output).to match(/Skipping Rails initialization/i)
     end
 
     it "does not skip rails initialization when false or not set" do
-      output = capture(:stdout) { Honeybadger::CLI.start(%w[deploy --api-key=test-api-key --environment=test-env --revision=test-rev --repository=test-repo --user=test-user --skip-rails-load=false]) }
+      output = capture(:stdout) { NeetoBugtrap::CLI.start(%w[deploy --api-key=test-api-key --environment=test-env --revision=test-rev --repository=test-repo --user=test-user --skip-rails-load=false]) }
       expect(output).to_not match(/Skipping Rails initialization/i)
 
-      output = capture(:stdout) { Honeybadger::CLI.start(%w[deploy --api-key=test-api-key --environment=test-env --revision=test-rev --repository=test-repo --user=test-user]) }
+      output = capture(:stdout) { NeetoBugtrap::CLI.start(%w[deploy --api-key=test-api-key --environment=test-env --revision=test-rev --repository=test-repo --user=test-user]) }
       expect(output).to_not match(/Skipping Rails initialization/i)
     end
   end

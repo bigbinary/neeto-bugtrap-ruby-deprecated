@@ -1,13 +1,13 @@
-require 'honeybadger/ruby'
+require 'neeto-bugtrap-ruby/ruby'
 
-agent = Honeybadger::Agent.new({
+agent = NeetoBugtrap::Agent.new({
   api_key: 'asdf',
   backend: 'debug',
   debug: true,
   logger: Logger.new(STDOUT)
 })
 
-agent.notify(error_class: 'CustomHoneybadgerException', error_message: 'Test message')
+agent.notify(error_class: 'CustomNeetoBugtrapException', error_message: 'Test message')
 
 agent.flush
 

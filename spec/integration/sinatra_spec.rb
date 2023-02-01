@@ -9,7 +9,7 @@ end
 
 if SINATRA_PRESENT
   require FIXTURES_PATH.join('sinatra', 'app.rb')
-  require 'honeybadger/init/sinatra'
+  require 'neeto-bugtrap-ruby/init/sinatra'
 
   describe 'Sinatra integration' do
     include Rack::Test::Methods
@@ -19,27 +19,27 @@ if SINATRA_PRESENT
     end
 
     before(:each) do
-      Honeybadger.configure do |config|
+      NeetoBugtrap.configure do |config|
         config.backend = 'test'
       end
     end
 
     after(:each) do
-      Honeybadger::Backend::Test.notifications[:notices].clear
+      NeetoBugtrap::Backend::Test.notifications[:notices].clear
     end
 
     it "reports exceptions" do
-      Honeybadger.flush do
+      NeetoBugtrap.flush do
         get '/runtime_error'
         expect(last_response.status).to eq(500)
       end
 
-      expect(Honeybadger::Backend::Test.notifications[:notices].size).to eq(1)
+      expect(NeetoBugtrap::Backend::Test.notifications[:notices].size).to eq(1)
     end
 
     it "configures the api key from sinatra config" do
       get '/' # Initialize app
-      expect(Honeybadger.config.get(:api_key)).to eq('gem testing')
+      expect(NeetoBugtrap.config.get(:api_key)).to eq('gem testing')
     end
   end
 end

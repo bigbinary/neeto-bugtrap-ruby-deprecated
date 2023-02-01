@@ -24,9 +24,9 @@ def run_sidekiq_job(klass, args)
   processor.__send__(:process, unit_of_work)
 end
 
-require 'honeybadger'
+require 'neeto-bugtrap-ruby'
 
-ERROR = StandardError.new('This is a failure inside Honeybadger integration test suite')
+ERROR = StandardError.new('This is a failure inside NeetoBugtrap integration test suite')
 
 class SidekiqJobNoRetry
   include Sidekiq::Job
@@ -39,7 +39,7 @@ end
 
 describe 'Sidekiq integration' do
   it 'calls the error handler' do
-    expect(Honeybadger).to receive(:notify).once.with(ERROR, anything)
+    expect(NeetoBugtrap).to receive(:notify).once.with(ERROR, anything)
 
     expect { run_sidekiq_job(SidekiqJobNoRetry, ['Tim', 10]) }.to raise_error(ERROR)
   end

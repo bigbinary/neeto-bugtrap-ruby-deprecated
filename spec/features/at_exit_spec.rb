@@ -6,13 +6,13 @@ feature "Rescuing exceptions at exit" do
   end
 
   before do
-    set_environment_variable('HONEYBADGER_API_KEY', 'asdf')
-    set_environment_variable('HONEYBADGER_LOGGING_LEVEL', 'DEBUG')
+    set_environment_variable('NEETOBUGTRAP_API_KEY', 'asdf')
+    set_environment_variable('NEETOBUGTRAP_LOGGING_LEVEL', 'DEBUG')
   end
 
-  it "reports the exception to Honeybadger" do
+  it "reports the exception to NeetoBugtrap" do
     expect(run_command(crash_cmd)).not_to be_successfully_executed
-    assert_notification('error' => {'class' => 'RuntimeError', 'message' => 'RuntimeError: badgers!'})
+    assert_notification('error' => {'class' => 'RuntimeError', 'message' => 'RuntimeError: bugtraps!'})
   end
 
   it "ignores SystemExit" do
@@ -32,10 +32,10 @@ feature "Rescuing exceptions at exit" do
 
   context "at_exit is disabled" do
     before do
-      set_environment_variable('HONEYBADGER_EXCEPTIONS_NOTIFY_AT_EXIT', 'false')
+      set_environment_variable('NEETOBUGTRAP_EXCEPTIONS_NOTIFY_AT_EXIT', 'false')
     end
 
-    it "doesn't report the exception to Honeybadger" do
+    it "doesn't report the exception to NeetoBugtrap" do
       expect(run_command(crash_cmd)).not_to be_successfully_executed
       assert_no_notification
     end
