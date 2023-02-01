@@ -75,7 +75,8 @@ module NeetoBugtrap
         if config[:'connection.secure']
           http.use_ssl = true
 
-          http.ca_file = config.ca_bundle_path
+          # TODO: Uncomment this later and fix the issue with the file
+          # http.ca_file = config.ca_bundle_path
           http.verify_mode = OpenSSL::SSL::VERIFY_PEER
         else
           http.use_ssl = false
