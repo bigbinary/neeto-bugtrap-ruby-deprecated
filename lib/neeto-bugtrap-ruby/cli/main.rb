@@ -16,7 +16,7 @@ module NeetoBugtrap
     BLANK = /\A\s*\z/
 
     NOTIFIER = {
-      name: 'neeto-bugtrap-ruby-ruby (cli)'.freeze,
+      name: 'neeto-bugtrap-ruby (cli)'.freeze,
       url: 'https://github.com/bigbinary/neeto-bugtrap-ruby'.freeze,
       version: VERSION,
       language: nil
