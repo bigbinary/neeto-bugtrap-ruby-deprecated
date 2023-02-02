@@ -10,7 +10,7 @@ module NeetoBugtrap
   module Backend
     class Server < Base
       ENDPOINTS = {
-        notices: '/v1/notices'.freeze,
+        notices: '/api/v1/notices'.freeze,
         deploys: '/v1/deploys'.freeze
       }.freeze
 
