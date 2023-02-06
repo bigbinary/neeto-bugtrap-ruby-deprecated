@@ -44,7 +44,7 @@ module NeetoBugtrap
       end
 
       def post(endpoint, payload, headers = nil)
-        response = http_connection.post(endpoint,  { payload: JSON.parse(payload.to_json).deep_symbolize_keys }.to_json, http_headers(headers))
+        response = http_connection.post(endpoint,  { payload: payload.to_json }, http_headers(headers))
         debug { sprintf("http method=POST path=%s code=%d", endpoint.dump, response.code) }
         response
       end
