@@ -28,4 +28,5 @@ group :development do
   gem 'pry'
   gem 'pry-byebug', platforms: :mri
   gem 'rdoc'
+  gem "rubocop", "~> 1.28"
 end
