@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'neeto-bugtrap-ruby/util/sanitizer'
 
 module NeetoBugtrap
@@ -18,7 +20,7 @@ module NeetoBugtrap
       KEYS = DEFAULTS.keys.freeze
 
       # The cgi_data key where the raw Cookie header is stored.
-      HTTP_COOKIE_KEY = 'HTTP_COOKIE'.freeze
+      HTTP_COOKIE_KEY = 'HTTP_COOKIE'
 
       def self.build(opts = {})
         sanitizer = opts.fetch(:sanitizer) { Sanitizer.new }
@@ -26,6 +28,7 @@ module NeetoBugtrap
         payload = DEFAULTS.dup
         KEYS.each do |key|
           next unless opts[key]
+
           payload[key] = sanitizer.sanitize(opts[key])
         end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 begin
   require 'sidekiq'
   SIDEKIQ_PRESENT = true
@@ -32,7 +34,7 @@ class SidekiqJobNoRetry
   include Sidekiq::Job
   sidekiq_options retry: false
 
-  def perform(*args)
+  def perform(*_args)
     raise ERROR
   end
 end

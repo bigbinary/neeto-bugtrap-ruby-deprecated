@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 # minimal rails gems required to run rails
 # https://github.com/rails/rails/blob/main/rails.gemspec
-RAILS_GEMS = %w[activesupport activemodel activerecord activejob railties actionpack]
+RAILS_GEMS = %w[activesupport activemodel activerecord activejob railties actionpack].freeze
 
 appraise 'standalone' do
 end
@@ -23,7 +25,7 @@ end
 
 appraise 'delayed_job' do
   gem 'delayed_job', '< 4.1.2' # See https://github.com/collectiveidea/delayed_job/pull/931
-  gem "activesupport", "> 3.1.12", "< 5.0.0" # Prevent buggy version from being installed
+  gem 'activesupport', '> 3.1.12', '< 5.0.0' # Prevent buggy version from being installed
 end
 
 appraise 'resque' do
@@ -40,7 +42,7 @@ appraise 'sidekiq7' do
 end
 
 appraise 'rails5.2' do
-  RAILS_GEMS.each { |rails_gem| gem rails_gem, "~> 5.2" }
+  RAILS_GEMS.each { |rails_gem| gem rails_gem, '~> 5.2' }
   gem 'sqlite3', '~> 1.4', platforms: :mri
   gem 'activerecord-jdbcsqlite3-adapter', '~> 52', platforms: :jruby
   gem 'better_errors', require: false, platforms: :mri
@@ -51,7 +53,7 @@ end
 
 if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.5.0')
   appraise 'rails6.0' do
-    RAILS_GEMS.each { |rails_gem| gem rails_gem, "~> 6.0" }
+    RAILS_GEMS.each { |rails_gem| gem rails_gem, '~> 6.0' }
     gem 'sqlite3', '~> 1.4', platforms: :mri
     gem 'activerecord-jdbcsqlite3-adapter', '~> 60', platforms: :jruby
     gem 'better_errors', require: false, platforms: :mri
@@ -60,7 +62,7 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.5.0')
   end
 
   appraise 'rails6.1' do
-    RAILS_GEMS.each { |rails_gem| gem rails_gem, "~> 6.1" }
+    RAILS_GEMS.each { |rails_gem| gem rails_gem, '~> 6.1' }
     gem 'sqlite3', '~> 1.4', platforms: :mri
     gem 'activerecord-jdbcsqlite3-adapter', '~> 61', platforms: :jruby
     gem 'better_errors', require: false, platforms: :mri
@@ -71,7 +73,7 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.5.0')
   end
 
   appraise 'rails7.0' do
-    RAILS_GEMS.each { |rails_gem| gem rails_gem, "~> 7.0" }
+    RAILS_GEMS.each { |rails_gem| gem rails_gem, '~> 7.0' }
     gem 'sqlite3', '~> 1.4', platforms: :mri
     gem 'activerecord-jdbcsqlite3-adapter', '~> 60', platforms: :jruby
     gem 'better_errors', require: false, platforms: :mri

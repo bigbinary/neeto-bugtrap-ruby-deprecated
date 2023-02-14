@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'forwardable'
 require 'neeto-bugtrap-ruby/cli/main'
 require 'neeto-bugtrap-ruby/cli/helpers'
@@ -26,7 +28,7 @@ module NeetoBugtrap
 
         response = config.backend.notify(:deploys, payload)
         if response.success?
-          say("Deploy notification complete.", :green)
+          say('Deploy notification complete.', :green)
         else
           say(error_message(response), :red)
           exit(1)

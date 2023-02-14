@@ -1,4 +1,6 @@
-require File.expand_path('../lib/neeto-bugtrap-ruby/version.rb', __FILE__)
+# frozen_string_literal: true
+
+require File.expand_path('lib/neeto-bugtrap-ruby/version.rb', __dir__)
 
 Gem::Specification.new do |s|
   s.name        = 'neeto-bugtrap-ruby'
@@ -8,9 +10,9 @@ Gem::Specification.new do |s|
   s.description = 'Make managing application errors a more pleasant experience.'
   s.authors     = ['Honeybadger Industries LLC']
   s.metadata = {
-    'bug_tracker_uri'   => 'https://github.com/bigbinary/neeto-bugtrap-ruby/issues',
-    'changelog_uri'     => 'https://github.com/bigbinary/neeto-bugtrap-ruby/blob/master/CHANGELOG.md',
-    'source_code_uri'   => 'https://github.com/bigbinary/neeto-bugtrap-ruby'
+    'bug_tracker_uri' => 'https://github.com/bigbinary/neeto-bugtrap-ruby/issues',
+    'changelog_uri' => 'https://github.com/bigbinary/neeto-bugtrap-ruby/blob/master/CHANGELOG.md',
+    'source_code_uri' => 'https://github.com/bigbinary/neeto-bugtrap-ruby'
   }
 
   s.required_ruby_version = '>= 2.3.0'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'neeto-bugtrap-ruby/plugin'
 
 module NeetoBugtrap
@@ -14,7 +16,7 @@ module NeetoBugtrap
         # @return The super value of the middleware's +#render_exception()+
         #   method.
         def render_exception(arg, exception)
-          if arg.kind_of?(::ActionDispatch::Request)
+          if arg.is_a?(::ActionDispatch::Request)
             request = arg
             env = request.env
           else
@@ -23,7 +25,11 @@ module NeetoBugtrap
           end
 
           env['neetobugtrap.exception'] = exception
-          env['neetobugtrap.request.url'] = request.url rescue nil
+          env['neetobugtrap.request.url'] = begin
+            request.url
+          rescue StandardError
+            nil
+          end
 
           super(arg, exception)
         end
@@ -31,7 +37,9 @@ module NeetoBugtrap
 
       class ErrorSubscriber
         def self.report(exception, handled:, severity:, context: {}, source: nil)
-          return if source && ::NeetoBugtrap.config[:'rails.subscriber_ignore_sources'].any? { |regex| regex.match?(source) }
+          return if source && ::NeetoBugtrap.config[:'rails.subscriber_ignore_sources'].any? do |regex|
+                      regex.match?(source)
+                    end
 
           tags = ["severity:#{severity}", "handled:#{handled}"]
           tags << "source:#{source}" if source

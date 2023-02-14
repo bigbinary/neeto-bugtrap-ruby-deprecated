@@ -1,21 +1,25 @@
+# frozen_string_literal: true
+
 require 'set'
 
 module NeetoBugtrap
   class Config
     module Env
       CONFIG_KEY = /\ANEETOBUGTRAP_(.+)\Z/.freeze
-      CONFIG_MAPPING = Hash[DEFAULTS.keys.map {|k| [k.to_s.upcase.gsub(KEY_REPLACEMENT, '_'), k] }].freeze
+      CONFIG_MAPPING = Hash[DEFAULTS.keys.map { |k| [k.to_s.upcase.gsub(KEY_REPLACEMENT, '_'), k] }].freeze
       ARRAY_VALUES = Regexp.new('\s*,\s*').freeze
       IGNORED_TYPES = Set[Hash]
 
       def self.new(env = ENV)
         hash = {}
 
-        env.each_pair do |k,v|
+        env.each_pair do |k, v|
           next unless k.match(CONFIG_KEY)
-          next unless config_key = CONFIG_MAPPING[$1]
+          next unless (config_key = CONFIG_MAPPING[::Regexp.last_match(1)])
+
           type = OPTIONS[config_key][:type]
           next if IGNORED_TYPES.include?(type)
+
           hash[config_key] = cast_value(v, type)
         end
 

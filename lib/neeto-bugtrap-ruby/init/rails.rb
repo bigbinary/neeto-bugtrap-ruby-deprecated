@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails'
 require 'yaml'
 
@@ -19,12 +21,12 @@ module NeetoBugtrap
 
         config.before_initialize do
           NeetoBugtrap.init!({
-            :root           => ::Rails.root.to_s,
-            :env            => ::Rails.env,
-            :'config.path'  => ::Rails.root.join('config', 'neetobugtrap.yml'),
-            :logger         => Logging::FormattedLogger.new(::Rails.logger),
-            :framework      => :rails
-          })
+                               root: ::Rails.root.to_s,
+                               env: ::Rails.env,
+                               'config.path': ::Rails.root.join('config', 'neetobugtrap.yml'),
+                               logger: Logging::FormattedLogger.new(::Rails.logger),
+                               framework: :rails
+                             })
         end
 
         config.after_initialize do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'forwardable'
 require 'net/http'
 require 'json'
@@ -15,10 +17,10 @@ module NeetoBugtrap
       include NeetoBugtrap::Logging::Helper
 
       HEADERS = {
-        'Content-type'.freeze => 'application/json'.freeze,
-        'Content-Encoding'.freeze => 'deflate'.freeze,
-        'Accept'.freeze => 'text/json, application/json'.freeze,
-        'User-Agent'.freeze => "NB-Ruby #{VERSION}; #{RUBY_VERSION}; #{RUBY_PLATFORM}".freeze
+        'Content-type' => 'application/json',
+        'Content-Encoding' => 'deflate',
+        'Accept' => 'text/json, application/json',
+        'User-Agent' => "NB-Ruby #{VERSION}; #{RUBY_VERSION}; #{RUBY_PLATFORM}"
       }.freeze
 
       ERRORS = [Timeout::Error,
@@ -39,13 +41,13 @@ module NeetoBugtrap
 
       def get(endpoint)
         response = http_connection.get(endpoint)
-        debug { sprintf("http method=GET path=%s code=%d", endpoint.dump, response.code) }
+        debug { format('http method=GET path=%s code=%d', endpoint.dump, response.code) }
         response
       end
 
       def post(endpoint, payload, headers = nil)
-        response = http_connection.post(endpoint,  { payload: payload.to_json }, http_headers(headers))
-        debug { sprintf("http method=POST path=%s code=%d", endpoint.dump, response.code) }
+        response = http_connection.post(endpoint, { payload: payload.to_json }, http_headers(headers))
+        debug { format('http method=POST path=%s code=%d', endpoint.dump, response.code) }
         response
       end
 
@@ -60,13 +62,14 @@ module NeetoBugtrap
       def http_headers(headers = nil)
         {}.tap do |hash|
           hash.merge!(HEADERS)
-          hash.merge!({'X-API-Key' => config[:api_key].to_s})
+          hash.merge!({ 'X-API-Key' => config[:api_key].to_s })
           hash.merge!(headers) if headers
         end
       end
 
       def setup_http_connection
-        http_class = Net::HTTP::Proxy(config[:'connection.proxy_host'], config[:'connection.proxy_port'], config[:'connection.proxy_user'], config[:'connection.proxy_pass'])
+        http_class = Net::HTTP::Proxy(config[:'connection.proxy_host'], config[:'connection.proxy_port'],
+                                      config[:'connection.proxy_user'], config[:'connection.proxy_pass'])
         http = http_class.new(config[:'connection.host'], config.connection_port)
 
         http.read_timeout = config[:'connection.http_read_timeout']

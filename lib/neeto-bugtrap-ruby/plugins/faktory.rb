@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'neeto-bugtrap-ruby/plugin'
 require 'neeto-bugtrap-ruby/ruby'
 
@@ -5,7 +7,7 @@ module NeetoBugtrap
   module Plugins
     module Faktory
       class Middleware
-        def call(worker, job)
+        def call(_worker, _job)
           NeetoBugtrap.clear!
           yield
         end
@@ -23,10 +25,10 @@ module NeetoBugtrap
 
           ::Faktory.configure_worker do |faktory|
             faktory.error_handlers << lambda do |ex, params|
-              opts = {parameters: params}
+              opts = { parameters: params }
 
-              if job = params[:job]
-                if (threshold = config[:'faktory.attempt_threshold'].to_i) > 0
+              if (job = params[:job])
+                if (threshold = config[:'faktory.attempt_threshold'].to_i).positive?
                   # If job.failure is nil, it is the first attempt. The first
                   # retry has a job.failure.retry_count of 0, which would be
                   # the second attempt in our case.

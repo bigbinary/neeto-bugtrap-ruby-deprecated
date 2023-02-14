@@ -1,19 +1,24 @@
+# frozen_string_literal: true
+
 module NeetoBugtrap
   module Util
     class Stats
-      HAS_MEM = File.exist?("/proc/meminfo")
-      HAS_LOAD = File.exist?("/proc/loadavg")
+      HAS_MEM = File.exist?('/proc/meminfo')
+      HAS_LOAD = File.exist?('/proc/loadavg')
 
       class << self
         def all
-          { :mem => memory, :load => load }
+          { mem: memory, load: load }
         end
 
         # From https://github.com/bloopletech/webstats/blob/master/server/data_providers/mem_info.rb
         def memory
           out = {}
           if HAS_MEM && (meminfo = run_meminfo)
-            out[:total], out[:free], out[:buffers], out[:cached] = meminfo[0..4].map { |l| l =~ /^.*?\: +(.*?) kB$/; ($1.to_i / 1024.0).to_f }
+            out[:total], out[:free], out[:buffers], out[:cached] = meminfo[0..4].map do |l|
+              l =~ /^.*?: +(.*?) kB$/
+              (::Regexp.last_match(1).to_i / 1024.0).to_f
+            end
             out[:free_total] = out[:free] + out[:buffers] + out[:cached]
           end
           out
@@ -31,11 +36,11 @@ module NeetoBugtrap
         private
 
         def run_meminfo
-          run { IO.readlines("/proc/meminfo") }
+          run { IO.readlines('/proc/meminfo') }
         end
 
         def run_loadavg
-          run { IO.read("/proc/loadavg") }
+          run { IO.read('/proc/loadavg') }
         end
 
         def run

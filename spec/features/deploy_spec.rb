@@ -1,39 +1,51 @@
+# frozen_string_literal: true
+
 require 'neeto-bugtrap-ruby'
 
-feature "Running the deploy cli command" do
+feature 'Running the deploy cli command' do
   before { set_environment_variable('NEETOBUGTRAP_BACKEND', 'debug') }
 
-  it "notifies NeetoBugtrap of the deploy" do
-    output = capture(:stdout) { NeetoBugtrap::CLI.start(%w[deploy --api-key=test-api-key --environment=test-env --revision=test-rev --repository=test-repo --user=test-user]) }
+  it 'notifies NeetoBugtrap of the deploy' do
+    output = capture(:stdout) do
+      NeetoBugtrap::CLI.start(%w[deploy --api-key=test-api-key --environment=test-env --revision=test-rev
+                                 --repository=test-repo --user=test-user])
+    end
     expect(output).to match(/Deploy notification complete/)
   end
 
-  context "when the options are invalid" do
-    it "notifies the user" do
-      output = capture(:stdout) { expect{NeetoBugtrap::CLI.start(%w[deploy --api-key= --environment=test-env --revision=test-rev --repository=test-repo --user=test-user])}.to raise_error(SystemExit) }
+  context 'when the options are invalid' do
+    it 'notifies the user' do
+      output = capture(:stdout) do
+        expect do
+          NeetoBugtrap::CLI.start(%w[deploy --api-key= --environment=test-env --revision=test-rev --repository=test-repo
+                                     --user=test-user])
+        end.to raise_error(SystemExit)
+      end
       expect(output).to match(/required.+api-key/i)
     end
   end
 
-  context "when there is a server error" do
+  context 'when there is a server error' do
     before { set_environment_variable('DEBUG_BACKEND_STATUS', '500') }
 
-    it "notifies the user" do
-
-      cmd = run_command("neetobugtrap deploy --api-key=test-api-key --environment=test-env --revision=test-rev --repository=test-repo --user=test-user")
+    it 'notifies the user' do
+      cmd = run_command('neetobugtrap deploy --api-key=test-api-key --environment=test-env --revision=test-rev --repository=test-repo --user=test-user')
       expect(cmd).not_to be_successfully_executed
       expect(cmd.output).to match(/request failed/i)
     end
   end
 
-  context "when Rails is not detected due to a missing environment.rb" do
-    it "skips rails initialization without logging" do
-      output = capture(:stdout) { NeetoBugtrap::CLI.start(%w[deploy --api-key=test-api-key --environment=test-env --revision=test-rev --repository=test-repo --user=test-user --skip-rails-load]) }
+  context 'when Rails is not detected due to a missing environment.rb' do
+    it 'skips rails initialization without logging' do
+      output = capture(:stdout) do
+        NeetoBugtrap::CLI.start(%w[deploy --api-key=test-api-key --environment=test-env --revision=test-rev
+                                   --repository=test-repo --user=test-user --skip-rails-load])
+      end
       expect(output).not_to match(/Skipping Rails initialization/i)
     end
   end
 
-  context "when Rails is detected via the presence of environment.rb" do
+  context 'when Rails is detected via the presence of environment.rb' do
     before do
       @features_dir = File.join(Dir.pwd, 'tmp', 'features')
       config_path = File.join(@features_dir, 'config')
@@ -45,16 +57,25 @@ feature "Running the deploy cli command" do
 
     after { Dir.chdir(@_previous_dir) }
 
-    it "skips rails initialization when true" do
-      output = capture(:stdout) { NeetoBugtrap::CLI::Main.start(%w[deploy --skip-rails-load --api-key=test-api-key --environment=test-env --revision=test-rev --repository=test-repo --user=test-user]) }
+    it 'skips rails initialization when true' do
+      output = capture(:stdout) do
+        NeetoBugtrap::CLI::Main.start(%w[deploy --skip-rails-load --api-key=test-api-key --environment=test-env
+                                         --revision=test-rev --repository=test-repo --user=test-user])
+      end
       expect(output).to match(/Skipping Rails initialization/i)
     end
 
-    it "does not skip rails initialization when false or not set" do
-      output = capture(:stdout) { NeetoBugtrap::CLI.start(%w[deploy --api-key=test-api-key --environment=test-env --revision=test-rev --repository=test-repo --user=test-user --skip-rails-load=false]) }
+    it 'does not skip rails initialization when false or not set' do
+      output = capture(:stdout) do
+        NeetoBugtrap::CLI.start(%w[deploy --api-key=test-api-key --environment=test-env --revision=test-rev
+                                   --repository=test-repo --user=test-user --skip-rails-load=false])
+      end
       expect(output).to_not match(/Skipping Rails initialization/i)
 
-      output = capture(:stdout) { NeetoBugtrap::CLI.start(%w[deploy --api-key=test-api-key --environment=test-env --revision=test-rev --repository=test-repo --user=test-user]) }
+      output = capture(:stdout) do
+        NeetoBugtrap::CLI.start(%w[deploy --api-key=test-api-key --environment=test-env --revision=test-rev
+                                   --repository=test-repo --user=test-user])
+      end
       expect(output).to_not match(/Skipping Rails initialization/i)
     end
   end

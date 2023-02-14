@@ -1,14 +1,16 @@
+# frozen_string_literal: true
+
 module Helpers
   def stub_http(options = {})
     response = options[:response] || Net::HTTPSuccess.new('1.2', '200', 'OK')
     allow(response).to receive(:body).and_return(options[:body] || '{"id":"1234"}')
-    http = double(:post          => response,
-                  :get           => response,
+    http = double(:post => response,
+                  :get => response,
                   :read_timeout= => nil,
                   :open_timeout= => nil,
-                  :ca_file=      => nil,
-                  :verify_mode=  => nil,
-                  :use_ssl=      => nil)
+                  :ca_file= => nil,
+                  :verify_mode= => nil,
+                  :use_ssl= => nil)
     allow(Net::HTTP).to receive(:new).and_return(http)
     http
   end
@@ -17,7 +19,7 @@ module Helpers
     backtrace = ["test/neetobugtrap/rack_test.rb:15:in `build_exception'",
                  "test/neetobugtrap/rack_test.rb:52:in `test_delivers_exception_from_rack'",
                  "/Users/josh/Developer/.rvm/gems/ruby-1.9.3-p0/gems/mocha-0.10.5/lib/mocha/integration/mini_test/version_230_to_262.rb:28:in `run'"]
-    opts = {backtrace: backtrace}.merge(opts)
+    opts = { backtrace: backtrace }.merge(opts)
     BacktracedException.new(opts)
   end
 

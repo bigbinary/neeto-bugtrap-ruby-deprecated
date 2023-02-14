@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'neeto-bugtrap-ruby/backend/null'
 
 module NeetoBugtrap
@@ -10,7 +12,7 @@ module NeetoBugtrap
       #
       # @return [Hash] Notifications hash.
       def self.notifications
-        @notifications ||= Hash.new {|h,k| h[k] = [] }
+        @notifications ||= Hash.new { |h, k| h[k] = [] }
       end
 
       # @api public

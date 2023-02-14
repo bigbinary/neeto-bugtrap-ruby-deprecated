@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'net/http'
 require 'logger'
 require 'neeto-bugtrap-ruby/util/http'
@@ -12,24 +14,25 @@ describe NeetoBugtrap::Util::HTTP do
   it { should respond_to :post }
   it { should respond_to :get }
 
-  it "sends a user agent with version number" do
-    http  = stub_http
-    expect(http).to receive(:post).with(kind_of(String), kind_of(String), hash_including({'User-Agent' => "NB-Ruby #{NeetoBugtrap::VERSION}; #{RUBY_VERSION}; #{RUBY_PLATFORM}"}))
+  it 'sends a user agent with version number' do
+    http = stub_http
+    expect(http).to receive(:post).with(kind_of(String), kind_of(String),
+                                        hash_including({ 'User-Agent' => "NB-Ruby #{NeetoBugtrap::VERSION}; #{RUBY_VERSION}; #{RUBY_PLATFORM}" }))
     http_post
   end
 
-  context "when proxy settings are configured" do
-    let(:config) {
+  context 'when proxy settings are configured' do
+    let(:config) do
       NeetoBugtrap::Config.new({
-        :api_key => 'abc123',
-        :'connection.proxy_host' => 'some.host',
-        :'connection.proxy_port' => 88,
-        :'connection.proxy_user' => 'login',
-        :'connection.proxy_pass' => 'passwd'
-      })
-    }
+                                 api_key: 'abc123',
+                                 'connection.proxy_host': 'some.host',
+                                 'connection.proxy_port': 88,
+                                 'connection.proxy_user': 'login',
+                                 'connection.proxy_pass': 'passwd'
+                               })
+    end
 
-    it "gets from NeetoBugtrap when using an HTTP proxy" do
+    it 'gets from NeetoBugtrap when using an HTTP proxy' do
       http  = stub_http
       proxy = double(new: http)
       allow(Net::HTTP).to receive(:Proxy).and_return(proxy)
@@ -40,76 +43,77 @@ describe NeetoBugtrap::Util::HTTP do
       http_get
     end
 
-    it "posts to NeetoBugtrap when using an HTTP proxy" do
+    it 'posts to NeetoBugtrap when using an HTTP proxy' do
       http  = stub_http
       proxy = double(new: http)
       allow(Net::HTTP).to receive(:Proxy).and_return(proxy)
 
-      expect(http).to receive(:post).with('/v1/foo', kind_of(String), NeetoBugtrap::Util::HTTP::HEADERS.merge({ 'X-API-Key' => 'abc123'}))
+      expect(http).to receive(:post).with('/v1/foo', kind_of(String),
+                                          NeetoBugtrap::Util::HTTP::HEADERS.merge({ 'X-API-Key' => 'abc123' }))
       expect(Net::HTTP).to receive(:Proxy).with('some.host', 88, 'login', 'passwd')
 
       http_post
     end
   end
 
-  it "returns the response" do
+  it 'returns the response' do
     stub_http
     expect(http_post).to be_a Net::HTTPResponse
   end
 
-  it "returns the response for #get" do
+  it 'returns the response for #get' do
     stub_http
     expect(http_get).to be_a Net::HTTPResponse
   end
 
-  context "success response from server" do
+  context 'success response from server' do
     let(:sender) { build_sender }
 
     before { stub_http }
 
-    it "logs success" do
+    it 'logs success' do
       expect(logger).to receive(:debug).with(/code=200/)
       http_post
     end
   end
 
-  context "success response from server on #get" do
+  context 'success response from server on #get' do
     before { stub_http }
 
-    it "logs success" do
+    it 'logs success' do
       expect(logger).to receive(:debug).with(/code=200/)
       http_get
     end
   end
 
-  context "non-success response from server" do
-    it "logs failure" do
+  context 'non-success response from server' do
+    it 'logs failure' do
       stub_http(response: Net::HTTPClientError.new('1.2', '429', 'Too Many Requests'))
       expect(logger).to receive(:debug).with(/code=429/)
       http_post
     end
   end
 
-  context "non-success response from server on #get" do
-    it "logs failure" do
+  context 'non-success response from server on #get' do
+    it 'logs failure' do
       stub_http(response: Net::HTTPClientError.new('1.2', '429', 'Too Many Requests'))
       expect(logger).to receive(:debug).with(/code=429/)
       http_get
     end
   end
 
-  context "failure response from server" do
-    it "logs failure" do
+  context 'failure response from server' do
+    it 'logs failure' do
       stub_http(response: Net::HTTPServerError.new('1.2', '500', 'Internal Error'))
       expect(logger).to receive(:debug).with(/code=500/)
       http_post
     end
   end
 
-  context "when encountering exceptions" do
-    context "HTTP connection setup problems" do
-      it "should not be rescued" do
-        proxy = double()
+  context 'when encountering exceptions' do
+    context 'HTTP connection setup problems' do
+      it 'should not be rescued' do
+        proxy = double
         allow(proxy).to receive(:new).and_raise(NoMemoryError)
         allow(Net::HTTP).to receive(:Proxy).and_return(proxy)
         expect { http_post }.to raise_error(NoMemoryError)
@@ -136,24 +140,26 @@ describe NeetoBugtrap::Util::HTTP do
     # end
   end
 
-  context "SSL" do
-    it "posts to the right url for non-ssl" do
+  context 'SSL' do
+    it 'posts to the right url for non-ssl' do
       config[:'connection.secure'] = false
       http = stub_http
-      url = "http://api.neetobugtrap.com:80/v1/foo"
+      url = 'http://api.neetobugtrap.com:80/v1/foo'
       uri = URI.parse(url)
-      expect(http).to receive(:post).with(uri.path, anything, NeetoBugtrap::Util::HTTP::HEADERS.merge({ 'X-API-Key' => 'abc123'}))
+      expect(http).to receive(:post).with(uri.path, anything,
+                                          NeetoBugtrap::Util::HTTP::HEADERS.merge({ 'X-API-Key' => 'abc123' }))
       http_post
     end
 
-    it "post to the right path for ssl" do
+    it 'post to the right path for ssl' do
       http = stub_http
-      expect(http).to receive(:post).with('/v1/foo', anything, NeetoBugtrap::Util::HTTP::HEADERS.merge({ 'X-API-Key' => 'abc123'}))
+      expect(http).to receive(:post).with('/v1/foo', anything,
+                                          NeetoBugtrap::Util::HTTP::HEADERS.merge({ 'X-API-Key' => 'abc123' }))
       http_post
     end
 
-    it "verifies the SSL peer when the use_ssl option is set to true" do
-      url = "https://api.neetobugtrap.com/v1/foo"
+    it 'verifies the SSL peer when the use_ssl option is set to true' do
+      url = 'https://api.neetobugtrap.com/v1/foo'
       uri = URI.parse(url)
 
       real_http = Net::HTTP.new(uri.host, uri.port)
@@ -170,7 +176,7 @@ describe NeetoBugtrap::Util::HTTP do
       expect(real_http.ca_file).to eq config.local_cert_path
     end
 
-    it "uses the default DEFAULT_CERT_FILE if asked to" do
+    it 'uses the default DEFAULT_CERT_FILE if asked to' do
       expect(File).to receive(:exist?).with(OpenSSL::X509::DEFAULT_CERT_FILE).and_return(true)
       config[:'connection.system_ssl_cert_chain'] = true
 
@@ -179,7 +185,7 @@ describe NeetoBugtrap::Util::HTTP do
       expect(http.ca_file).to eq OpenSSL::X509::DEFAULT_CERT_FILE
     end
 
-    it "uses a custom ca bundle if asked to" do
+    it 'uses a custom ca bundle if asked to' do
       config[:'connection.ssl_ca_bundle_path'] = '/test/blargh.crt'
 
       http = subject.send(:setup_http_connection)
@@ -187,7 +193,7 @@ describe NeetoBugtrap::Util::HTTP do
       expect(http.ca_file).to eq '/test/blargh.crt'
     end
 
-    it "uses the default cert (OpenSSL::X509::DEFAULT_CERT_FILE) only if explicitly told to" do
+    it 'uses the default cert (OpenSSL::X509::DEFAULT_CERT_FILE) only if explicitly told to' do
       allow(File).to receive(:exist?).with(OpenSSL::X509::DEFAULT_CERT_FILE).and_return(true)
       http = subject.send(:setup_http_connection)
 
@@ -195,44 +201,44 @@ describe NeetoBugtrap::Util::HTTP do
       expect(http.ca_file).not_to eq OpenSSL::X509::DEFAULT_CERT_FILE
     end
 
-    it "verifies the connection when the use_ssl option is set (VERIFY_PEER)" do
+    it 'verifies the connection when the use_ssl option is set (VERIFY_PEER)' do
       http = subject.send(:setup_http_connection)
       expect(http.verify_mode).to eq OpenSSL::SSL::VERIFY_PEER
     end
 
-    it "uses ssl if secure" do
+    it 'uses ssl if secure' do
       http = subject.send(:setup_http_connection)
       expect(http.port).to eq 443
     end
 
-    it "does not use ssl if not secure" do
+    it 'does not use ssl if not secure' do
       config[:'connection.secure'] = false
       http = subject.send(:setup_http_connection)
       expect(http.port).to eq 80
     end
   end
 
-  context "network timeouts" do
-    it "default the open timeout to 2 seconds" do
+  context 'network timeouts' do
+    it 'default the open timeout to 2 seconds' do
       http = stub_http
       expect(http).to receive(:open_timeout=).with(2)
       http_post
     end
 
-    it "default the read timeout to 5 seconds" do
+    it 'default the read timeout to 5 seconds' do
       http = stub_http
       expect(http).to receive(:read_timeout=).with(5)
       http_post
     end
 
-    it "allow override of the open timeout" do
+    it 'allow override of the open timeout' do
       config[:'connection.http_open_timeout'] = 4
       http = stub_http
       expect(http).to receive(:open_timeout=).with(4)
       http_post
     end
 
-    it "allow override of the read timeout" do
+    it 'allow override of the read timeout' do
       config[:'connection.http_read_timeout'] = 10
       http = stub_http
       expect(http).to receive(:read_timeout=).with(10)

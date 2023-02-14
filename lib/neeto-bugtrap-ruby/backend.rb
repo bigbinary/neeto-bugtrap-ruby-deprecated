@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'forwardable'
 
 require 'neeto-bugtrap-ruby/backend/base'

@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'rails'
 require 'action_controller/railtie'
 
 # Duplicating here as some specs don't use the rails helper
-SKIP_ACTIVE_RECORD = !!(defined?(JRUBY_VERSION) && Rails::VERSION::PRE == "alpha")
+SKIP_ACTIVE_RECORD = !(defined?(JRUBY_VERSION) && Rails::VERSION::PRE == 'alpha').nil?
 
 if SKIP_ACTIVE_RECORD
   module ActiveRecord
@@ -23,9 +25,7 @@ ActiveSupport::Deprecation.silenced = true
 
 class RailsApp < Rails::Application
   # Rails 6+
-  if Rails::VERSION::MAJOR >= 6
-    config.hosts << "www.example.com"
-  end
+  config.hosts << 'www.example.com' if Rails::VERSION::MAJOR >= 6
 
   config.secret_key_base = 'test secret key base for test rails app'
   config.eager_load = true
@@ -34,8 +34,8 @@ class RailsApp < Rails::Application
   config.consider_all_requests_local = false
 
   routes.append do
-    get '/runtime_error', :to => 'rails#runtime_error'
-    get '/record_not_found', :to => 'rails#record_not_found'
+    get '/runtime_error', to: 'rails#runtime_error'
+    get '/record_not_found', to: 'rails#record_not_found'
     root to: 'rails#index'
   end
 end

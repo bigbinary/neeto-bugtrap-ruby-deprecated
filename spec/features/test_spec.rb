@@ -1,49 +1,51 @@
+# frozen_string_literal: true
+
 require 'neeto-bugtrap-ruby'
 
-feature "Running the test cli command" do
-  scenario "in a standalone project" do
-    it "displays expected debug output and sends notification" do
+feature 'Running the test cli command' do
+  scenario 'in a standalone project' do
+    it 'displays expected debug output and sends notification' do
       set_environment_variable('NEETOBUGTRAP_API_KEY', 'asdf')
-      expect(run_command("neetobugtrap test")).to be_successfully_executed
-      expect(all_output).not_to match /Detected Rails/i
-      expect(all_output).to match /asdf/
-      expect(all_output).to match /Initializing NeetoBugtrap/
-      expect(all_output).to match /NeetoBugtrapTestingException/
+      expect(run_command('neetobugtrap test')).to be_successfully_executed
+      expect(all_output).not_to match(/Detected Rails/i)
+      expect(all_output).to match(/asdf/)
+      expect(all_output).to match(/Initializing NeetoBugtrap/)
+      expect(all_output).to match(/NeetoBugtrapTestingException/)
       # Make sure the worker timeout isn't being exceeded.
-      expect(all_output).not_to match /kill/
-      assert_notification('error' => {'class' => 'NeetoBugtrapTestingException'})
+      expect(all_output).not_to match(/kill/)
+      assert_notification('error' => { 'class' => 'NeetoBugtrapTestingException' })
     end
 
-    context "with invalid configuration" do
-      it "displays expected debug output" do
-        expect(run_command("neetobugtrap test --dry-run")).not_to be_successfully_executed
-        expect(all_output).not_to match /Detected Rails/i
-        expect(all_output).to match /API key is missing/i
+    context 'with invalid configuration' do
+      it 'displays expected debug output' do
+        expect(run_command('neetobugtrap test --dry-run')).not_to be_successfully_executed
+        expect(all_output).not_to match(/Detected Rails/i)
+        expect(all_output).to match(/API key is missing/i)
       end
     end
   end
 
-  scenario "in a rails project", framework: :rails do
+  scenario 'in a rails project', framework: :rails do
     let(:config_file) { Pathname(current_dir).join('config', 'neetobugtrap.yml') }
 
-    it "displays expected debug output and sends notification" do
-      File.write(config_file, <<-YML)
----
-api_key: 'asdf'
-YML
-      expect(run_command("neetobugtrap test")).to be_successfully_executed
-      expect(all_output).to match /Detected Rails/i
-      expect(all_output).to match /asdf/
-      expect(all_output).to match /Initializing NeetoBugtrap/
-      expect(all_output).to match /NeetoBugtrapTestingException/
-      assert_notification('error' => {'class' => 'NeetoBugtrapTestingException'})
+    it 'displays expected debug output and sends notification' do
+      File.write(config_file, <<~YML)
+        ---
+        api_key: 'asdf'
+      YML
+      expect(run_command('neetobugtrap test')).to be_successfully_executed
+      expect(all_output).to match(/Detected Rails/i)
+      expect(all_output).to match(/asdf/)
+      expect(all_output).to match(/Initializing NeetoBugtrap/)
+      expect(all_output).to match(/NeetoBugtrapTestingException/)
+      assert_notification('error' => { 'class' => 'NeetoBugtrapTestingException' })
     end
 
-    context "with invalid configuration" do
-      it "displays expected debug output" do
-        expect(run_command("neetobugtrap test --dry-run")).not_to be_successfully_executed
-        expect(all_output).to match /Detected Rails/i
-        expect(all_output).to match /API key is missing/i
+    context 'with invalid configuration' do
+      it 'displays expected debug output' do
+        expect(run_command('neetobugtrap test --dry-run')).not_to be_successfully_executed
+        expect(all_output).to match(/Detected Rails/i)
+        expect(all_output).to match(/API key is missing/i)
       end
     end
   end

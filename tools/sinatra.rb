@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sinatra'
 require 'neeto-bugtrap-ruby'
 
@@ -10,7 +12,7 @@ get '/' do
 end
 
 get '/test/failure' do
-  fail 'Sinatra has left the building'
+  raise 'Sinatra has left the building'
 end
 
 # end

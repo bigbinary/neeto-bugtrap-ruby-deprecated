@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'neeto-bugtrap-ruby/conversions'
 
 module NeetoBugtrap
@@ -19,7 +21,6 @@ module NeetoBugtrap
     end
 
     # Internal helpers
-
 
     def set_context(hash)
       @mutex.synchronize do
@@ -50,6 +51,5 @@ module NeetoBugtrap
         @rack_env = nil
       end
     end
-
   end
 end

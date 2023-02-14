@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'rubygems'
 require 'bundler/setup'
 require 'neeto-bugtrap-ruby/version'
 
 module Release
-  CHANGELOG_FILE    = 'CHANGELOG.md'.freeze
+  CHANGELOG_FILE    = 'CHANGELOG.md'
   CHANGELOG_HEADING = '## [Unreleased]'
   EXIT_CMD          = 'bundle update neetobugtrap && git add -p'
 
@@ -11,17 +13,19 @@ module Release
     bump_changelog(version)
   end
 
-  def self.run_after(version)
+  def self.run_after(_version)
     Bundler.with_unbundled_env { system(EXIT_CMD) }
   end
 
   def self.bump_changelog(version)
     contents = File.read(CHANGELOG_FILE)
     if contents =~ Regexp.new(Regexp.escape("## [#{version}]"))
-      puts "ERROR: #{ version } already exists in CHANGELOG.md"
+      puts "ERROR: #{version} already exists in CHANGELOG.md"
       exit 1
     end
 
-    File.write(CHANGELOG_FILE, contents.gsub(CHANGELOG_HEADING, "#{CHANGELOG_HEADING}\n\n## [#{version}] - #{Time.now.strftime("%Y-%m-%d")}"))
+    File.write(CHANGELOG_FILE,
+               contents.gsub(CHANGELOG_HEADING,
+                             "#{CHANGELOG_HEADING}\n\n## [#{version}] - #{Time.now.strftime('%Y-%m-%d')}"))
   end
 end

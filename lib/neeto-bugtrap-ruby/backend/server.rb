@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'net/http'
 require 'json'
 require 'zlib'
@@ -10,12 +12,11 @@ module NeetoBugtrap
   module Backend
     class Server < Base
       ENDPOINTS = {
-        notices: '/api/v1/notices'.freeze,
-        deploys: '/v1/deploys'.freeze
+        notices: '/api/v1/notices',
+        deploys: '/v1/deploys'
       }.freeze
 
-      CHECK_IN_ENDPOINT = '/v1/check_in'.freeze
-
+      CHECK_IN_ENDPOINT = '/v1/check_in'
 
       HTTP_ERRORS = Util::HTTP::ERRORS
 
@@ -51,11 +52,11 @@ module NeetoBugtrap
       private
 
       def payload_headers(payload)
-        if payload.respond_to?(:api_key) && payload.api_key
-          {
-            'X-API-Key' => payload.api_key
-          }
-        end
+        return unless payload.respond_to?(:api_key) && payload.api_key
+
+        {
+          'X-API-Key' => payload.api_key
+        }
       end
     end
   end

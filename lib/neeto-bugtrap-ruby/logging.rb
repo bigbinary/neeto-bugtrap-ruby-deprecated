@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'logger'
 require 'singleton'
 require 'delegate'
@@ -6,8 +8,8 @@ require 'forwardable'
 module NeetoBugtrap
   # @api private
   module Logging
-    PREFIX = '** [NeetoBugtrap] '.freeze
-    LOGGER_PROG = "neetobugtrap".freeze
+    PREFIX = '** [NeetoBugtrap] '
+    LOGGER_PROG = 'neetobugtrap'
 
     # Logging helper methods. Requires a NeetoBugtrap::Config @config instance
     # variable to exist and/or #logger to be defined. Each method is
@@ -15,27 +17,32 @@ module NeetoBugtrap
     # logger directly to avoid extra object allocation.
     module Helper
       private
+
       def debug(msg = nil)
         return true unless logger.debug?
+
         msg = yield if block_given?
         logger.debug(msg)
       end
-      alias :d :debug
+      alias d debug
 
       def info(msg = nil)
         return true unless logger.info?
+
         msg = yield if block_given?
         logger.info(msg)
       end
 
       def warn(msg = nil)
         return true unless logger.warn?
+
         msg = yield if block_given?
         logger.warn(msg)
       end
 
       def error(msg = nil)
         return true unless logger.error?
+
         msg = yield if block_given?
         logger.error(msg)
       end
@@ -94,7 +101,7 @@ module NeetoBugtrap
         @logger = logger
       end
 
-      def add(severity, msg, progname=LOGGER_PROG)
+      def add(severity, msg, progname = LOGGER_PROG)
         @logger.add(severity, msg, progname)
       end
 
@@ -102,28 +109,29 @@ module NeetoBugtrap
     end
 
     class FormattedLogger < StandardLogger
-      def add(severity, msg, progname=LOGGER_PROG)
+      def add(severity, msg, progname = LOGGER_PROG)
         super(severity, format_message(msg), progname)
       end
 
       private
 
       def format_message(msg)
-        return msg unless msg.kind_of?(String)
+        return msg unless msg.is_a?(String)
+
         PREFIX + msg
       end
     end
 
     class ConfigLogger < StandardLogger
-      LOCATE_CALLER_LOCATION = Regexp.new("#{Regexp.escape(__FILE__)}").freeze
-      CALLER_LOCATION = Regexp.new("#{Regexp.escape(File.expand_path('../../../', __FILE__))}/(.*)").freeze
+      LOCATE_CALLER_LOCATION = Regexp.new(Regexp.escape(__FILE__).to_s).freeze
+      CALLER_LOCATION = Regexp.new("#{Regexp.escape(File.expand_path('../..', __dir__))}/(.*)").freeze
 
-      INFO_SUPPLEMENT = ' level=%s pid=%s'.freeze
-      DEBUG_SUPPLEMENT = ' at=%s'.freeze
+      INFO_SUPPLEMENT = ' level=%s pid=%s'
+      DEBUG_SUPPLEMENT = ' at=%s'
 
       def initialize(config, logger = Logger.new(nil))
         @config = config
-        @tty = STDOUT.tty?
+        @tty = $stdout.tty?
         @tty_level = @config.log_level(:'logging.tty_level')
         super(logger)
       end
@@ -135,6 +143,7 @@ module NeetoBugtrap
         # the info level if the debug config option is on.
         if severity == Logger::Severity::DEBUG
           return true if suppress_debug?
+
           super(Logger::Severity::INFO, supplement(msg, Logger::Severity::DEBUG))
         else
           super(severity, supplement(msg, severity))
@@ -156,21 +165,21 @@ module NeetoBugtrap
       end
 
       def supplement(msg, severity)
-        return msg unless msg.kind_of?(String)
+        return msg unless msg.is_a?(String)
 
         r = msg.dup
-        r << sprintf(INFO_SUPPLEMENT, severity, Process.pid)
-        if severity == Logger::Severity::DEBUG && l = caller_location
-          r << sprintf(DEBUG_SUPPLEMENT, l.dump)
+        r << format(INFO_SUPPLEMENT, severity, Process.pid)
+        if severity == Logger::Severity::DEBUG && (l = caller_location)
+          r << format(DEBUG_SUPPLEMENT, l.dump)
         end
 
         r
       end
 
       def caller_location
-        if caller && caller.find {|l| l !~ LOCATE_CALLER_LOCATION && l =~ CALLER_LOCATION }
-          Regexp.last_match(1)
-        end
+        return unless caller&.find { |l| l !~ LOCATE_CALLER_LOCATION && l =~ CALLER_LOCATION }
+
+        Regexp.last_match(1)
       end
     end
   end

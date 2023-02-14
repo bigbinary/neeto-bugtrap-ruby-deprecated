@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'forwardable'
 require 'net/http'
 
@@ -38,7 +40,7 @@ module NeetoBugtrap
       return false unless start
 
       if queue.size >= config.max_queue_size
-        warn { sprintf('Unable to report error; reached max queue size of %s. id=%s', queue.size, msg.id) }
+        warn { format('Unable to report error; reached max queue size of %s. id=%s', queue.size, msg.id) }
         return false
       end
 
@@ -60,11 +62,15 @@ module NeetoBugtrap
       return true unless thread&.alive?
 
       if throttled?
-        warn { sprintf('Unable to report %s error(s) to NeetoBugtrap (currently throttled)', queue.size) } unless queue.empty?
+        unless queue.empty?
+          warn do
+            format('Unable to report %s error(s) to NeetoBugtrap (currently throttled)', queue.size)
+          end
+        end
         return true
       end
 
-      info { sprintf('Waiting to report %s error(s) to NeetoBugtrap', queue.size) } unless queue.empty?
+      info { format('Waiting to report %s error(s) to NeetoBugtrap', queue.size) } unless queue.empty?
 
       queue.push(SHUTDOWN)
       !!thread.join
@@ -76,7 +82,7 @@ module NeetoBugtrap
     # Blocks until queue is processed up to this point in time.
     def flush
       mutex.synchronize do
-        if thread && thread.alive?
+        if thread&.alive?
           queue.push(marker)
           marker.wait(mutex)
         end
@@ -102,7 +108,7 @@ module NeetoBugtrap
     private
 
     attr_reader :config, :queue, :pid, :mutex, :marker, :thread, :throttle,
-      :throttle_interval, :start_at
+                :throttle_interval, :start_at
 
     def_delegator :config, :backend
 
@@ -117,11 +123,12 @@ module NeetoBugtrap
     def can_start?
       return false if shutdown?
       return false if suspended?
+
       true
     end
 
     def throttled?
-      mutex.synchronize { throttle > 0 }
+      mutex.synchronize { throttle.positive? }
     end
 
     def kill!
@@ -159,10 +166,10 @@ module NeetoBugtrap
         d { 'stopping worker' }
       end
     rescue Exception => e
-      error {
+      error do
         msg = "Error in worker thread (shutting down) class=%s message=%s\n\t%s"
-        sprintf(msg, e.class, e.message.dump, Array(e.backtrace).join("\n\t"))
-      }
+        format(msg, e.class, e.message.dump, Array(e.backtrace).join("\n\t"))
+      end
     ensure
       release_marker
     end
@@ -171,26 +178,30 @@ module NeetoBugtrap
       send_now(msg)
 
       if shutdown? && throttled?
-        warn { sprintf('Unable to report %s error(s) to NeetoBugtrapWeb (currently throttled)', queue.size) } if queue.size > 1
+        if queue.size > 1
+          warn do
+            format('Unable to report %s error(s) to NeetoBugtrapWeb (currently throttled)', queue.size)
+          end
+        end
         kill!
         return
       end
 
       sleep(throttle_interval)
     rescue StandardError => e
-      error {
+      error do
         msg = "Error in worker thread class=%s message=%s\n\t%s"
-        sprintf(msg, e.class, e.message.dump, Array(e.backtrace).join("\n\t"))
-      }
+        format(msg, e.class, e.message.dump, Array(e.backtrace).join("\n\t"))
+      end
     end
 
     def notify_backend(payload)
-      d { sprintf('worker notifying backend id=%s', payload.id) }
+      d { format('worker notifying backend id=%s', payload.id) }
       backend.notify(:notices, payload)
     end
 
     def calc_throttle_interval
-      ((BASE_THROTTLE ** throttle) - 1).round(3)
+      ((BASE_THROTTLE**throttle) - 1).round(3)
     end
 
     def inc_throttle
@@ -203,7 +214,8 @@ module NeetoBugtrap
 
     def dec_throttle
       mutex.synchronize do
-        return nil if throttle == 0
+        return nil if throttle.zero?
+
         @throttle -= 1
         @throttle_interval = calc_throttle_interval
         throttle
@@ -211,30 +223,40 @@ module NeetoBugtrap
     end
 
     def handle_response(msg, response)
-      d { sprintf('worker response id=%s code=%s message=%s', msg.id, response.code, response.message.to_s.dump) }
+      d { format('worker response id=%s code=%s message=%s', msg.id, response.code, response.message.to_s.dump) }
 
       case response.code
       when 429, 503
         throttle = inc_throttle
-        warn { sprintf('Error report failed: project is sending too many errors. id=%s code=%s throttle=%s interval=%s', msg.id, response.code, throttle, throttle_interval) }
+        warn do
+          format('Error report failed: project is sending too many errors. id=%s code=%s throttle=%s interval=%s', msg.id,
+                 response.code, throttle, throttle_interval)
+        end
       when 402
-        warn { sprintf('Error report failed: payment is required. id=%s code=%s', msg.id, response.code) }
+        warn { format('Error report failed: payment is required. id=%s code=%s', msg.id, response.code) }
         suspend(3600)
       when 403
-        warn { sprintf('Error report failed: API key is invalid. id=%s code=%s', msg.id, response.code) }
+        warn { format('Error report failed: API key is invalid. id=%s code=%s', msg.id, response.code) }
         suspend(3600)
       when 201
-        if throttle = dec_throttle
-          info { sprintf('Success ⚡ https://app.neetobugtrap.com/notice/%s id=%s code=%s throttle=%s interval=%s', msg.id, msg.id, response.code, throttle, throttle_interval) }
+        if (throttle = dec_throttle)
+          info { format('Success ⚡ https://app.neetobugtrap.com/notice/%s id=%s code=%s throttle=%s interval=%s', msg.id, msg.id, response.code, throttle, throttle_interval) }
         else
-          info { sprintf('Success ⚡ https://app.neetobugtrap.com/notice/%s id=%s code=%s', msg.id, msg.id, response.code) }
+          info { format('Success ⚡ https://app.neetobugtrap.com/notice/%s id=%s code=%s', msg.id, msg.id, response.code) }
         end
       when :stubbed
-        info { sprintf('Success ⚡ Development mode is enabled; this error will be reported if it occurs after you deploy your app. id=%s', msg.id) }
+        info do
+          format(
+            'Success ⚡ Development mode is enabled; this error will be reported if it occurs after you deploy your app. id=%s', msg.id
+          )
+        end
       when :error
-        warn { sprintf('Error report failed: an unknown error occurred. code=%s error=%s', response.code, response.message.to_s.dump) }
+        warn do
+          format('Error report failed: an unknown error occurred. code=%s error=%s', response.code,
+                 response.message.to_s.dump)
+        end
       else
-        warn { sprintf('Error report failed: unknown response from server. code=%s', response.code) }
+        warn { format('Error report failed: unknown response from server. code=%s', response.code) }
       end
     end
 

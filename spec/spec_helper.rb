@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'aruba/rspec'
 require 'aruba/api'
 require 'fileutils'
@@ -19,10 +21,10 @@ rescue LoadError
   nil
 end
 
-Dir[File.expand_path('../support/**/*.rb', __FILE__)].each {|f| require f}
+Dir[File.expand_path('support/**/*.rb', __dir__)].sort.each { |f| require f }
 
-TMP_DIR = Pathname.new(File.expand_path('../../tmp', __FILE__))
-FIXTURES_PATH = Pathname.new(File.expand_path('../fixtures/', __FILE__))
+TMP_DIR = Pathname.new(File.expand_path('../tmp', __dir__))
+FIXTURES_PATH = Pathname.new(File.expand_path('fixtures', __dir__))
 NULL_LOGGER = Logger.new(File::NULL)
 NULL_LOGGER.level = Logger::Severity::DEBUG
 
@@ -39,9 +41,7 @@ RSpec.configure do |config|
   config.filter_run :focus
   config.run_all_when_everything_filtered = true
 
-  if config.files_to_run.one?
-    config.default_formatter = 'doc'
-  end
+  config.default_formatter = 'doc' if config.files_to_run.one?
 
   config.alias_example_group_to :feature, type: :feature
   config.alias_example_group_to :scenario
@@ -50,7 +50,7 @@ RSpec.configure do |config|
   config.include FeatureHelpers, type: :feature
 
   config.before(:all, type: :feature) do
-    require "neeto-bugtrap-ruby/cli"
+    require 'neeto-bugtrap-ruby/cli'
   end
 
   config.before(:each, type: :feature) do
@@ -61,7 +61,8 @@ RSpec.configure do |config|
   config.include Helpers
 
   config.before(:all) do
-    NeetoBugtrap::Agent.instance = NeetoBugtrap::Agent.new(NeetoBugtrap::Config.new(backend: 'null', logger: NULL_LOGGER))
+    NeetoBugtrap::Agent.instance = NeetoBugtrap::Agent.new(NeetoBugtrap::Config.new(backend: 'null',
+                                                                                    logger: NULL_LOGGER))
   end
 
   config.after(:each) do
@@ -82,11 +83,12 @@ RSpec.configure do |config|
     cd('rails')
   end
 
-  if ENV['BUNDLE_GEMFILE'] =~ /rails/
+  case ENV['BUNDLE_GEMFILE']
+  when /rails/
     config.filter_run_excluding framework: ->(v) { !v || v != :rails }
-  elsif ENV['BUNDLE_GEMFILE'] =~ /sinatra/
+  when /sinatra/
     config.filter_run_excluding framework: ->(v) { !v || v != :sinatra }
-  elsif ENV['BUNDLE_GEMFILE'] =~ /rake/
+  when /rake/
     config.filter_run_excluding framework: ->(v) { !v || v != :rake }
   else
     config.filter_run_excluding framework: ->(v) { !v || v != :ruby }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'neeto-bugtrap-ruby/util/stats'
 
 describe NeetoBugtrap::Util::Stats do
@@ -6,7 +8,8 @@ describe NeetoBugtrap::Util::Stats do
 
     before do
       stub_const('NeetoBugtrap::Util::Stats::HAS_MEM', true)
-      allow(IO).to receive(:readlines).with('/proc/meminfo').and_return(["MemTotal:       35125476 kB\n", "MemFree:         1671436 kB\n", "Buffers:         2242812 kB\n", "Cached:         11791596 kB\n", "SwapCached:       164256 kB\n", "Active:         15891800 kB\n", "Inactive:       13593872 kB\n"])
+      allow(IO).to receive(:readlines).with('/proc/meminfo').and_return(["MemTotal:       35125476 kB\n",
+                                                                         "MemFree:         1671436 kB\n", "Buffers:         2242812 kB\n", "Cached:         11791596 kB\n", "SwapCached:       164256 kB\n", "Active:         15891800 kB\n", "Inactive:       13593872 kB\n"])
     end
 
     describe '.keys' do
@@ -14,7 +17,7 @@ describe NeetoBugtrap::Util::Stats do
       its(:length) { should eq 5 }
     end
 
-    context "when too many files are open" do
+    context 'when too many files are open' do
       before do
         allow(IO).to receive(:readlines).and_raise Errno::ENFILE
       end
@@ -23,14 +26,14 @@ describe NeetoBugtrap::Util::Stats do
     end
 
     it 'converts KB to MB' do
-      expect(NeetoBugtrap::Util::Stats.memory[:total]).to eq 34302.22265625
+      expect(NeetoBugtrap::Util::Stats.memory[:total]).to eq 34_302.22265625
       expect(NeetoBugtrap::Util::Stats.memory[:free]).to eq 1632.26171875
       expect(NeetoBugtrap::Util::Stats.memory[:buffers]).to eq 2190.24609375
-      expect(NeetoBugtrap::Util::Stats.memory[:cached]).to eq 11515.23046875
+      expect(NeetoBugtrap::Util::Stats.memory[:cached]).to eq 11_515.23046875
     end
 
     it 'sums non-totals for free_total' do
-      expect(NeetoBugtrap::Util::Stats.memory[:free_total]).to eq 15337.73828125
+      expect(NeetoBugtrap::Util::Stats.memory[:free_total]).to eq 15_337.73828125
     end
 
     context 'when mathn is required' do
@@ -58,7 +61,7 @@ describe NeetoBugtrap::Util::Stats do
       its(:length) { should eq 3 }
     end
 
-    context "when too many files are open" do
+    context 'when too many files are open' do
       before do
         allow(IO).to receive(:read).and_raise Errno::ENFILE
       end

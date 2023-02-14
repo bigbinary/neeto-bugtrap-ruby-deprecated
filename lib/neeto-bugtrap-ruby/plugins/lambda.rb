@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'neeto-bugtrap-ruby/plugin'
 require 'neeto-bugtrap-ruby/util/lambda'
 
@@ -26,20 +28,18 @@ module NeetoBugtrap
         mod = Module.new do
           handler_names.each do |handler|
             define_method(handler) do |event:, context:|
-              begin
-                NeetoBugtrap.context(aws_request_id: context.aws_request_id) if context.respond_to?(:aws_request_id)
+              NeetoBugtrap.context(aws_request_id: context.aws_request_id) if context.respond_to?(:aws_request_id)
 
-                super(event: event, context: context)
-              rescue => e
-                NeetoBugtrap.notify(e)
-                raise
-              end
+              super(event: event, context: context)
+            rescue StandardError => e
+              NeetoBugtrap.notify(e)
+              raise
             end
           end
         end
 
-        self.singleton_class.prepend(mod)
-        Kernel.singleton_class.prepend(mod) if self == TOPLEVEL_BINDING.eval("self")
+        singleton_class.prepend(mod)
+        Kernel.singleton_class.prepend(mod) if self == TOPLEVEL_BINDING.eval('self')
       end
     end
 
@@ -51,15 +51,15 @@ module NeetoBugtrap
         config[:sync] = true
         config[:'exceptions.notify_at_exit'] = false
 
-        main = TOPLEVEL_BINDING.eval("self")
+        main = TOPLEVEL_BINDING.eval('self')
         main.extend(LambdaExtension)
 
         (config[:before_notify] ||= []) << lambda do |notice|
           data = Util::Lambda.normalized_data
 
-          notice.component = data["function"]
-          notice.action = data["handler"]
-          notice.details["Lambda Details"] = data
+          notice.component = data['function']
+          notice.action = data['handler']
+          notice.details['Lambda Details'] = data
 
           if (trace_id = Util::Lambda.trace_id)
             notice.context[:lambda_trace_id] = trace_id

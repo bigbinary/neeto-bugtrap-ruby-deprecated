@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module NeetoBugtrap
   module Util
     class SQL
@@ -6,8 +8,8 @@ module NeetoBugtrap
       DQuotedData = /"(?:[^"]|"")*"/.freeze
       NumericData = /\b\d+\b/.freeze
       Newline = /\n/.freeze
-      Replacement = "?".freeze
-      EmptyReplacement = "".freeze
+      Replacement = '?'
+      EmptyReplacement = ''
       DoubleQuoters = /(postgres|sqlite|postgis)/.freeze
 
       def self.obfuscate(sql, adapter)

@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 module NeetoBugtrap
   module Util
     class Revision
       class << self
         def detect(root = Dir.pwd)
           revision = from_heroku ||
-            from_capistrano(root) ||
-            from_git
+                     from_capistrano(root) ||
+                     from_git
 
           revision = revision.to_s.strip
           return unless revision =~ /\S/
@@ -26,12 +28,22 @@ module NeetoBugtrap
         def from_capistrano(root)
           file = File.join(root, 'REVISION')
           return nil unless File.file?(file)
-          File.read(file) rescue nil
+
+          begin
+            File.read(file)
+          rescue StandardError
+            nil
+          end
         end
 
         def from_git
           return nil unless File.directory?('.git')
-          `git rev-parse HEAD 2> #{File::NULL}` rescue nil
+
+          begin
+            `git rev-parse HEAD 2> #{File::NULL}`
+          rescue StandardError
+            nil
+          end
         end
       end
     end

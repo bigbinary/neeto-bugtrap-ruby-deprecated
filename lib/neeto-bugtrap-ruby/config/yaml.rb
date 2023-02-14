@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'pathname'
 require 'yaml'
 require 'erb'
@@ -8,7 +10,7 @@ module NeetoBugtrap
       DISALLOWED_KEYS = [:'config.path'].freeze
 
       def self.new(path, env = 'production')
-        path = path.kind_of?(Pathname) ? path : Pathname.new(path)
+        path = path.is_a?(Pathname) ? path : Pathname.new(path)
 
         if !path.exist?
           raise ConfigError, "The configuration file #{path} was not found."
@@ -19,7 +21,7 @@ module NeetoBugtrap
         end
 
         yaml = load_yaml(path)
-        yaml.merge!(yaml[env]) if yaml[env].kind_of?(Hash)
+        yaml.merge!(yaml[env]) if yaml[env].is_a?(Hash)
 
         dotify_keys(yaml)
       end
@@ -31,13 +33,13 @@ module NeetoBugtrap
           # to Psych 4. https://bugs.ruby-lang.org/issues/17866
           method = YAML.respond_to?(:unsafe_load) ? :unsafe_load : :load
           yaml = YAML.send(method, ERB.new(path.read).result)
-        rescue => e
+        rescue StandardError => e
           config_error = ConfigError.new(e.to_s)
 
           if e.backtrace
             backtrace = e.backtrace.map do |line|
-              if line.start_with?('(erb)'.freeze)
-                line.gsub('(erb)'.freeze, path.to_s)
+              if line.start_with?('(erb)')
+                line.gsub('(erb)', path.to_s)
               else
                 line
               end
@@ -60,12 +62,13 @@ module NeetoBugtrap
 
       def self.dotify_keys(hash, key_prefix = nil)
         {}.tap do |new_hash|
-          hash.each_pair do |k,v|
+          hash.each_pair do |k, v|
             k = [key_prefix, k].compact.join('.')
-            if v.kind_of?(Hash)
+            if v.is_a?(Hash)
               new_hash.update(dotify_keys(v, k))
             else
               next if DISALLOWED_KEYS.include?(k.to_sym)
+
               new_hash[k.to_sym] = v
             end
           end

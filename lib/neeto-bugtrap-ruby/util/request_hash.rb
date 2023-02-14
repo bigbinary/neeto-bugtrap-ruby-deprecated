@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'set'
 
 module NeetoBugtrap
@@ -5,9 +7,9 @@ module NeetoBugtrap
     # Constructs a request hash from a Rack::Request matching the /v1/notices
     # API specification.
     module RequestHash
-      HTTP_HEADER_PREFIX = 'HTTP_'.freeze
+      HTTP_HEADER_PREFIX = 'HTTP_'
 
-      CGI_WHITELIST = %w(
+      CGI_WHITELIST = %w[
         AUTH_TYPE
         CONTENT_LENGTH
         CONTENT_TYPE
@@ -22,13 +24,14 @@ module NeetoBugtrap
         SERVER_PORT
         SERVER_PROTOCOL
         SERVER_SOFTWARE
-      ).freeze
+      ].freeze
 
       def self.from_env(env)
         return {} unless defined?(::Rack::Request)
         return {} unless env
 
-        hash, request = {}, ::Rack::Request.new(env.dup)
+        hash = {}
+        request = ::Rack::Request.new(env.dup)
 
         hash[:url] = extract_url(request)
         hash[:params] = extract_params(request)
@@ -42,19 +45,19 @@ module NeetoBugtrap
 
       def self.extract_url(request)
         request.env['neetobugtrap.request.url'] || request.url
-      rescue => e
+      rescue StandardError => e
         "Failed to access URL -- #{e}"
       end
 
       def self.extract_params(request)
         (request.env['action_dispatch.request.parameters'] || request.params).to_hash || {}
-      rescue => e
+      rescue StandardError => e
         { error: "Failed to access params -- #{e}" }
       end
 
       def self.extract_session(request)
         request.session.to_hash
-      rescue => e
+      rescue StandardError => e
         # Rails raises ArgumentError when `config.secret_token` is missing, and
         # ActionDispatch::Session::SessionRestoreError when the session can't be
         # restored.
@@ -62,9 +65,10 @@ module NeetoBugtrap
       end
 
       def self.extract_cgi_data(request)
-        request.env.each_with_object({}) do |(k,v), env|
+        request.env.each_with_object({}) do |(k, v), env|
           next unless k.is_a?(String)
           next unless k.start_with?(HTTP_HEADER_PREFIX) || CGI_WHITELIST.include?(k)
+
           env[k] = v
         end
       end

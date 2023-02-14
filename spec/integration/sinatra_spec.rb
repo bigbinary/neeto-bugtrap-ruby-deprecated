@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 begin
   require 'sinatra/base'
   require 'rack/test'
@@ -28,7 +30,7 @@ if SINATRA_PRESENT
       NeetoBugtrap::Backend::Test.notifications[:notices].clear
     end
 
-    it "reports exceptions" do
+    it 'reports exceptions' do
       NeetoBugtrap.flush do
         get '/runtime_error'
         expect(last_response.status).to eq(500)
@@ -37,7 +39,7 @@ if SINATRA_PRESENT
       expect(NeetoBugtrap::Backend::Test.notifications[:notices].size).to eq(1)
     end
 
-    it "configures the api key from sinatra config" do
+    it 'configures the api key from sinatra config' do
       get '/' # Initialize app
       expect(NeetoBugtrap.config.get(:api_key)).to eq('gem testing')
     end

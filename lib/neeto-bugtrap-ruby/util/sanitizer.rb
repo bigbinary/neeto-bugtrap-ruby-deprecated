@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bigdecimal'
 require 'set'
 
@@ -8,22 +10,22 @@ module NeetoBugtrap
     # Sanitizer sanitizes data for sending to NeetoBugtrap's API. The filters
     # are based on Rails' HTTP parameter filter.
     class Sanitizer
-      COOKIE_PAIRS = /[;,]\s?/
-      COOKIE_SEP = '='.freeze
-      COOKIE_PAIR_SEP = '; '.freeze
+      COOKIE_PAIRS = /[;,]\s?/.freeze
+      COOKIE_SEP = '='
+      COOKIE_PAIR_SEP = '; '
 
-      ENCODE_OPTS = { invalid: :replace, undef: :replace, replace: '?'.freeze }.freeze
+      ENCODE_OPTS = { invalid: :replace, undef: :replace, replace: '?' }.freeze
 
-      BASIC_OBJECT = '#<BasicObject>'.freeze
-      DEPTH = '[DEPTH]'.freeze
-      FILTERED = '[FILTERED]'.freeze
-      RAISED = '[RAISED]'.freeze
-      RECURSION = '[RECURSION]'.freeze
-      TRUNCATED = '[TRUNCATED]'.freeze
+      BASIC_OBJECT = '#<BasicObject>'
+      DEPTH = '[DEPTH]'
+      FILTERED = '[FILTERED]'
+      RAISED = '[RAISED]'
+      RECURSION = '[RECURSION]'
+      TRUNCATED = '[TRUNCATED]'
 
       IMMUTABLE = [NilClass, FalseClass, TrueClass, Symbol, Numeric, BigDecimal, Method].freeze
 
-      MAX_STRING_SIZE = 65536
+      MAX_STRING_SIZE = 65_536
 
       VALID_ENCODINGS = [Encoding::UTF_8, Encoding::ISO_8859_1].freeze
 
@@ -36,7 +38,9 @@ module NeetoBugtrap
         @filters = !filters.empty?
         @max_depth = max_depth
 
-        strings, @regexps, @blocks = [], [], []
+        strings = []
+        @regexps = []
+        @blocks = []
 
         filters.each do |item|
           case item
@@ -49,18 +53,18 @@ module NeetoBugtrap
           end
         end
 
-        @deep_regexps, @regexps = @regexps.partition { |r| r.to_s.include?('\\.'.freeze) }
-        deep_strings, @strings = strings.partition { |s| s.include?('\\.'.freeze) }
+        @deep_regexps, @regexps = @regexps.partition { |r| r.to_s.include?('\\.') }
+        deep_strings, @strings = strings.partition { |s| s.include?('\\.') }
 
-        @regexps << Regexp.new(strings.join('|'.freeze), true) unless strings.empty?
-        @deep_regexps << Regexp.new(deep_strings.join('|'.freeze), true) unless deep_strings.empty?
+        @regexps << Regexp.new(strings.join('|'), true) unless strings.empty?
+        @deep_regexps << Regexp.new(deep_strings.join('|'), true) unless deep_strings.empty?
       end
 
       def sanitize(data, depth = 0, stack = nil, parents = [])
         return BASIC_OBJECT if basic_object?(data)
 
         if recursive?(data)
-          return RECURSION if stack && stack.include?(data.object_id)
+          return RECURSION if stack&.include?(data.object_id)
 
           stack = stack ? stack.dup : Set.new
           stack << data.object_id
@@ -75,12 +79,12 @@ module NeetoBugtrap
 
           hash.each_pair do |key, value|
             parents.push(key) if deep_regexps
-            key = key.kind_of?(Symbol) ? key : sanitize(key, depth+1, stack, parents)
+            key = key.is_a?(Symbol) ? key : sanitize(key, depth + 1, stack, parents)
 
             if filter_key?(key, parents)
               new_hash[key] = FILTERED
             else
-              value = sanitize(value, depth+1, stack, parents)
+              value = sanitize(value, depth + 1, stack, parents)
 
               if blocks.any? && !recursive?(value)
                 key = key.dup if can_dup?(key)
@@ -99,28 +103,28 @@ module NeetoBugtrap
           return DEPTH if depth >= max_depth
 
           data.to_a.map do |value|
-            sanitize(value, depth+1, stack, parents)
+            sanitize(value, depth + 1, stack, parents)
           end
         when Numeric, TrueClass, FalseClass, NilClass
           data
         when String
           sanitize_string(data)
-        when -> (d) { d.respond_to?(:to_neetobugtrap) }
+        when ->(d) { d.respond_to?(:to_neetobugtrap) }
           return DEPTH if depth >= max_depth
 
           begin
             data = data.to_neetobugtrap
-          rescue
+          rescue StandardError
             return RAISED
           end
 
-          sanitize(data, depth+1, stack, parents)
+          sanitize(data, depth + 1, stack, parents)
         else # all other objects
           klass = data.class
 
           begin
             data = String(data)
-          rescue
+          rescue StandardError
             return RAISED
           end
 
@@ -151,13 +155,14 @@ module NeetoBugtrap
 
         filtered_url.scan(/(?:^|&|\?)([^=?&]+)=([^&]+)/).each do |m|
           next unless filter_key?(m[0])
+
           filtered_url.gsub!(/#{Regexp.escape(m[1])}/, FILTERED)
         end
 
         filtered_url
       end
 
-    private
+      private
 
       attr_reader :max_depth, :regexps, :deep_regexps, :blocks
 
@@ -168,25 +173,28 @@ module NeetoBugtrap
       def filter_key?(key, parents = nil)
         return false unless filters?
         return true if regexps.any? { |r| key =~ r }
-        return true if deep_regexps && parents && (joined = parents.join(".")) && deep_regexps.any? { |r| joined =~ r }
+        return true if deep_regexps && parents && (joined = parents.join('.')) && deep_regexps.any? { |r| joined =~ r }
+
         false
       end
 
       def sanitize_string(string)
         string = valid_encoding(string)
         return string unless string.respond_to?(:size) && string.size > MAX_STRING_SIZE
+
         string[0...MAX_STRING_SIZE] + TRUNCATED
       end
 
       def valid_encoding?(string)
         string.valid_encoding? && (
           VALID_ENCODINGS.include?(string.encoding) ||
-          VALID_ENCODINGS.include?(Encoding.compatible?(''.freeze, string))
+          VALID_ENCODINGS.include?(Encoding.compatible?('', string))
         )
       end
 
       def valid_encoding(string)
         return string if valid_encoding?(string)
+
         string.encode(Encoding::UTF_8, **ENCODE_OPTS)
       end
 
@@ -197,13 +205,13 @@ module NeetoBugtrap
       def basic_object?(object)
         object.respond_to?(:to_s)
         false
-      rescue
+      rescue StandardError
         # BasicObject doesn't respond to `#respond_to?`.
         true
       end
 
       def can_dup?(obj)
-        !IMMUTABLE.any? {|k| obj.kind_of?(k) }
+        IMMUTABLE.none? { |k| obj.is_a?(k) }
       end
 
       def inspected?(string)

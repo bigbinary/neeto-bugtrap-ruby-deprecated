@@ -1,10 +1,14 @@
+# frozen_string_literal: true
+
 require 'neeto-bugtrap-ruby/rack/error_notifier'
 
-class BacktracedException < Exception
+class BacktracedException < StandardError
   attr_accessor :backtrace
+
   def initialize(opts)
     @backtrace = opts[:backtrace]
   end
+
   def set_backtrace(bt)
     @backtrace = bt
   end
@@ -14,7 +18,7 @@ def build_exception(opts = {})
   backtrace = ["test/neetobugtrap/rack_test.rb:15:in `build_exception'",
                "test/neetobugtrap/rack_test.rb:52:in `test_delivers_exception_from_rack'",
                "/Users/josh/Developer/.rvm/gems/ruby-1.9.3-p0/gems/mocha-0.10.5/lib/mocha/integration/mini_test/version_230_to_262.rb:28:in `run'"]
-  opts = { :backtrace => backtrace }.merge(opts)
+  opts = { backtrace: backtrace }.merge(opts)
   BacktracedException.new(opts)
 end
 
@@ -22,9 +26,9 @@ describe NeetoBugtrap::Rack::ErrorNotifier do
   let(:agent) { NeetoBugtrap::Agent.new }
   let(:config) { agent.config }
 
-  it "calls the upstream app with the environment" do
+  it 'calls the upstream app with the environment' do
     environment = { 'key' => 'value' }
-    app = lambda { |env| ['response', {}, env] }
+    app = ->(env) { ['response', {}, env] }
     stack = NeetoBugtrap::Rack::ErrorNotifier.new(app, agent)
 
     response = stack.call(environment)
@@ -32,12 +36,12 @@ describe NeetoBugtrap::Rack::ErrorNotifier do
     expect(response).to eq ['response', {}, environment]
   end
 
-  it "delivers an exception raised while calling an upstream app" do
+  it 'delivers an exception raised while calling an upstream app' do
     allow(agent).to receive(:notify)
 
     exception = build_exception
     environment = { 'key' => 'value' }
-    app = lambda do |env|
+    app = lambda do |_env|
       raise exception
     end
 
@@ -46,14 +50,14 @@ describe NeetoBugtrap::Rack::ErrorNotifier do
     begin
       stack = NeetoBugtrap::Rack::ErrorNotifier.new(app, agent)
       stack.call(environment)
-    rescue Exception => raised
-      expect(raised).to eq exception
+    rescue Exception => e
+      expect(e).to eq exception
     else
-      fail "Didn't raise an exception"
+      raise "Didn't raise an exception"
     end
   end
 
-  it "delivers an exception in rack.exception" do
+  it 'delivers an exception in rack.exception' do
     allow(agent).to receive(:notify)
     exception = build_exception
     environment = { 'key' => 'value' }
@@ -72,7 +76,7 @@ describe NeetoBugtrap::Rack::ErrorNotifier do
     expect(actual_response).to eq response
   end
 
-  it "delivers an exception in sinatra.error" do
+  it 'delivers an exception in sinatra.error' do
     allow(agent).to receive(:notify)
     exception = build_exception
     environment = { 'key' => 'value' }
@@ -91,11 +95,11 @@ describe NeetoBugtrap::Rack::ErrorNotifier do
     expect(actual_response).to eq response
   end
 
-  it "clears context after app is called" do
+  it 'clears context after app is called' do
     NeetoBugtrap.context(foo: :bar)
-    expect(NeetoBugtrap.get_context).to eq({foo: :bar})
+    expect(NeetoBugtrap.get_context).to eq({ foo: :bar })
 
-    app = lambda { |env| ['response', {}, env] }
+    app = ->(env) { ['response', {}, env] }
     stack = NeetoBugtrap::Rack::ErrorNotifier.new(app, agent)
 
     stack.call({})

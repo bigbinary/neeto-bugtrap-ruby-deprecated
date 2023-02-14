@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 
 module NeetoBugtrap
@@ -7,7 +9,7 @@ module NeetoBugtrap
     # Handles backtrace parsing line by line.
     class Line
       # Backtrace line regexp (optionally allowing leading X: for windows support).
-      INPUT_FORMAT = %r{^((?:[a-zA-Z]:)?[^:]+):(\d+)(?::in `([^']+)')?$}.freeze
+      INPUT_FORMAT = /^((?:[a-zA-Z]:)?[^:]+):(\d+)(?::in `([^']+)')?$/.freeze
 
       # The file portion of the line (such as app/models/user.rb).
       attr_reader :file
@@ -37,16 +39,16 @@ module NeetoBugtrap
           end
         end
 
-        if filtered_line
-          match = unparsed_line.match(INPUT_FORMAT) || [].freeze
-          fmatch = filtered_line.match(INPUT_FORMAT) || [].freeze
+        return unless filtered_line
 
-          file, number, method = match[1], match[2], match[3]
-          filtered_args = [fmatch[1], fmatch[2], fmatch[3]]
-          new(file, number, method, *filtered_args, opts.fetch(:source_radius, 2))
-        else
-          nil
-        end
+        match = unparsed_line.match(INPUT_FORMAT) || [].freeze
+        fmatch = filtered_line.match(INPUT_FORMAT) || [].freeze
+
+        file = match[1]
+        number = match[2]
+        method = match[3]
+        filtered_args = [fmatch[1], fmatch[2], fmatch[3]]
+        new(file, number, method, *filtered_args, opts.fetch(:source_radius, 2))
       end
 
       def initialize(file, number, method, filtered_file = file,
@@ -71,12 +73,12 @@ module NeetoBugtrap
       end
 
       def inspect
-        "<Line:#{to_s}>"
+        "<Line:#{self}>"
       end
 
       # Determines if this line is part of the application trace or not.
       def application?
-        (filtered_file =~ /^\[PROJECT_ROOT\]/i) && !(filtered_file =~ /^\[PROJECT_ROOT\]\/vendor/i)
+        (filtered_file =~ /^\[PROJECT_ROOT\]/i) && filtered_file !~ %r{^\[PROJECT_ROOT\]/vendor}i
       end
 
       def source
@@ -101,7 +103,10 @@ module NeetoBugtrap
 
           l = 0
           File.open(file) do |f|
-            start.times { f.gets ; l += 1 }
+            start.times do
+              f.gets
+              l += 1
+            end
             return Hash[duration.times.map { (line = f.gets) ? [(l += 1), line] : nil }.compact]
           end
         else
@@ -132,14 +137,16 @@ module NeetoBugtrap
     #
     # Returns array containing backtrace lines.
     def to_ary
-      lines.take(1000).map { |l| { :number => l.filtered_number, :file => l.filtered_file, :method => l.filtered_method, :source => l.source } }
+      lines.take(1000).map do |l|
+        { number: l.filtered_number, file: l.filtered_file, method: l.filtered_method, source: l.source }
+      end
     end
-    alias :to_a :to_ary
+    alias to_a to_ary
 
     # JSON support.
     #
     # Returns JSON representation of backtrace.
-    def as_json(options = {})
+    def as_json(_options = {})
       to_ary
     end
 
@@ -155,7 +162,7 @@ module NeetoBugtrap
     end
 
     def inspect
-      "<Backtrace: " + lines.collect { |line| line.inspect }.join(", ") + ">"
+      "<Backtrace: #{lines.collect(&:inspect).join(', ')}>"
     end
 
     def ==(other)

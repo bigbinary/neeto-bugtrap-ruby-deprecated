@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 begin
   require 'resque'
   require 'mock_redis'
@@ -35,16 +37,16 @@ if RESQUE_PRESENT
       Resque.redis = MockRedis.new
     end
 
-    it "reports failed jobs to NeetoBugtrap" do
-      job = Resque::Job.new(:jobs, {'class' => 'TestWorker', 'args' => nil})
+    it 'reports failed jobs to NeetoBugtrap' do
+      job = Resque::Job.new(:jobs, { 'class' => 'TestWorker', 'args' => nil })
 
       expect(NeetoBugtrap).to receive(:notify).once.with(ERROR, anything)
 
       worker.perform(job)
     end
 
-    it "reports DirtyExit to NeetoBugtrap" do
-      job = Resque::Job.new(:jobs, {'class' => 'TestWorker', 'args' => nil})
+    it 'reports DirtyExit to NeetoBugtrap' do
+      job = Resque::Job.new(:jobs, { 'class' => 'TestWorker', 'args' => nil })
 
       expect(NeetoBugtrap).to receive(:notify).once.with(kind_of(Resque::DirtyExit), anything)
 

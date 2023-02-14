@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'neeto-bugtrap-ruby/ruby'
 
 NeetoBugtrap.init!({
-  :framework      => :ruby,
-  :env            => ENV['RUBY_ENV'] || ENV['RACK_ENV'],
-  :'logging.path' => 'STDOUT'
-})
+                     framework: :ruby,
+                     env: ENV['RUBY_ENV'] || ENV['RACK_ENV'],
+                     'logging.path': 'STDOUT'
+                   })
 
 NeetoBugtrap.load_plugins!
 

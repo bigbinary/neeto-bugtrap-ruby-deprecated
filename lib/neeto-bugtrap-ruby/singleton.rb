@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+require 'English'
 require 'forwardable'
 require 'neeto-bugtrap-ruby/agent'
 
@@ -59,45 +62,46 @@ module NeetoBugtrap
 
   # @api private
   def load_plugins!
-    Dir[File.expand_path('../plugins/*.rb', __FILE__)].each do |plugin|
+    Dir[File.expand_path('plugins/*.rb', __dir__)].sort.each do |plugin|
       require plugin
     end
-    Plugin.load!(self.config)
+    Plugin.load!(config)
   end
 
   # @api private
   def install_at_exit_callback
     at_exit do
-      if $! && !ignored_exception?($!) && NeetoBugtrap.config[:'exceptions.notify_at_exit']
-        NeetoBugtrap.notify($!, component: 'at_exit', sync: true)
+      if $ERROR_INFO && !ignored_exception?($ERROR_INFO) && NeetoBugtrap.config[:'exceptions.notify_at_exit']
+        NeetoBugtrap.notify($ERROR_INFO, component: 'at_exit', sync: true)
       end
 
-      NeetoBugtrap.stop if NeetoBugtrap.config[:'send_data_at_exit']
+      NeetoBugtrap.stop if NeetoBugtrap.config[:send_data_at_exit]
     end
   end
 
   # @deprecated
-  def start(config = {})
-    raise NoMethodError, <<-WARNING
-`NeetoBugtrap.start` is no longer necessary and has been removed.
+  def start(_config = {})
+    raise NoMethodError, <<~WARNING
+      `NeetoBugtrap.start` is no longer necessary and has been removed.
 
-  Use `NeetoBugtrap.configure` to explicitly configure the agent from Ruby moving forward:
+        Use `NeetoBugtrap.configure` to explicitly configure the agent from Ruby moving forward:
 
-  NeetoBugtrap.configure do |config|
-    config.api_key = 'project api key'
-    config.exceptions.ignore += [CustomError]
-  end
-WARNING
+        NeetoBugtrap.configure do |config|
+          config.api_key = 'project api key'
+          config.exceptions.ignore += [CustomError]
+        end
+    WARNING
   end
 
   private
+
   # @api private
   def ignored_exception?(exception)
     exception.is_a?(SystemExit) ||
-      ( exception.is_a?(SignalException) &&
-         ( (exception.respond_to?(:signm) && exception.signm == "SIGTERM") ||
+      (exception.is_a?(SignalException) &&
+         ((exception.respond_to?(:signm) && exception.signm == 'SIGTERM') ||
           # jruby has a missing #signm implementation
-          ["TERM", "SIGTERM"].include?(exception.to_s) )
-    )
+          %w[TERM SIGTERM].include?(exception.to_s))
+      )
   end
 end
