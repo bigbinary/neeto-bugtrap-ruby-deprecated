@@ -1,0 +1,29 @@
+version: v1.0
+name: minitest
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu2004
+
+global_job_config:
+  prologue:
+    commands:
+      - checkout
+      - sem-version ruby 3.0.4
+      - bundle config path 'vendor/bundle'
+      - bundle install
+  env_vars:
+    - name: TZ
+      value: "/usr/share/zoneinfo/America/New_York"
+    - name: RAILS_ENV
+      value: "test"
+    - name: RACK_ENV
+      value: "test"
+
+blocks:
+  - name: Linter
+    task:
+      jobs:
+        - name: Checks
+          commands:
+            - bundle exec rubocop
