@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'time'
 
 module NeetoBugtrap
@@ -10,7 +12,7 @@ module NeetoBugtrap
 
       include Comparable
 
-      def initialize(category: "custom", message: nil, metadata: {})
+      def initialize(category: 'custom', message: nil, metadata: {})
         @active = true
         @timestamp = Time.now.utc
 
@@ -31,7 +33,6 @@ module NeetoBugtrap
       def <=>(other)
         to_h <=> other.to_h
       end
-
 
       # Is the Breadcrumb active or not. Inactive Breadcrumbs not be included
       # with any outgoing payloads.

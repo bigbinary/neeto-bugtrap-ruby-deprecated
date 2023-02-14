@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 begin
   # Require these early to work around https://github.com/jruby/jruby#6547
   #   can be pulled out > 9.2.14 of jruby.
@@ -9,7 +11,7 @@ begin
   # We are unable to run Activerecord with rails edge on jruby as the sqlite
   # adapter is not supported, so we are skipping activrecord specs just for
   # that runtime and Rails version
-  SKIP_ACTIVE_RECORD = !!(defined?(JRUBY_VERSION) && Rails::VERSION::PRE == "alpha")
+  SKIP_ACTIVE_RECORD = !(defined?(JRUBY_VERSION) && Rails::VERSION::PRE == 'alpha').nil?
 
   require FIXTURES_PATH.join('rails', 'config', 'application.rb')
   require 'neeto-bugtrap-ruby/init/rails'

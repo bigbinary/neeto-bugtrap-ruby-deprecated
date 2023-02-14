@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'neeto-bugtrap-ruby/version'
 
 module NeetoBugtrap

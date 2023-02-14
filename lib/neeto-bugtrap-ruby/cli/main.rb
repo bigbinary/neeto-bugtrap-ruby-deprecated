@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'neeto-bugtrap-ruby/cli/deploy'
 require 'neeto-bugtrap-ruby/cli/exec'
 require 'neeto-bugtrap-ruby/cli/heroku'
@@ -13,36 +15,38 @@ require 'logger'
 
 module NeetoBugtrap
   module CLI
-    BLANK = /\A\s*\z/
+    BLANK = /\A\s*\z/.freeze
 
     NOTIFIER = {
-      name: 'neeto-bugtrap-ruby (cli)'.freeze,
-      url: 'https://github.com/bigbinary/neeto-bugtrap-ruby'.freeze,
+      name: 'neeto-bugtrap-ruby (cli)',
+      url: 'https://github.com/bigbinary/neeto-bugtrap-ruby',
       version: VERSION,
       language: nil
     }.freeze
 
     class Main < Thor
       def self.project_options
-        option :api_key,         required: false, aliases: :'-k', type: :string, desc: 'Api key of your NeetoBugtrap application'
-        option :environment,     required: false, aliases: [:'-e', :'-env'], type: :string, desc: 'Environment this command is being executed in (i.e. "production", "staging")'
+        option :api_key,         required: false, aliases: :'-k', type: :string,
+                                 desc: 'Api key of your NeetoBugtrap application'
+        option :environment,     required: false, aliases: %i[-e -env], type: :string,
+                                 desc: 'Environment this command is being executed in (i.e. "production", "staging")'
         option :skip_rails_load, required: false, type: :boolean, desc: 'Flag to skip rails initialization'
       end
 
       def help(*args, &block)
-        if args.size == 0
-          say(<<-WELCOME)
-⚡  NeetoBugtrap v#{VERSION}
+        if args.empty?
+          say(<<~WELCOME)
+            ⚡  NeetoBugtrap v#{VERSION}
 
-NeetoBugtrap is your favorite error tracker for Ruby. When your app raises an
-exception we notify you with all the context you need to fix it.
+            NeetoBugtrap is your favorite error tracker for Ruby. When your app raises an
+            exception we notify you with all the context you need to fix it.
 
-The NeetoBugtrap CLI provides tools for interacting with NeetoBugtrap via the
-command line.
+            The NeetoBugtrap CLI provides tools for interacting with NeetoBugtrap via the
+            command line.
 
-If you need support, please drop us a line: support@neetobugtrap.com
+            If you need support, please drop us a line: support@neetobugtrap.com
 
-WELCOME
+          WELCOME
         end
         super
       end
@@ -50,7 +54,7 @@ WELCOME
       desc 'install API_KEY', 'Install NeetoBugtrap into a new project'
       def install(api_key)
         Install.new(options, api_key).run
-      rescue => e
+      rescue StandardError => e
         log_error(e)
         exit(1)
       end
@@ -60,7 +64,7 @@ WELCOME
       option :file,    type: :string,  aliases: :'-f', default: nil, desc: 'Write the output to FILE'
       def test
         Test.new(options).run
-      rescue => e
+      rescue StandardError => e
         log_error(e)
         exit(1)
       end
@@ -69,7 +73,8 @@ WELCOME
       project_options
       option :repository, required: true, type: :string, aliases: :'-r', desc: 'The address of your repository'
       option :revision,   required: true, type: :string, aliases: :'-s', desc: 'The revision/sha that is being deployed'
-      option :user,       required: true, type: :string, aliases: :'-u', default: ENV['USER'] || ENV['USERNAME'], desc: 'The local user who is deploying'
+      option :user,       required: true, type: :string, aliases: :'-u', default: ENV['USER'] || ENV['USERNAME'],
+                          desc: 'The local user who is deploying'
       def deploy
         config = build_config(options)
 
@@ -79,14 +84,15 @@ WELCOME
         end
 
         Deploy.new(options, [], config).run
-      rescue => e
+      rescue StandardError => e
         log_error(e)
         exit(1)
       end
 
       desc 'notify', 'Notify NeetoBugtrap of an error'
       project_options
-      option :class,       required: true, type: :string, aliases: :'-c', default: 'CLI Notification', desc: 'The class name of the error. (Default: CLI Notification)'
+      option :class,       required: true, type: :string, aliases: :'-c', default: 'CLI Notification',
+                           desc: 'The class name of the error. (Default: CLI Notification)'
       option :message,     required: true, type: :string, aliases: :'-m', desc: 'The error message.'
       option :action,      required: false, type: :string, aliases: :'-a', desc: 'The action.'
       option :component,   required: false, type: :string, aliases: :'-C', desc: 'The component.'
@@ -102,17 +108,18 @@ WELCOME
         end
 
         Notify.new(options, [], config).run
-      rescue => e
+      rescue StandardError => e
         log_error(e)
         exit(1)
       end
 
       desc 'exec', 'Execute a command. If the exit status is not 0, report the result to NeetoBugtrap'
       project_options
-      option :quiet, required: false, type: :boolean, aliases: :'-q', default: false, desc: 'Suppress all output unless notification fails.'
+      option :quiet, required: false, type: :boolean, aliases: :'-q', default: false,
+                     desc: 'Suppress all output unless notification fails.'
       def exec(*args)
-        if args.size == 0
-          say("neeto-bugtrap-ruby: exec needs a command to run", :red)
+        if args.empty?
+          say('neeto-bugtrap-ruby: exec needs a command to run', :red)
           exit(1)
         end
 
@@ -124,7 +131,7 @@ WELCOME
         end
 
         Exec.new(options, args, config).run
-      rescue => e
+      rescue StandardError => e
         log_error(e)
         exit(1)
       end
@@ -143,8 +150,8 @@ WELCOME
 
         config = NeetoBugtrap.config
         config.set(:report_data, true)
-        config.set(:api_key, fetch_value(options, 'api_key')) if options.has_key?('api_key')
-        config.set(:env, fetch_value(options, 'environment')) if options.has_key?('environment')
+        config.set(:api_key, fetch_value(options, 'api_key')) if options.key?('api_key')
+        config.set(:env, fetch_value(options, 'environment')) if options.key?('environment')
 
         config
       end
@@ -152,17 +159,15 @@ WELCOME
       def load_env(options)
         # Initialize Rails when running from Rails root.
         environment_rb = File.join(Dir.pwd, 'config', 'environment.rb')
-        if File.exist?(environment_rb)
-          load_rails_env_if_allowed(environment_rb, options)
-        end
+        load_rails_env_if_allowed(environment_rb, options) if File.exist?(environment_rb)
         # Ensure config is loaded (will be skipped if initialized by Rails).
         NeetoBugtrap.config.load!
       end
 
       def load_rails_env_if_allowed(environment_rb, options)
         # Skip Rails initialization according to option flag
-        if options.has_key?('skip_rails_load') && fetch_value(options, 'skip_rails_load')
-          say("Skipping Rails initialization.")
+        if options.key?('skip_rails_load') && fetch_value(options, 'skip_rails_load')
+          say('Skipping Rails initialization.')
         else
           load_rails_env(environment_rb)
         end
@@ -181,55 +186,55 @@ WELCOME
       def log_error(e)
         case e
         when *Util::HTTP::ERRORS
-          say(<<-MSG, :red)
-!! --- Failed to notify NeetoBugtrap ------------------------------------------- !!
+          say(<<~MSG, :red)
+            !! --- Failed to notify NeetoBugtrap ------------------------------------------- !!
 
-# What happened?
+            # What happened?
 
-  We encountered an HTTP error while contacting our service. Issues like this are
-  usually temporary.
+              We encountered an HTTP error while contacting our service. Issues like this are
+              usually temporary.
 
-# Error details
+            # Error details
 
-  #{e.class}: #{e.message}\n    at #{e.backtrace && e.backtrace.first}
+              #{e.class}: #{e.message}\n    at #{e.backtrace && e.backtrace.first}
 
-# What can I do?
+            # What can I do?
 
-  - Retry the command.
-  - Make sure you can connect to api.neetobugtrap.com (`curl https://api.neetobugtrap.com/v1/notices`).
-  - If you continue to see this message, email us at support@neetobugtrap.com
-    (don't forget to attach this output!)
+              - Retry the command.
+              - Make sure you can connect to api.neetobugtrap.com (`curl https://api.neetobugtrap.com/v1/notices`).
+              - If you continue to see this message, email us at support@neetobugtrap.com
+                (don't forget to attach this output!)
 
-!! --- End -------------------------------------------------------------------- !!
-MSG
+            !! --- End -------------------------------------------------------------------- !!
+          MSG
         else
-          say(<<-MSG, :red)
-!! --- NeetoBugtrap command failed --------------------------------------------- !!
+          say(<<~MSG, :red)
+            !! --- NeetoBugtrap command failed --------------------------------------------- !!
 
-# What did you try to do?
+            # What did you try to do?
 
-  You tried to execute the following command:
-  `neetobugtrap #{ARGV.join(' ')}`
+              You tried to execute the following command:
+              `neetobugtrap #{ARGV.join(' ')}`
 
-# What actually happend?
+            # What actually happend?
 
-  We encountered a Ruby exception and were forced to cancel your request.
+              We encountered a Ruby exception and were forced to cancel your request.
 
-# Error details
+            # Error details
 
-  #{e.class}: #{e.message}
-    #{e.backtrace && e.backtrace.join("\n    ")}
+              #{e.class}: #{e.message}
+                #{e.backtrace && e.backtrace.join("\n    ")}
 
-# What can I do?
+            # What can I do?
 
-  - If you're calling the `install` or `test` command in a Rails app, make sure
-    you can boot the Rails console: `bundle exec rails console`.
-  - Retry the command.
-  - If you continue to see this message, email us at support@neetobugtrap.com
-    (don't forget to attach this output!)
+              - If you're calling the `install` or `test` command in a Rails app, make sure
+                you can boot the Rails console: `bundle exec rails console`.
+              - Retry the command.
+              - If you continue to see this message, email us at support@neetobugtrap.com
+                (don't forget to attach this output!)
 
-!! --- End -------------------------------------------------------------------- !!
-MSG
+            !! --- End -------------------------------------------------------------------- !!
+          MSG
         end
       end
     end

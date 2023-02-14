@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'neeto-bugtrap-ruby/backend/base'
 
 module NeetoBugtrap
@@ -5,7 +7,7 @@ module NeetoBugtrap
     class Null < Base
       class StubbedResponse < Response
         def initialize
-          super(:stubbed, '{}'.freeze)
+          super(:stubbed, '{}')
         end
 
         def success?
@@ -17,11 +19,11 @@ module NeetoBugtrap
         super
       end
 
-      def notify(feature, payload)
+      def notify(_feature, _payload)
         StubbedResponse.new
       end
 
-      def check_in(id)
+      def check_in(_id)
         StubbedResponse.new
       end
     end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'digest'
 require 'forwardable'
 require 'neeto-bugtrap-ruby/cli/main'
@@ -46,7 +48,7 @@ module NeetoBugtrap
 
         response = config.backend.notify(:notices, payload)
         if response.success?
-          say("Error notification complete.", :green)
+          say('Error notification complete.', :green)
         else
           say(error_message(response), :red)
           exit(1)
@@ -60,7 +62,7 @@ module NeetoBugtrap
       def_delegator :@shell, :say
 
       def option?(key)
-        options.has_key?(key) && options[key] != key
+        options.key?(key) && options[key] != key
       end
     end
   end

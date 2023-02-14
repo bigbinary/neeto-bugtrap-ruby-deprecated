@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'pathname'
 require 'delegate'
 require 'logger'
@@ -10,7 +12,6 @@ require 'neeto-bugtrap-ruby/backend'
 require 'neeto-bugtrap-ruby/config/defaults'
 require 'neeto-bugtrap-ruby/util/http'
 require 'neeto-bugtrap-ruby/util/revision'
-require 'neeto-bugtrap-ruby/logging'
 
 module NeetoBugtrap
   # @api private
@@ -35,7 +36,7 @@ module NeetoBugtrap
 
     NOT_BLANK = Regexp.new('\S').freeze
 
-    IVARS = [:@ruby, :@env, :@yaml, :@framework].freeze
+    IVARS = %i[@ruby @env @yaml @framework].freeze
 
     def initialize(opts = {})
       @ruby = opts.freeze
@@ -55,17 +56,21 @@ module NeetoBugtrap
       init_logging!
       init_backend!
 
-      logger.info(sprintf('Initializing NeetoBugtrap Error Tracker for Ruby. Ship it! version=%s framework=%s', NeetoBugtrap::VERSION, detected_framework))
-      logger.warn('Development mode is enabled. Data will not be reported until you deploy your app.') if warn_development?
+      logger.info(format('Initializing NeetoBugtrap Error Tracker for Ruby. Ship it! version=%s framework=%s',
+                         NeetoBugtrap::VERSION, detected_framework))
+      if warn_development?
+        logger.warn('Development mode is enabled. Data will not be reported until you deploy your app.')
+      end
 
       self
     end
 
     def load!(framework: {}, env: ENV)
       return self if @loaded
+
       self.framework = framework.freeze
       self.env = Env.new(env).freeze
-      load_config_from_disk {|yaml| self.yaml = yaml.freeze }
+      load_config_from_disk { |yaml| self.yaml = yaml.freeze }
       detect_revision!
       @loaded = true
       self
@@ -113,9 +118,7 @@ module NeetoBugtrap
     def get(key)
       IVARS.each do |var|
         source = instance_variable_get(var)
-        if source.has_key?(key)
-          return source[key]
-        end
+        return source[key] if source.key?(key)
       end
 
       DEFAULTS[key]
@@ -129,18 +132,17 @@ module NeetoBugtrap
     alias []= :set
 
     def to_hash(defaults = false)
-      hash = [:@ruby, :@env, :@yaml, :@framework].reverse.reduce({}) do |a,e|
+      hash = %i[@ruby @env @yaml @framework].reverse.reduce({}) do |a, e|
         a.merge!(instance_variable_get(e))
       end
 
       hash = DEFAULTS.merge(hash) if defaults
 
-      undotify_keys(hash.select {|k,v| DEFAULTS.has_key?(k) })
+      undotify_keys(hash.select { |k, _v| DEFAULTS.key?(k) })
     end
     alias to_h to_hash
 
     # Internal Helpers
-
 
     def logger
       init_logging! unless @logger
@@ -162,12 +164,13 @@ module NeetoBugtrap
     end
 
     def warn_development?
-      dev? && backend.kind_of?(Backend::Null)
+      dev? && backend.is_a?(Backend::Null)
     end
 
     def public?
       return true if self[:report_data]
       return false if self[:report_data] == false
+
       !self[:env] || !dev?
     end
 
@@ -177,13 +180,14 @@ module NeetoBugtrap
 
     def log_debug?
       return debug? if self[:'logging.debug'].nil?
+
       !!self[:'logging.debug']
     end
 
     def ignored_classes
       ignore_only = get(:'exceptions.ignore_only')
       return ignore_only if ignore_only
-      return DEFAULTS[:'exceptions.ignore'] unless ignore = get(:'exceptions.ignore')
+      return DEFAULTS[:'exceptions.ignore'] unless (ignore = get(:'exceptions.ignore'))
 
       DEFAULTS[:'exceptions.ignore'] | Array(ignore)
     end
@@ -249,8 +253,9 @@ module NeetoBugtrap
     end
 
     def load_plugin?(name)
-      return false if includes_token?(self[:'skipped_plugins'], name)
-      return true unless self[:plugins].kind_of?(Array)
+      return false if includes_token?(self[:skipped_plugins], name)
+      return true unless self[:plugins].is_a?(Array)
+
       includes_token?(self[:plugins], name)
     end
 
@@ -261,7 +266,7 @@ module NeetoBugtrap
       root = get(:root).to_s
       @no_root = true and return nil unless root =~ NOT_BLANK
 
-      @root_regexp = Regexp.new("^#{ Regexp.escape(root) }")
+      @root_regexp = Regexp.new("^#{Regexp.escape(root)}")
     end
 
     def detected_framework
@@ -292,12 +297,14 @@ module NeetoBugtrap
 
     def detect_revision!
       return if self[:revision]
+
       set(:revision, Util::Revision.detect(self[:root]))
     end
 
     def log_path
       return if log_stdout?
-      return if !self[:'logging.path']
+      return unless self[:'logging.path']
+
       locate_absolute_path(self[:'logging.path'], self[:root])
     end
 
@@ -313,6 +320,7 @@ module NeetoBugtrap
 
     def default_backend
       return Backend::Server.new(self) if public?
+
       Backend::Null.new(self)
     end
 
@@ -328,7 +336,8 @@ module NeetoBugtrap
       end
 
       if ruby[:backend]
-        logger.warn(sprintf('Unknown backend: %p; default will be used. Backend must respond to #notify', self[:backend]))
+        logger.warn(format('Unknown backend: %p; default will be used. Backend must respond to #notify',
+                           self[:backend]))
       end
 
       @backend = default_backend
@@ -336,7 +345,7 @@ module NeetoBugtrap
 
     def build_stdout_logger
       logger = Logger.new($stdout)
-      logger.formatter = lambda do |severity, datetime, progname, msg|
+      logger.formatter = lambda do |_severity, _datetime, _progname, msg|
         "#{msg}\n"
       end
       logger.level = log_level
@@ -359,7 +368,7 @@ module NeetoBugtrap
 
       return build_stdout_logger if log_stdout?
 
-      if path = log_path
+      if (path = log_path)
         FileUtils.mkdir_p(path.dirname) unless path.dirname.writable?
         return build_file_logger(path)
       end
@@ -376,7 +385,8 @@ module NeetoBugtrap
     # Takes an Array and a value and returns true if the value exists in the
     # array in String or Symbol form, otherwise false.
     def includes_token?(obj, value)
-      return false unless obj.kind_of?(Array)
+      return false unless obj.is_a?(Array)
+
       obj.map(&:to_sym).include?(value.to_sym)
     end
 
@@ -390,19 +400,20 @@ module NeetoBugtrap
     end
 
     def load_config_from_disk
-      if (path = config_paths.find(&:exist?)) && path.file?
-        Yaml.new(path, self[:env]).tap do |yml|
-          yield(yml) if block_given?
-        end
+      return unless (path = config_paths.find(&:exist?)) && path.file?
+
+      Yaml.new(path, self[:env]).tap do |yml|
+        yield(yml) if block_given?
       end
     end
 
     def undotify_keys(hash)
       {}.tap do |new_hash|
-        hash.each_pair do |k,v|
+        hash.each_pair do |k, v|
           if k.to_s =~ DOTTED_KEY
-            new_hash[$1] ||= {}
-            new_hash[$1] = undotify_keys(new_hash[$1].merge({$2 => v}))
+            new_hash[::Regexp.last_match(1)] ||= {}
+            new_hash[::Regexp.last_match(1)] =
+              undotify_keys(new_hash[::Regexp.last_match(1)].merge({ ::Regexp.last_match(2) => v }))
           else
             new_hash[k.to_s] = v
           end

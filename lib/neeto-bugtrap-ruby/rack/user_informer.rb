@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'forwardable'
 
 module NeetoBugtrap
@@ -9,7 +11,7 @@ module NeetoBugtrap
 
       def initialize(app, agent = nil)
         @app = app
-        @agent = agent.kind_of?(Agent) && agent
+        @agent = agent.is_a?(Agent) && agent
       end
 
       def replacement(with)
@@ -18,15 +20,16 @@ module NeetoBugtrap
 
       def call(env)
         return @app.call(env) unless config[:'user_informer.enabled']
+
         status, headers, body = @app.call(env)
         if env['neetobugtrap.error_id']
           new_body = []
           replace  = replacement(env['neetobugtrap.error_id'])
           body.each do |chunk|
-            new_body << chunk.gsub("<!-- NEETOBUGTRAP ERROR -->", replace)
+            new_body << chunk.gsub('<!-- NEETOBUGTRAP ERROR -->', replace)
           end
           body.close if body.respond_to?(:close)
-          headers['Content-Length'] = new_body.reduce(0) { |a,e| a += e.bytesize }.to_s
+          headers['Content-Length'] = new_body.reduce(0) { |a, e| a += e.bytesize }.to_s
           body = new_body
         end
         [status, headers, body]

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 gemspec
@@ -17,10 +19,10 @@ gem 'rake'
 
 # mathn has moved to a rubygem in Ruby 2.5.0: https://github.com/ruby/mathn
 platforms :ruby_25 do
-  gem "mathn"
+  gem 'mathn'
 end
 
-gem "bump", "~> 0.10.0"
+gem 'bump', '~> 0.10.0'
 
 group :development do
   gem 'guard'
@@ -28,5 +30,5 @@ group :development do
   gem 'pry'
   gem 'pry-byebug', platforms: :mri
   gem 'rdoc'
-  gem "rubocop", "~> 1.28"
+  gem 'rubocop', '~> 1.28'
 end

@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'neeto-bugtrap-ruby/breadcrumbs/ring_buffer'
 
 describe NeetoBugtrap::Breadcrumbs::RingBuffer do
-  describe "#add" do
+  describe '#add' do
     it 'adds items' do
       subject.add!(:a)
       expect(subject.buffer).to eq([:a])
@@ -13,11 +15,11 @@ describe NeetoBugtrap::Breadcrumbs::RingBuffer do
       buffer.add!(:b)
       buffer.add!(:c)
 
-      expect(buffer.buffer).to eq([:b, :c])
+      expect(buffer.buffer).to eq(%i[b c])
     end
   end
 
-  describe "#clear" do
+  describe '#clear' do
     it 'clears data' do
       subject.add!(:a)
       subject.clear!
@@ -25,15 +27,15 @@ describe NeetoBugtrap::Breadcrumbs::RingBuffer do
     end
   end
 
-  describe "#each" do
-    it "enumerates over buffer" do
+  describe '#each' do
+    it 'enumerates over buffer' do
       subject.add!(:a)
       subject.add!(:b)
-      expect(subject.reduce([]) { |m, v| m << v }).to eq([:a, :b])
+      expect(subject.reduce([]) { |m, v| m << v }).to eq(%i[a b])
     end
   end
 
-  describe "#drop" do
+  describe '#drop' do
     it 'removes the last inserted item' do
       subject.add!(:a)
       subject.add!(:b)
@@ -42,7 +44,7 @@ describe NeetoBugtrap::Breadcrumbs::RingBuffer do
     end
   end
 
-  describe "#previous" do
+  describe '#previous' do
     it 'returns the last inserted item' do
       subject.add!(:a)
       subject.add!(:b)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 if defined?(::Rails::Railtie)
   require 'neeto-bugtrap-ruby/init/rails'
 elsif defined?(Sinatra::Base)
@@ -6,6 +8,4 @@ else
   require 'neeto-bugtrap-ruby/init/ruby'
 end
 
-if defined?(Rake.application)
-  require 'neeto-bugtrap-ruby/init/rake'
-end
+require 'neeto-bugtrap-ruby/init/rake' if defined?(Rake.application)

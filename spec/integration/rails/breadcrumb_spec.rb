@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../rails_helper'
 
 describe 'Rails Breadcrumbs integration', if: RAILS_PRESENT, type: :request do
@@ -15,9 +17,9 @@ describe 'Rails Breadcrumbs integration', if: RAILS_PRESENT, type: :request do
 
   unless SKIP_ACTIVE_RECORD
     around(:example) do |example|
-      ActiveRecord::Base.connection.execute("CREATE TABLE things (name char(200));")
+      ActiveRecord::Base.connection.execute('CREATE TABLE things (name char(200));')
       example.run
-      ActiveRecord::Base.connection.execute("DROP TABLE things;")
+      ActiveRecord::Base.connection.execute('DROP TABLE things;')
     end
   end
 
@@ -41,39 +43,39 @@ describe 'Rails Breadcrumbs integration', if: RAILS_PRESENT, type: :request do
     notice.as_json[:breadcrumbs][:trail]
   end
 
-  it "creates log event" do
-    NeetoBugtrap.flush { get "/breadcrumbs/log_breadcrumb_event" }
+  it 'creates log event' do
+    NeetoBugtrap.flush { get '/breadcrumbs/log_breadcrumb_event' }
     expect(notices.first).to contain_breadcrumb_including({
-      category: "log",
-      message: "test log event",
-      metadata: include({ severity: "INFO" })
-    })
+                                                            category: 'log',
+                                                            message: 'test log event',
+                                                            metadata: include({ severity: 'INFO' })
+                                                          })
   end
 
-  it "creates active_record event", skip: SKIP_ACTIVE_RECORD do
-    NeetoBugtrap.flush { get "/breadcrumbs/active_record_event" }
+  it 'creates active_record event', skip: SKIP_ACTIVE_RECORD do
+    NeetoBugtrap.flush { get '/breadcrumbs/active_record_event' }
     expect(notices.first).to contain_breadcrumb_including({
-      category: "query",
-      message: /Active Record - .*/,
-      metadata: include({
-        sql: /INSERT INTO \? \(\?\)/
-      })
-    })
+                                                            category: 'query',
+                                                            message: /Active Record - .*/,
+                                                            metadata: include({
+                                                                                sql: /INSERT INTO \? \(\?\)/
+                                                                              })
+                                                          })
   end
 
-  it "creates active_job event" do
-    NeetoBugtrap.flush { get "/breadcrumbs/active_job_event" }
+  it 'creates active_job event' do
+    NeetoBugtrap.flush { get '/breadcrumbs/active_job_event' }
     expect(notices.first).to contain_breadcrumb_including({
-      category: "job",
-      message: "Active Job Enqueue"
-    })
+                                                            category: 'job',
+                                                            message: 'Active Job Enqueue'
+                                                          })
   end
 
-  it "creates cache event" do
-    NeetoBugtrap.flush { get "/breadcrumbs/cache_event" }
+  it 'creates cache event' do
+    NeetoBugtrap.flush { get '/breadcrumbs/cache_event' }
     expect(notices.first).to contain_breadcrumb_including({
-      category: "query",
-      message: "Active Support Cache Read"
-    })
+                                                            category: 'query',
+                                                            message: 'Active Support Cache Read'
+                                                          })
   end
 end

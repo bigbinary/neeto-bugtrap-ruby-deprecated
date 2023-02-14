@@ -1,16 +1,19 @@
-feature "Rescuing exceptions in a rake task" do
+# frozen_string_literal: true
+
+feature 'Rescuing exceptions in a rake task' do
   before do
     FileUtils.cp(FIXTURES_PATH.join('Rakefile'), current_dir)
     set_environment_variable('NEETOBUGTRAP_API_KEY', 'asdf')
     set_environment_variable('NEETOBUGTRAP_LOGGING_LEVEL', 'DEBUG')
   end
 
-  it "reports the exception to NeetoBugtrap" do
+  it 'reports the exception to NeetoBugtrap' do
     expect(run_command('rake neetobugtrap')).not_to be_successfully_executed
-    assert_notification('error' => {'class' => 'RuntimeError', 'message' => 'RuntimeError: Jim has left the building :('})
+    assert_notification('error' => { 'class' => 'RuntimeError',
+                                     'message' => 'RuntimeError: Jim has left the building :(' })
   end
 
-  context "rake reporting is disabled" do
+  context 'rake reporting is disabled' do
     before do
       set_environment_variable('NEETOBUGTRAP_EXCEPTIONS_RESCUE_RAKE', 'false')
     end
@@ -21,20 +24,21 @@ feature "Rescuing exceptions in a rake task" do
     end
   end
 
-  context "shell is attached" do
+  context 'shell is attached' do
     it "doesn't report the exception to NeetoBugtrapWeb" do
       expect(run_command('rake neetobugtrap_autodetect_from_terminal')).not_to be_successfully_executed
       assert_no_notification
     end
 
-    context "rake reporting is enabled" do
+    context 'rake reporting is enabled' do
       before do
         set_environment_variable('NEETOBUGTRAP_EXCEPTIONS_RESCUE_RAKE', 'true')
       end
 
-      it "reports the exception to NeetoBugtrapWeb" do
+      it 'reports the exception to NeetoBugtrapWeb' do
         expect(run_command('rake neetobugtrap_autodetect_from_terminal')).not_to be_successfully_executed
-        assert_notification('error' => {'class' => 'RuntimeError', 'message' => 'RuntimeError: Jim has left the building :('})
+        assert_notification('error' => { 'class' => 'RuntimeError',
+                                         'message' => 'RuntimeError: Jim has left the building :(' })
       end
     end
   end

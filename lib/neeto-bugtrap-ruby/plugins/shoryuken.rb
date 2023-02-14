@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'neeto-bugtrap-ruby/plugin'
 require 'neeto-bugtrap-ruby/ruby'
 
@@ -8,10 +10,8 @@ module NeetoBugtrap
         def call(_worker, _queue, sqs_msg, body)
           begin
             yield
-          rescue => e
-            if attempt_threshold <= receive_count(sqs_msg)
-              NeetoBugtrap.notify(e, parameters: notification_params(body))
-            end
+          rescue StandardError => e
+            NeetoBugtrap.notify(e, parameters: notification_params(body)) if attempt_threshold <= receive_count(sqs_msg)
 
             raise e
           end
@@ -28,7 +28,7 @@ module NeetoBugtrap
         def receive_count(sqs_msg)
           return 0 if sqs_msg.is_a?(Array)
 
-          sqs_msg.attributes['ApproximateReceiveCount'.freeze].to_i
+          sqs_msg.attributes['ApproximateReceiveCount'].to_i
         end
 
         def notification_params(body)

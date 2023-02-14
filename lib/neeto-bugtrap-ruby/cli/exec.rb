@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'erb'
 require 'forwardable'
 require 'neeto-bugtrap-ruby/cli/main'
@@ -14,34 +16,34 @@ module NeetoBugtrap
       extend Forwardable
       include Helpers::BackendCmd
 
-      FAILED_TEMPLATE = <<-MSG
-NeetoBugtrap detected failure or error output for the command:
-`<%= args.join(' ') %>`
+      FAILED_TEMPLATE = <<~MSG
+        NeetoBugtrap detected failure or error output for the command:
+        `<%= args.join(' ') %>`
 
-PROCESS ID: <%= pid %>
+        PROCESS ID: <%= pid %>
 
-RESULT CODE: <%= code %>
+        RESULT CODE: <%= code %>
 
-ERROR OUTPUT:
-<%= stderr %>
+        ERROR OUTPUT:
+        <%= stderr %>
 
-STANDARD OUTPUT:
-<%= stdout %>
-MSG
+        STANDARD OUTPUT:
+        <%= stdout %>
+      MSG
 
-      NO_EXEC_TEMPLATE = <<-MSG
-NeetoBugtrap failed to execute the following command:
-`<%= args.join(' ') %>`
+      NO_EXEC_TEMPLATE = <<~MSG
+        NeetoBugtrap failed to execute the following command:
+        `<%= args.join(' ') %>`
 
-The command was not executable. Try adjusting permissions on the file.
-MSG
+        The command was not executable. Try adjusting permissions on the file.
+      MSG
 
-      NOT_FOUND_TEMPLATE = <<-MSG
-NeetoBugtrap failed to execute the following command:
-`<%= args.join(' ') %>`
+      NOT_FOUND_TEMPLATE = <<~MSG
+        NeetoBugtrap failed to execute the following command:
+        `<%= args.join(' ') %>`
 
-The command was not found. Make sure it exists in your PATH.
-MSG
+        The command was not found. Make sure it exists in your PATH.
+      MSG
 
       def initialize(options, args, config)
         @options = options
@@ -82,12 +84,12 @@ MSG
 
         begin
           response = config.backend.notify(:notices, payload)
-        rescue
+        rescue StandardError
           say(result.msg)
           raise
         end
 
-        if !response.success?
+        unless response.success?
           say(result.msg)
           say(error_message(response), :red)
           exit(1)

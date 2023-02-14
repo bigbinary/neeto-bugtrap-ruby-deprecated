@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+require 'English'
 require 'json'
 require 'securerandom'
 require 'forwardable'
@@ -13,23 +16,23 @@ require 'neeto-bugtrap-ruby/util/request_payload'
 module NeetoBugtrap
   # @api private
   NOTIFIER = {
-    name: 'neeto-bugtrap-ruby'.freeze,
-    url: 'https://github.com/bigbinary/neeto-bugtrap-ruby'.freeze,
+    name: 'neeto-bugtrap-ruby',
+    url: 'https://github.com/bigbinary/neeto-bugtrap-ruby',
     version: VERSION,
-    language: 'ruby'.freeze
+    language: 'ruby'
   }.freeze
 
   # @api private
   # Substitution for gem root in backtrace lines.
-  GEM_ROOT = '[GEM_ROOT]'.freeze
+  GEM_ROOT = '[GEM_ROOT]'
 
   # @api private
   # Substitution for project root in backtrace lines.
-  PROJECT_ROOT = '[PROJECT_ROOT]'.freeze
+  PROJECT_ROOT = '[PROJECT_ROOT]'
 
   # @api private
   # Empty String (used for equality comparisons and assignment).
-  STRING_EMPTY = ''.freeze
+  STRING_EMPTY = ''
 
   # @api private
   # A Regexp which matches non-blank characters.
@@ -79,6 +82,7 @@ module NeetoBugtrap
 
     # The exception cause if available.
     attr_reader :cause
+
     def cause=(cause)
       @cause = cause
       @causes = unwrap_causes(cause)
@@ -95,6 +99,7 @@ module NeetoBugtrap
 
     # Tags which will be applied to error.
     attr_reader :tags
+
     def tags=(tags)
       @tags = construct_tags(tags)
     end
@@ -113,12 +118,12 @@ module NeetoBugtrap
 
     # A hash of parameters from the query string or post body.
     attr_accessor :params
-    alias_method :parameters, :params
+    alias parameters params
 
     # The component (if any) which was used in this request (usually the controller).
     attr_accessor :component
-    alias_method :controller, :component
-    alias_method :controller=, :component=
+    alias controller component
+    alias controller= component=
 
     # The action (if any) that was called in this request.
     attr_accessor :action
@@ -154,33 +159,36 @@ module NeetoBugtrap
 
     # @api private
     # Cache project path substitutions for backtrace lines.
-    PROJECT_ROOT_CACHE = {}
+    PROJECT_ROOT_CACHE = {}.freeze
 
     # @api private
     # Cache gem path substitutions for backtrace lines.
-    GEM_ROOT_CACHE = {}
+    GEM_ROOT_CACHE = {}.freeze
 
     # @api private
     # A list of backtrace filters to run all the time.
     BACKTRACE_FILTERS = [
       lambda { |line|
         return line unless defined?(Gem)
+
         GEM_ROOT_CACHE[line] ||= Gem.path.reduce(line) do |line, path|
           line.sub(path, GEM_ROOT)
         end
       },
       lambda { |line, config|
         return line unless config
+
         c = (PROJECT_ROOT_CACHE[config[:root]] ||= {})
-        return c[line] if c.has_key?(line)
+        return c[line] if c.key?(line)
+
         c[line] ||= if config.root_regexp
                       line.sub(config.root_regexp, PROJECT_ROOT)
                     else
                       line
                     end
       },
-      lambda { |line| line.sub(RELATIVE_ROOT, STRING_EMPTY) },
-      lambda { |line| line if line !~ %r{lib/neeto-bugtrap-ruby} }
+      ->(line) { line.sub(RELATIVE_ROOT, STRING_EMPTY) },
+      ->(line) { line if line !~ %r{lib/neeto-bugtrap-ruby} }
     ].freeze
 
     # @api private
@@ -198,15 +206,18 @@ module NeetoBugtrap
 
       @exception = unwrap_exception(opts[:exception])
 
-      self.error_class = exception_attribute(:error_class, 'Notice') {|exception| exception.class.name }
+      self.error_class = exception_attribute(:error_class, 'Notice') { |exception| exception.class.name }
       self.error_message = exception_attribute(:error_message, 'No message provided') do |exception|
-        message = exception.respond_to?(:detailed_message) ?
-          exception.detailed_message.sub(" (#{exception.class.name})", '') # Gems like error_highlight append the exception class name
-          : exception.message
+        # Gems like error_highlight append the exception class name
+        message = if exception.respond_to?(:detailed_message)
+                    exception.detailed_message.sub(" (#{exception.class.name})", '')
+                  else
+                    exception.message
+                  end
         "#{exception.class.name}: #{message}"
       end
       self.backtrace = exception_attribute(:backtrace, caller)
-      self.cause = opts.key?(:cause) ? opts[:cause] : (exception_cause(@exception) || $!)
+      self.cause = opts.key?(:cause) ? opts[:cause] : (exception_cause(@exception) || $ERROR_INFO)
 
       self.context = construct_context_hash(opts, exception)
       self.local_variables = local_variables_from_exception(exception, config)
@@ -233,7 +244,7 @@ module NeetoBugtrap
     # Template used to create JSON payload.
     #
     # @return [Hash] JSON representation of notice.
-    def as_json(*args)
+    def as_json(*_args)
       request = construct_request_hash
       request[:context] = s(context)
       request[:local_variables] = local_variables if local_variables
@@ -294,17 +305,17 @@ module NeetoBugtrap
     private
 
     attr_reader :config, :opts, :stats, :now, :pid, :request_sanitizer,
-      :rack_env
+                :rack_env
 
     def ignore_by_origin?
       return false if opts[:origin] != :rake
       return false if config[:'exceptions.rescue_rake']
+
       true
     end
 
     def ignore_by_callbacks?
-      config.exception_filter &&
-        config.exception_filter.call(self)
+      config.exception_filter&.call(self)
     end
 
     # Gets a property named "attribute" of an exception, either from
@@ -346,7 +357,7 @@ module NeetoBugtrap
     #
     # Returns true or false.
     def ignore_by_class?(ignored_class = nil)
-      @ignore_by_class ||= Proc.new do |ignored_class|
+      @ignore_by_class ||= proc do |ignored_class|
         case error_class
         when (ignored_class.respond_to?(:name) ? ignored_class.name : ignored_class)
           true
@@ -358,7 +369,7 @@ module NeetoBugtrap
       ignored_class ? @ignore_by_class.call(ignored_class) : config.ignored_classes.any?(&@ignore_by_class)
     end
 
-    def construct_backtrace_filters(opts)
+    def construct_backtrace_filters(_opts)
       [
         config.backtrace_filter
       ].compact | BACKTRACE_FILTERS
@@ -381,7 +392,7 @@ module NeetoBugtrap
         cgi_data: cgi_data,
         sanitizer: request_sanitizer
       }
-      request.delete_if {|k,v| config.excluded_request_keys.include?(k) }
+      request.delete_if { |k, _v| config.excluded_request_keys.include?(k) }
       Util::RequestPayload.build(request)
     end
 
@@ -429,6 +440,7 @@ module NeetoBugtrap
 
     def fingerprint_hash
       return unless fingerprint
+
       Digest::SHA1.hexdigest(fingerprint.to_s)
     end
 
@@ -455,34 +467,30 @@ module NeetoBugtrap
     # Returns a Hash of local variables.
     def local_variables_from_exception(exception, config)
       return nil unless send_local_variables?(config)
-      return {} unless Exception === exception
+      return {} unless exception.is_a?(Exception)
       return {} unless exception.respond_to?(:__neetobugtrap_bindings_stack)
       return {} if exception.__neetobugtrap_bindings_stack.empty?
 
       if config[:root]
-        binding = exception.__neetobugtrap_bindings_stack.find { |b|
+        binding = exception.__neetobugtrap_bindings_stack.find do |b|
           if BINDING_HAS_SOURCE_LOCATION
             b.source_location[0]
           else
             b.eval('__FILE__')
           end =~ /^#{Regexp.escape(config[:root].to_s)}/
-        }
+        end
       end
 
       binding ||= exception.__neetobugtrap_bindings_stack[0]
 
       vars = binding.eval('local_variables')
       results =
-        vars.inject([]) { |acc, arg|
-          begin
-            result = binding.eval(arg.to_s)
-            acc << [arg, result]
-          rescue NameError
-            # Do Nothing
-          end
-
-          acc
-        }
+        vars.each_with_object([]) do |arg, acc|
+          result = binding.eval(arg.to_s)
+          acc << [arg, result]
+        rescue NameError
+          # Do Nothing
+        end
 
       result_hash = Hash[results]
       request_sanitizer.sanitize(result_hash)
@@ -517,6 +525,7 @@ module NeetoBugtrap
     # Returns the Exception to report.
     def unwrap_exception(exception)
       return exception unless config[:'exceptions.unwrap']
+
       exception_cause(exception) || exception
     end
 
@@ -542,7 +551,9 @@ module NeetoBugtrap
     #
     # Returns the Array of Cause instances.
     def unwrap_causes(cause)
-      causes, c, i = [], cause, 0
+      causes = []
+      c = cause
+      i = 0
 
       while c && i < MAX_EXCEPTION_CAUSES
         causes << Cause.new(c)
@@ -559,13 +570,13 @@ module NeetoBugtrap
     #
     # Returns the Array of causes in Hash payload format.
     def prepare_causes(causes)
-      causes.map {|c|
+      causes.map do |c|
         {
           class: c.error_class,
           message: c.error_message,
           backtrace: parse_backtrace(c.backtrace)
         }
-      }
+      end
     end
 
     def params_filters

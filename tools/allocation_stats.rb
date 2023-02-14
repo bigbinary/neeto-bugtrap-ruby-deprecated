@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'allocation_stats'
 require 'neeto-bugtrap-ruby'
 require 'benchmark'
@@ -5,7 +7,7 @@ require 'benchmark'
 group_by = if ENV['GROUP']
              ENV['GROUP'].split(',').lazy.map(&:strip).map(&:to_sym).freeze
            else
-             [:sourcefile, :sourceline, :class].freeze
+             %i[sourcefile sourceline class].freeze
            end
 
 puts Benchmark.measure {
@@ -16,7 +18,8 @@ puts Benchmark.measure {
     end
 
     1000.times do
-      NeetoBugtrap.notify(error_class: 'RubyProf', error_message: 'Profiling NeetoBugtrap -- this should never actually be reported.')
+      NeetoBugtrap.notify(error_class: 'RubyProf',
+                          error_message: 'Profiling NeetoBugtrap -- this should never actually be reported.')
     end
   end
 

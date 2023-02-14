@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'forwardable'
 
 module NeetoBugtrap
@@ -69,7 +71,7 @@ module NeetoBugtrap
       def register(name = nil, &block)
         name ||= name_from_caller(caller) or
           raise(ArgumentError, 'Plugin name is required, but was nil.')
-        instances[key = name.to_sym] and fail("Already registered: #{name}")
+        instances[key = name.to_sym] and raise("Already registered: #{name}")
         instances[key] = new(name).tap { |d| d.instance_eval(&block) }
       end
 
@@ -79,7 +81,7 @@ module NeetoBugtrap
           if config.load_plugin?(name)
             plugin.load!(config)
           else
-            config.logger.debug(sprintf('skip plugin name=%s reason=disabled', name))
+            config.logger.debug(format('skip plugin name=%s reason=disabled', name))
           end
         end
       end
@@ -87,8 +89,8 @@ module NeetoBugtrap
       # @api private
       def name_from_caller(caller)
         caller && caller[0].match(CALLER_FILE) or
-          fail("Unable to determine name from caller: #{caller.inspect}")
-        File.basename($1)[/[^\.]+/]
+          raise("Unable to determine name from caller: #{caller.inspect}")
+        File.basename(::Regexp.last_match(1))[/[^.]+/]
       end
     end
 
@@ -108,6 +110,7 @@ module NeetoBugtrap
       private
 
       attr_reader :config, :block
+
       def_delegator :@config, :logger
     end
 
@@ -167,28 +170,30 @@ module NeetoBugtrap
 
     # @api private
     def ok?(config)
-      @requirements.all? {|r| Execution.new(config, &r).call }
-    rescue => e
-      config.logger.error(sprintf("plugin error name=%s class=%s message=%s\n\t%s", name, e.class, e.message.dump, Array(e.backtrace).join("\n\t")))
+      @requirements.all? { |r| Execution.new(config, &r).call }
+    rescue StandardError => e
+      config.logger.error(format("plugin error name=%s class=%s message=%s\n\t%s", name, e.class, e.message.dump,
+                                 Array(e.backtrace).join("\n\t")))
       false
     end
 
     # @api private
     def load!(config)
       if @loaded
-        config.logger.debug(sprintf('skip plugin name=%s reason=loaded', name))
+        config.logger.debug(format('skip plugin name=%s reason=loaded', name))
         return false
       elsif ok?(config)
-        config.logger.debug(sprintf('load plugin name=%s', name))
-        @executions.each {|e| Execution.new(config, &e).call }
+        config.logger.debug(format('load plugin name=%s', name))
+        @executions.each { |e| Execution.new(config, &e).call }
         @loaded = true
       else
-        config.logger.debug(sprintf('skip plugin name=%s reason=requirement', name))
+        config.logger.debug(format('skip plugin name=%s reason=requirement', name))
       end
 
       @loaded
-    rescue => e
-      config.logger.error(sprintf("plugin error name=%s class=%s message=%s\n\t%s", name, e.class, e.message.dump, Array(e.backtrace).join("\n\t")))
+    rescue StandardError => e
+      config.logger.error(format("plugin error name=%s class=%s message=%s\n\t%s", name, e.class, e.message.dump,
+                                 Array(e.backtrace).join("\n\t")))
       @loaded = true
       false
     end

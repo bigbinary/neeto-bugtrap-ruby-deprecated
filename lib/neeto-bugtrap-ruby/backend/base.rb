@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'forwardable'
 require 'net/http'
 require 'json'
@@ -7,15 +9,15 @@ require 'neeto-bugtrap-ruby/logging'
 module NeetoBugtrap
   module Backend
     class Response
-      NOT_BLANK = /\S/
+      NOT_BLANK = /\S/.freeze
 
       attr_reader :code, :body, :message, :error
 
       FRIENDLY_ERRORS = {
-        429 => "Your project is currently sending too many errors.\nThis issue should resolve itself once error traffic is reduced.".freeze,
-        503 => "Your project is currently sending too many errors.\nThis issue should resolve itself once error traffic is reduced.".freeze,
-        402 => "The project owner's billing information has expired (or the trial has ended).\nPlease check your payment details or email support@neetobugtrap.com for help.".freeze,
-        403 => "The API key is invalid. Please check your API key and try again.".freeze
+        429 => "Your project is currently sending too many errors.\nThis issue should resolve itself once error traffic is reduced.",
+        503 => "Your project is currently sending too many errors.\nThis issue should resolve itself once error traffic is reduced.",
+        402 => "The project owner's billing information has expired (or the trial has ended).\nPlease check your payment details or email support@neetobugtrap.com for help.",
+        403 => 'The API key is invalid. Please check your API key and try again.'
       }.freeze
 
       # Initializes the Response instance.
@@ -33,8 +35,10 @@ module NeetoBugtrap
       #   @param [String] message The String message returned by the server (or
       #     set by the backend in the case of an :error code).
       def initialize(*args)
-        if (response = args.first).kind_of?(Net::HTTPResponse)
-          @code, @body, @message = response.code.to_i, response.body.to_s, response.message
+        if (response = args.first).is_a?(Net::HTTPResponse)
+          @code = response.code.to_i
+          @body = response.body.to_s
+          @message = response.message
         else
           @code, @body, @message = args
         end
@@ -51,6 +55,7 @@ module NeetoBugtrap
         return message if code == :error
         return FRIENDLY_ERRORS[code] if FRIENDLY_ERRORS[code]
         return error if error =~ NOT_BLANK
+
         msg = "The server responded with #{code}"
         msg << ": #{message}" if message =~ NOT_BLANK
         msg
@@ -60,8 +65,9 @@ module NeetoBugtrap
 
       def parse_error(body)
         return unless body =~ NOT_BLANK
+
         obj = JSON.parse(body)
-        return obj['error'] if obj.kind_of?(Hash)
+        return obj['error'] if obj.is_a?(Hash)
       rescue JSON::ParserError
         nil
       end

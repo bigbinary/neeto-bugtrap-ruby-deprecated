@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'neeto-bugtrap-ruby/plugin'
 require 'neeto-bugtrap-ruby/breadcrumbs/logging'
 
@@ -50,7 +52,9 @@ module NeetoBugtrap
           config[:'breadcrumbs.active_support_notifications'].each do |name, config|
             RailsBreadcrumbs.subscribe_to_notification(name, config)
           end
-          ActiveSupport::LogSubscriber.prepend(NeetoBugtrap::Breadcrumbs::LogSubscriberInjector) if config[:'breadcrumbs.logging.enabled']
+          if config[:'breadcrumbs.logging.enabled']
+            ActiveSupport::LogSubscriber.prepend(NeetoBugtrap::Breadcrumbs::LogSubscriberInjector)
+          end
         end
 
         ::Logger.prepend(NeetoBugtrap::Breadcrumbs::LogWrapper) if config[:'breadcrumbs.logging.enabled']
@@ -73,7 +77,7 @@ module NeetoBugtrap
       # @option notification_config [Proc] :transform A proc that accepts the data payload. The return value will replace the current data hash (optional)
       #
       def self.send_breadcrumb_notification(name, duration, notification_config, data = {})
-        return if notification_config[:exclude_when] && notification_config[:exclude_when].call(data)
+        return if notification_config[:exclude_when]&.call(data)
 
         message =
           case (m = notification_config[:message])

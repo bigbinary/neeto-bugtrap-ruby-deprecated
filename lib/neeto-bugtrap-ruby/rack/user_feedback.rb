@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'erb'
 require 'uri'
 require 'forwardable'
@@ -7,7 +9,7 @@ begin
 rescue LoadError
   module NeetoBugtrap
     module I18n
-      def self.t(key, options={})
+      def self.t(_key, options = {})
         options[:default]
       end
     end
@@ -23,19 +25,20 @@ module NeetoBugtrap
 
       def initialize(app, agent = nil)
         @app = app
-        @agent = agent.kind_of?(Agent) && agent
+        @agent = agent.is_a?(Agent) && agent
       end
 
       def call(env)
         return @app.call(env) unless config[:'feedback.enabled']
+
         status, headers, body = @app.call(env)
-        if env['neetobugtrap.error_id'] && form = render_form(env['neetobugtrap.error_id'])
+        if env['neetobugtrap.error_id'] && (form = render_form(env['neetobugtrap.error_id']))
           new_body = []
           body.each do |chunk|
-            new_body << chunk.gsub("<!-- NEETOBUGTRAP FEEDBACK -->", form)
+            new_body << chunk.gsub('<!-- NEETOBUGTRAP FEEDBACK -->', form)
           end
           body.close if body.respond_to?(:close)
-          headers['Content-Length'] = new_body.reduce(0) { |a,e| a += e.bytesize }.to_s
+          headers['Content-Length'] = new_body.reduce(0) { |a, e| a += e.bytesize }.to_s
           body = new_body
         end
         [status, headers, body]
@@ -52,6 +55,7 @@ module NeetoBugtrap
       # @private
       def render_form(error_id, action = action())
         return unless action
+
         ERB.new(@template ||= File.read(template_file)).result(binding)
       end
 
@@ -70,7 +74,7 @@ module NeetoBugtrap
         if custom_template_file?
           custom_template_file
         else
-          File.expand_path('../../templates/feedback_form.erb', __FILE__)
+          File.expand_path('../templates/feedback_form.erb', __dir__)
         end
       end
 
@@ -82,7 +86,6 @@ module NeetoBugtrap
       def agent
         @agent || NeetoBugtrap::Agent.instance
       end
-
     end
   end
 end

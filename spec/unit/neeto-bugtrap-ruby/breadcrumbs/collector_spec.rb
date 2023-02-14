@@ -1,9 +1,13 @@
+# frozen_string_literal: true
+
 require 'neeto-bugtrap-ruby/breadcrumbs/breadcrumb'
 require 'neeto-bugtrap-ruby/breadcrumbs/collector'
 
 describe NeetoBugtrap::Breadcrumbs::Collector do
-  let(:buffer) { double("Buffer") }
-  let(:config) { NeetoBugtrap::Config.new(api_key: "fake api key", logger: NULL_LOGGER, :'breadcrumbs.enabled' => true) }
+  let(:buffer) { double('Buffer') }
+  let(:config) do
+    NeetoBugtrap::Config.new(api_key: 'fake api key', logger: NULL_LOGGER, 'breadcrumbs.enabled': true)
+  end
   subject { described_class.new(config, buffer) }
 
   context 'buffer delegation' do
@@ -18,34 +22,35 @@ describe NeetoBugtrap::Breadcrumbs::Collector do
     end
   end
 
-
-  describe "#add!" do
-    it "delegates to " do
-      crumb = double("Crumb")
+  describe '#add!' do
+    it 'delegates to ' do
+      crumb = double('Crumb')
       expect(buffer).to receive(:add!).with(crumb)
       subject.add!(crumb)
     end
 
-    context "breadcrumbs disabled in config" do
-      let(:config) { NeetoBugtrap::Config.new(api_key:'fake api key', logger: NULL_LOGGER, :'breadcrumbs.enabled' => false) }
+    context 'breadcrumbs disabled in config' do
+      let(:config) do
+        NeetoBugtrap::Config.new(api_key: 'fake api key', logger: NULL_LOGGER, 'breadcrumbs.enabled': false)
+      end
 
       it 'does not call buffer' do
-        crumb = double("Crumb")
+        crumb = double('Crumb')
         expect(buffer).to_not receive(:add!)
         subject.add!(crumb)
       end
     end
   end
 
-  describe "#<<" do
+  describe '#<<' do
     it 'delegates to add!' do
       expect(subject.method(:<<)).to eq(subject.method(:add!))
     end
   end
 
-  describe "#drop_previous_breadcrumb_if" do
+  describe '#drop_previous_breadcrumb_if' do
     it 'calls drop on buffer if block returns truthy' do
-      crumb = double("Crumb")
+      crumb = double('Crumb')
       expect(subject).to receive(:previous).twice.and_return(crumb)
       expect(buffer).to receive(:drop)
       subject.drop_previous_breadcrumb_if do |c|
@@ -55,29 +60,29 @@ describe NeetoBugtrap::Breadcrumbs::Collector do
     end
 
     it 'does not call drop on buffer if block returns falsey' do
-      crumb = double("Crumb")
+      crumb = double('Crumb')
       expect(subject).to receive(:previous).twice.and_return(crumb)
       expect(buffer).to_not receive(:drop)
-      subject.drop_previous_breadcrumb_if { |c| false }
+      subject.drop_previous_breadcrumb_if { |_c| false }
     end
 
     it 'does not call drop on buffer if buffer is empty' do
       expect(subject).to receive(:previous).and_return(nil)
       expect(buffer).to_not receive(:drop)
-      subject.drop_previous_breadcrumb_if { |c| true }
+      subject.drop_previous_breadcrumb_if { |_c| true }
     end
   end
 
-  describe "to_h" do
+  describe 'to_h' do
     before do
       allow(subject).to receive(:trail).and_return([])
     end
 
     it 'contains trail summary' do
       trail = [buffer]
-      expect(buffer).to receive(:to_h).and_return({test: "buffer"})
+      expect(buffer).to receive(:to_h).and_return({ test: 'buffer' })
       expect(subject).to receive(:trail).and_return(trail)
-      expect(subject.to_h).to match(hash_including({ trail: [{test: "buffer"}] }))
+      expect(subject.to_h).to match(hash_including({ trail: [{ test: 'buffer' }] }))
     end
 
     it 'works with empty trail' do
@@ -89,14 +94,16 @@ describe NeetoBugtrap::Breadcrumbs::Collector do
     end
   end
 
-  describe "#trail" do
+  describe '#trail' do
     let(:active_breadcrumb) { instance_double(NeetoBugtrap::Breadcrumbs::Breadcrumb, active?: true) }
-    let(:buffer) {[
-      instance_double(NeetoBugtrap::Breadcrumbs::Breadcrumb, active?: false),
-      active_breadcrumb,
-    ]}
+    let(:buffer) do
+      [
+        instance_double(NeetoBugtrap::Breadcrumbs::Breadcrumb, active?: false),
+        active_breadcrumb
+      ]
+    end
 
-    it "only returns active breadcrumbs" do
+    it 'only returns active breadcrumbs' do
       expect(subject.trail.length).to eq(1)
       expect(subject.trail.first).to eq(active_breadcrumb)
     end

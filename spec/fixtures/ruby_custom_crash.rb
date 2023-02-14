@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 require 'neeto-bugtrap-ruby'
 
 CRASHES = {
-  "system_exit" => ->{ exit -1 },
-  "sigterm" => ->{ raise SignalException, "TERM" },
-  "hup" => ->{ raise SignalException, "SIGHUP" },
-}
+  'system_exit' => -> { exit(-1) },
+  'sigterm' => -> { raise SignalException, 'TERM' },
+  'hup' => -> { raise SignalException, 'SIGHUP' }
+}.freeze
 
-crash_type = ARGV.first || (raise "Invalid argument")
+crash_type = ARGV.first || (raise 'Invalid argument')
 
-(CRASHES[crash_type] || ->{ raise "Invalid crash type" }).()
+(CRASHES[crash_type] || -> { raise 'Invalid crash type' }).call

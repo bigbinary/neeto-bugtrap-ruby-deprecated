@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'forwardable'
 require 'rack/request'
 
@@ -23,7 +25,7 @@ module NeetoBugtrap
 
       def initialize(app, agent = nil)
         @app = app
-        @agent = agent.kind_of?(Agent) && agent
+        @agent = agent.is_a?(Agent) && agent
       end
 
       def call(env)
@@ -31,15 +33,13 @@ module NeetoBugtrap
           begin
             env['neetobugtrap.config'] = config
             response = @app.call(env)
-          rescue Exception => raised
-            env['neetobugtrap.error_id'] = notify_neetobugtrap(raised, env)
+          rescue Exception => e
+            env['neetobugtrap.error_id'] = notify_neetobugtrap(e, env)
             raise
           end
 
           framework_exception = framework_exception(env)
-          if framework_exception
-            env['neetobugtrap.error_id'] = notify_neetobugtrap(framework_exception, env)
-          end
+          env['neetobugtrap.error_id'] = notify_neetobugtrap(framework_exception, env) if framework_exception
 
           response
         end
@@ -57,9 +57,9 @@ module NeetoBugtrap
       end
 
       def ignored_user_agent?(env)
-        true if config[:'exceptions.ignored_user_agents'].
-          flatten.
-          any? { |ua| ua === env['HTTP_USER_AGENT'] }
+        true if config[:'exceptions.ignored_user_agents']
+                .flatten
+                .any? { |ua| ua === env['HTTP_USER_AGENT'] }
       end
 
       def notify_neetobugtrap(exception, env)
@@ -68,7 +68,7 @@ module NeetoBugtrap
         if config[:'breadcrumbs.enabled']
           # Drop the last breadcrumb only if the message contains the error class name
           agent.breadcrumbs.drop_previous_breadcrumb_if do |bc|
-            bc.category == "log" && bc.message.include?(exception.class.to_s)
+            bc.category == 'log' && bc.message.include?(exception.class.to_s)
           end
 
           agent.add_breadcrumb(
@@ -76,7 +76,7 @@ module NeetoBugtrap
             metadata: {
               message: exception.message
             },
-            category: "error"
+            category: 'error'
           )
         end
 

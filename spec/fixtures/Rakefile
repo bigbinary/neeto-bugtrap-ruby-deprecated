@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A test harness for RakeHandler
 #
 require 'rake'
@@ -19,11 +21,11 @@ end
 
 def stub_tty_output(value)
   if value
-    def STDOUT.tty?
+    def $stdout.tty?
       true
     end
   else
-    def STDOUT.tty?
+    def $stdout.tty?
       false
     end
   end

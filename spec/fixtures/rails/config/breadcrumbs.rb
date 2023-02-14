@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Thing < ActiveRecord::Base; end unless SKIP_ACTIVE_RECORD
 
 class Job < ActiveJob::Base
@@ -9,12 +11,12 @@ end
 class BreadcrumbController < ApplicationController
   def active_record_event
     ActiveRecord::Base.connection.execute("SELECT '\x83ݔj'")
-    Thing.create(name: "a thing")
+    Thing.create(name: 'a thing')
     notice
   end
 
   def log_breadcrumb_event
-    Rails.logger.info("test log event")
+    Rails.logger.info('test log event')
     notice
   end
 
@@ -24,7 +26,7 @@ class BreadcrumbController < ApplicationController
   end
 
   def cache_event
-    Rails.cache.read("test read")
+    Rails.cache.read('test read')
     notice
   end
 

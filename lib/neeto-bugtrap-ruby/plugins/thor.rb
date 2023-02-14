@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'neeto-bugtrap-ruby/plugin'
 require 'neeto-bugtrap-ruby/ruby'
 
@@ -25,7 +27,7 @@ module NeetoBugtrap
       requirement { defined?(::Thor.no_commands) }
 
       execution do
-        ::Thor.send(:include, Thor)
+        ::Thor.include Thor
       end
     end
   end

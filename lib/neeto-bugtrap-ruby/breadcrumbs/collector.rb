@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'forwardable'
 
 module NeetoBugtrap
@@ -36,19 +38,20 @@ module NeetoBugtrap
       # @return [self] Filtered breadcrumbs
       def add!(breadcrumb)
         return unless @config[:'breadcrumbs.enabled']
+
         @buffer.add!(breadcrumb)
 
         self
       end
 
-      alias_method :<<, :add!
+      alias << add!
 
       # @api private
       # Removes the prevous breadcrumb from the buffer if the supplied
       # block returns a falsy value
       #
       def drop_previous_breadcrumb_if
-        @buffer.drop if (previous && block_given? && yield(previous))
+        @buffer.drop if previous && block_given? && yield(previous)
       end
 
       # All active breadcrumbs you want to remove a breadcrumb from the trail,

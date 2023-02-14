@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'socket'
 require 'neeto-bugtrap-ruby/breadcrumbs/active_support'
 
@@ -27,9 +29,10 @@ module NeetoBugtrap
                       'Sinatra::NotFound',
                       'Sidekiq::JobRetry::Skip'].map(&:freeze).freeze
 
-    DEVELOPMENT_ENVIRONMENTS = ['development', 'test', 'cucumber'].map(&:freeze).freeze
+    DEVELOPMENT_ENVIRONMENTS = %w[development test cucumber].map(&:freeze).freeze
 
-    DEFAULT_PATHS = ['neetobugtrap.yml', 'config/neetobugtrap.yml', "#{ENV['HOME']}/neetobugtrap.yml"].map(&:freeze).freeze
+    DEFAULT_PATHS = ['neetobugtrap.yml', 'config/neetobugtrap.yml',
+                     "#{ENV['HOME']}/neetobugtrap.yml"].map(&:freeze).freeze
 
     OPTIONS = {
       api_key: {
@@ -77,7 +80,7 @@ module NeetoBugtrap
         default: DEVELOPMENT_ENVIRONMENTS,
         type: Array
       },
-      :'send_data_at_exit' => {
+      'send_data_at_exit': {
         description: 'Send remaining data when Ruby exits.',
         default: true,
         type: Boolean
@@ -97,233 +100,233 @@ module NeetoBugtrap
         default: false,
         type: Boolean
       },
-      :'skipped_plugins' => {
+      'skipped_plugins': {
         description: 'An optional list of plugins to skip.',
         default: nil,
         type: Array
       },
-      :'config.path' => {
+      'config.path': {
         description: 'The path (absolute, or relative from config.root) to the project\'s YAML configuration file.',
         default: DEFAULT_PATHS,
         type: String
       },
-      :'logging.path' => {
+      'logging.path': {
         description: 'The path (absolute, or relative from config.root) to the log file.',
         default: nil,
         type: String
       },
-      :'logging.level' => {
+      'logging.level': {
         description: 'The log level.',
         default: 'INFO',
         type: String
       },
-      :'logging.debug' => {
+      'logging.debug': {
         description: 'Override debug logging.',
         default: nil,
         type: Boolean
       },
-      :'logging.tty_level' => {
+      'logging.tty_level': {
         description: 'Level to log when attached to a terminal (anything < logging.level will always be ignored).',
         default: 'DEBUG',
         type: String
       },
-      :'connection.secure' => {
+      'connection.secure': {
         description: 'Use SSL when sending data.',
         default: true,
         type: Boolean
       },
-      :'connection.host' => {
+      'connection.host': {
         description: 'The host to use when sending data.',
-        default: 'api.neetobugtrap.com'.freeze,
+        default: 'api.neetobugtrap.com',
         type: String
       },
-      :'connection.port' => {
+      'connection.port': {
         description: 'The port to use when sending data.',
         default: nil,
         type: Integer
       },
-      :'connection.system_ssl_cert_chain' => {
+      'connection.system_ssl_cert_chain': {
         description: 'Use the system\'s SSL certificate chain (if available).',
         default: false,
         type: Boolean
       },
-      :'connection.ssl_ca_bundle_path' => {
+      'connection.ssl_ca_bundle_path': {
         description: 'Use this ca bundle when establishing secure connections.',
         default: nil,
         type: String
       },
-      :'connection.http_open_timeout' => {
+      'connection.http_open_timeout': {
         description: 'The HTTP open timeout when connecting to the server.',
         default: 2,
         type: Integer
       },
-      :'connection.http_read_timeout' => {
+      'connection.http_read_timeout': {
         description: 'The HTTP read timeout when connecting to the server.',
         default: 5,
         type: Integer
       },
-      :'connection.proxy_host' => {
+      'connection.proxy_host': {
         description: 'The proxy host to use when sending data.',
         default: nil,
         type: String
       },
-      :'connection.proxy_port' => {
+      'connection.proxy_port': {
         description: 'The proxy port to use when sending data.',
         default: nil,
         type: Integer
       },
-      :'connection.proxy_user' => {
+      'connection.proxy_user': {
         description: 'The proxy user to use when sending data.',
         default: nil,
         type: String
       },
-      :'connection.proxy_pass' => {
+      'connection.proxy_pass': {
         description: 'The proxy password to use when sending data.',
         default: nil,
         type: String
       },
-      :'request.filter_keys' => {
+      'request.filter_keys': {
         description: 'A list of keys to filter when sending request data.',
-        default: ['password'.freeze, 'password_confirmation'.freeze, 'HTTP_AUTHORIZATION'.freeze].freeze,
+        default: %w[password password_confirmation HTTP_AUTHORIZATION].freeze,
         type: Array
       },
-      :'request.disable_session' => {
+      'request.disable_session': {
         description: 'Prevent session from being sent with request data.',
         default: false,
         type: Boolean
       },
-      :'request.disable_params' => {
+      'request.disable_params': {
         description: 'Prevent params from being sent with request data.',
         default: false,
         type: Boolean
       },
-      :'request.disable_environment' => {
+      'request.disable_environment': {
         description: 'Prevent Rack environment from being sent with request data.',
         default: false,
         type: Boolean
       },
-      :'request.disable_url' => {
+      'request.disable_url': {
         description: 'Prevent url from being sent with request data (Rack environment may still contain it in some cases).',
         default: false,
         type: Boolean
       },
-      :'user_informer.enabled' => {
+      'user_informer.enabled': {
         description: 'Enable the UserInformer middleware.',
         default: true,
         type: Boolean
       },
-      :'user_informer.info' => {
+      'user_informer.info': {
         description: 'Replacement string for HTML comment in templates.',
-        default: 'NeetoBugtrap Error {{error_id}}'.freeze,
+        default: 'NeetoBugtrap Error {{error_id}}',
         type: String
       },
-      :'feedback.enabled' => {
+      'feedback.enabled': {
         description: 'Enable the UserFeedback middleware.',
         default: true,
         type: Boolean
       },
-      :'exceptions.enabled' => {
+      'exceptions.enabled': {
         description: 'Enable automatic reporting of exceptions.',
         default: true,
         type: Boolean
       },
-      :'exceptions.ignore' => {
+      'exceptions.ignore': {
         description: 'A list of additional exceptions to ignore (includes default ignored exceptions).',
         default: IGNORE_DEFAULT,
         type: Array
       },
-      :'exceptions.ignore_only' => {
+      'exceptions.ignore_only': {
         description: 'A list of exceptions to ignore (overrides the default ignored exceptions).',
         default: nil,
         type: Array
       },
-      :'exceptions.ignored_user_agents' => {
+      'exceptions.ignored_user_agents': {
         description: 'A list of user agents to ignore.',
         default: [].freeze,
         type: Array
       },
-      :'exceptions.rescue_rake' => {
+      'exceptions.rescue_rake': {
         description: 'Enable reporting exceptions in rake tasks.',
-        default: !STDOUT.tty?,
+        default: !$stdout.tty?,
         type: Boolean
       },
-      :'exceptions.notify_at_exit' => {
+      'exceptions.notify_at_exit': {
         description: 'Report unhandled exception when Ruby crashes (at_exit).',
         default: true,
         type: Boolean
       },
-      :'exceptions.source_radius' => {
+      'exceptions.source_radius': {
         description: 'The number of lines before and after the source when reporting snippets.',
         default: 2,
         type: Integer
       },
-      :'exceptions.local_variables' => {
+      'exceptions.local_variables': {
         description: 'Enable sending local variables. Requires binding_of_caller to be loaded.',
         default: false,
         type: Boolean
       },
-      :'exceptions.unwrap' => {
+      'exceptions.unwrap': {
         description: 'Reports #original_exception or #cause one level up from rescued exception when available.',
         default: false,
         type: Boolean
       },
-      :'delayed_job.attempt_threshold' => {
+      'delayed_job.attempt_threshold': {
         description: 'The number of attempts before notifications will be sent.',
         default: 0,
         type: Integer
       },
-      :'sidekiq.attempt_threshold' => {
+      'sidekiq.attempt_threshold': {
         description: 'The number of attempts before notifications will be sent.',
         default: 0,
         type: Integer
       },
-      :'shoryuken.attempt_threshold' => {
+      'shoryuken.attempt_threshold': {
         description: 'The number of attempts before notifications will be sent.',
         default: 0,
         type: Integer
       },
-      :'faktory.attempt_threshold' => {
+      'faktory.attempt_threshold': {
         description: 'The number of attempts before notifications will be sent.',
         default: 0,
         type: Integer
       },
-      :'sidekiq.use_component' => {
+      'sidekiq.use_component': {
         description: 'Automatically set the component to the class of the job. Helps with grouping.',
         default: true,
         type: Boolean
       },
-      :'sinatra.enabled' => {
+      'sinatra.enabled': {
         description: 'Enable Sinatra auto-initialization.',
         default: true,
         type: Boolean
       },
-      :'rails.subscriber_ignore_sources' => {
+      'rails.subscriber_ignore_sources': {
         description: "Sources (strings or regexes) that should be ignored when using the Rails' (7+) native error reporter.",
         default: [],
         type: Array
       },
-      :'resque.resque_retry.send_exceptions_when_retrying' => {
+      'resque.resque_retry.send_exceptions_when_retrying': {
         description: 'Send exceptions when retrying job.',
         default: true,
         type: Boolean
       },
-      :'breadcrumbs.enabled' => {
+      'breadcrumbs.enabled': {
         description: 'Disable breadcrumb functionality.',
         default: true,
         type: Boolean
       },
-      :'breadcrumbs.active_support_notifications' => {
+      'breadcrumbs.active_support_notifications': {
         description: 'Configuration for automatic Active Support Instrumentation events.',
         default: Breadcrumbs::ActiveSupport.default_notifications,
         type: Hash
       },
-      :'breadcrumbs.logging.enabled' => {
+      'breadcrumbs.logging.enabled': {
         description: 'Enable/Disable automatic breadcrumbs from log messages.',
         default: true,
         type: Boolean
       }
     }.freeze
 
-    DEFAULTS = Hash[OPTIONS.map{|k,v| [k, v[:default]] }].freeze
+    DEFAULTS = OPTIONS.transform_values { |v| v[:default] }.freeze
   end
 end

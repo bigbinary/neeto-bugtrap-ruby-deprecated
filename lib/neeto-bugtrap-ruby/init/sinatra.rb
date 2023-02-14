@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sinatra/base'
 require 'neeto-bugtrap-ruby/ruby'
 
@@ -15,11 +17,12 @@ module NeetoBugtrap
             NeetoBugtrap.install_at_exit_callback
             build_without_neetobugtrap(*args, &block)
           end
-          alias :build_without_neetobugtrap :build
-          alias :build :build_with_neetobugtrap
+          alias_method :build_without_neetobugtrap, :build
+          alias_method :build, :build_with_neetobugtrap
 
           def configure_neetobugtrap
             return unless defined?(neetobugtrap_api_key)
+
             NeetoBugtrap.configure do |config|
               config.api_key = neetobugtrap_api_key
             end
@@ -28,14 +31,15 @@ module NeetoBugtrap
           def install_neetobugtrap
             config = NeetoBugtrap.config
             return unless config[:'sinatra.enabled']
+
             install_neetobugtrap_middleware(NeetoBugtrap::Rack::ErrorNotifier) if config[:'exceptions.enabled']
           end
 
           def install_neetobugtrap_middleware(klass)
-            return if middleware.any? {|m| m[0] == klass }
+            return if middleware.any? { |m| m[0] == klass }
+
             use(klass)
           end
-
         end
       end
     end
@@ -43,9 +47,9 @@ module NeetoBugtrap
 end
 
 NeetoBugtrap.init!({
-  env: ENV['APP_ENV'] || ENV['RACK_ENV'],
-  framework: :sinatra,
-  :'logging.path' => 'STDOUT'
-})
+                     env: ENV['APP_ENV'] || ENV['RACK_ENV'],
+                     framework: :sinatra,
+                     'logging.path': 'STDOUT'
+                   })
 
 NeetoBugtrap.load_plugins!

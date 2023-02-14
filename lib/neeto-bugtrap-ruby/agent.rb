@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'forwardable'
 
 require 'neeto-bugtrap-ruby/version'
@@ -47,17 +49,17 @@ module NeetoBugtrap
     include Logging::Helper
 
     # @api private
-    def self.instance
-      @instance
+    class << self
+      attr_reader :instance
     end
 
     # @api private
-    def self.instance=(instance)
-      @instance = instance
+    class << self
+      attr_writer :instance
     end
 
     def initialize(opts = {})
-      if opts.kind_of?(Config)
+      if opts.is_a?(Config)
         @config = opts
         opts = {}
       end
@@ -134,11 +136,13 @@ module NeetoBugtrap
 
       validate_notify_opts!(opts)
 
-      add_breadcrumb(
-        "NeetoBugtrap Notice",
-        metadata: opts,
-        category: "notice"
-      ) if config[:'breadcrumbs.enabled']
+      if config[:'breadcrumbs.enabled']
+        add_breadcrumb(
+          'NeetoBugtrap Notice',
+          metadata: opts,
+          category: 'notice'
+        )
+      end
 
       opts[:rack_env] ||= context_manager.get_rack_env
       opts[:global_context] ||= context_manager.get_context
@@ -148,16 +152,17 @@ module NeetoBugtrap
 
       config.before_notify_hooks.each do |hook|
         break if notice.halted?
+
         with_error_handling { hook.call(notice) }
       end
 
       unless notice.api_key =~ NOT_BLANK
-        error { sprintf('Unable to send error report: API key is missing. id=%s', notice.id) }
+        error { format('Unable to send error report: API key is missing. id=%s', notice.id) }
         return false
       end
 
       if !opts[:force] && notice.ignore?
-        debug { sprintf('ignore notice feature=notices id=%s', notice.id) }
+        debug { format('ignore notice feature=notices id=%s', notice.id) }
         return false
       end
 
@@ -166,7 +171,7 @@ module NeetoBugtrap
         return false
       end
 
-      info { sprintf('Reporting error id=%s', notice.id) }
+      info { format('Reporting error id=%s', notice.id) }
 
       if opts[:sync] || config[:sync]
         send_now(notice)
@@ -174,8 +179,8 @@ module NeetoBugtrap
         push(notice)
       end
 
-      if exception_or_opts.is_a?(Exception)
-        exception_or_opts.instance_variable_set(:@__nb_notice_id, notice.id) unless exception_or_opts.frozen?
+      if exception_or_opts.is_a?(Exception) && !exception_or_opts.frozen?
+        exception_or_opts.instance_variable_set(:@__nb_notice_id, notice.id)
       end
 
       notice.id
@@ -192,7 +197,7 @@ module NeetoBugtrap
     #   otherwise.
     def check_in(id)
       # this is to allow check ins even if a url is passed
-      check_in_id = id.to_s.strip.gsub(/\/$/, '').split('/').last
+      check_in_id = id.to_s.strip.gsub(%r{/$}, '').split('/').last
       response = backend.check_in(check_in_id)
       response.success?
     end
@@ -307,12 +312,12 @@ module NeetoBugtrap
     #   known category. (optional)
     #
     # @return self
-    def add_breadcrumb(message, metadata: {}, category: "custom")
+    def add_breadcrumb(message, metadata: {}, category: 'custom')
       params = Util::Sanitizer.new(max_depth: 2).sanitize({
-        category: category,
-        message: message,
-        metadata: metadata
-      })
+                                                            category: category,
+                                                            message: message,
+                                                            metadata: metadata
+                                                          })
 
       breadcrumbs.add!(Breadcrumbs::Breadcrumb.new(**params))
 
@@ -350,6 +355,7 @@ module NeetoBugtrap
     #   on success or false if NeetoBugtrap isn't running.
     def flush
       return true unless block_given?
+
       yield
     ensure
       worker.flush
@@ -428,7 +434,7 @@ module NeetoBugtrap
     def_delegator :config, :backtrace_filter
 
     # @api private
-    def with_rack_env(rack_env, &block)
+    def with_rack_env(rack_env)
       context_manager.set_rack_env(rack_env)
       yield
     ensure
@@ -451,15 +457,20 @@ module NeetoBugtrap
     private
 
     def validate_notify_opts!(opts)
-      return if opts.has_key?(:exception)
-      return if opts.has_key?(:error_message)
-      msg = sprintf('`NeetoBugtrap.notify` was called with invalid arguments. You must pass either an Exception or options Hash containing the `:error_message` key. location=%s', caller[caller.size-1])
-      raise ArgumentError.new(msg) if config.dev?
+      return if opts.key?(:exception)
+      return if opts.key?(:error_message)
+
+      msg = format(
+        '`NeetoBugtrap.notify` was called with invalid arguments. You must pass either an Exception or options Hash containing the `:error_message` key. location=%s', caller[caller.size - 1]
+      )
+      raise ArgumentError, msg if config.dev?
+
       warn(msg)
     end
 
     def context_manager
       return @context if @context
+
       ContextManager.current
     end
 
@@ -479,8 +490,8 @@ module NeetoBugtrap
 
     def with_error_handling
       yield
-    rescue => ex
-      error { "Rescued an error in a before notify hook: #{ex.message}" }
+    rescue StandardError => e
+      error { "Rescued an error in a before notify hook: #{e.message}" }
     end
 
     @instance = new(Config.new)
