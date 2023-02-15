@@ -22,13 +22,6 @@ global_job_config:
       value: test
 
 blocks:
-  - name: Checking a few things before running tests
-    task:
-      jobs:
-        - name: Auditors and Linters
-          commands:
-            - bundle exec rubocop
-
   - name: Runs gem tests
     task:
       jobs:
