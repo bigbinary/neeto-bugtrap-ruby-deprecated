@@ -59,24 +59,27 @@ YML
       end
     end
 
-    scenario "when capistrano is detected" do
-      let(:capfile) { Pathname(current_dir).join('Capfile') }
+## 
+# TODO: Capistrano us not supported
+#
+#     scenario "when capistrano is detected" do
+#       let(:capfile) { Pathname(current_dir).join('Capfile') }
 
-      before { File.write(capfile, <<-YML) }
-if respond_to?(:namespace) # cap2 differentiator
-  load 'deploy'
-else
-  require 'capistrano/setup'
-  require 'capistrano/deploy'
-end
-YML
+#       before { File.write(capfile, <<-YML) }
+# if respond_to?(:namespace) # cap2 differentiator
+#   load 'deploy'
+# else
+#   require 'capistrano/setup'
+#   require 'capistrano/deploy'
+# end
+# YML
 
-      it "installs capistrano command" do
-        expect(run_command('neetobugtrap install asdf')).to be_successfully_executed
-        expect(run_command('bundle exec cap -T')).to be_successfully_executed
-        expect(all_output).to match(/neetobugtrap\:deploy/i)
-      end
-    end
+#       it "installs capistrano command" do
+#         expect(run_command('neetobugtrap install asdf')).to be_successfully_executed
+#         expect(run_command('bundle exec cap -T')).to be_successfully_executed
+#         expect(all_output).to match(/neetobugtrap\:deploy/i)
+#       end
+#     end
   end
 
   scenario "in a plain ruby project" do

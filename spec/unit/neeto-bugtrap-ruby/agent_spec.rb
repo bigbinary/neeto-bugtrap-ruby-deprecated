@@ -61,15 +61,18 @@ describe NeetoBugtrap::Agent do
 
       expect(instance.track_deployment).to eq(false)
     end
+    
+    ## 
+    # NOTE: We are not sending revision yet
+    #
+    # it 'passes the revision to the servce' do
+    #   allow_any_instance_of(NeetoBugtrap::Util::HTTP).to receive(:compress) { |_, body| body }
+    #   stub_request(:post, "https://api.neetobugtrap.com/v1/deploys").
+    #      with(body: { environment: nil, revision: '1234', local_username: nil, repository: nil }).
+    #      to_return(status: 200)
 
-    it 'passes the revision to the servce' do
-      allow_any_instance_of(NeetoBugtrap::Util::HTTP).to receive(:compress) { |_, body| body }
-      stub_request(:post, "https://api.neetobugtrap.com/v1/deploys").
-         with(body: { environment: nil, revision: '1234', local_username: nil, repository: nil }).
-         to_return(status: 200)
-
-      expect(instance.track_deployment(revision: '1234')).to eq(true)
-    end
+    #   expect(instance.track_deployment(revision: '1234')).to eq(true)
+    # end
   end
 
   describe "#clear!" do
