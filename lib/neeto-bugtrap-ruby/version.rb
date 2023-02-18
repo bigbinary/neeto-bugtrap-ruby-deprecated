@@ -1,4 +1,3 @@
 module NeetoBugtrap
-  # The current String NeetoBugtrap version.
-  VERSION = '5.0.2'.freeze
+  VERSION = '1.0.0'.freeze
 end
