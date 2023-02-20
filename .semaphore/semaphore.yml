@@ -27,4 +27,5 @@ blocks:
       jobs:
         - name: Gem tests
           commands:
+            - bundle exec neeto-audit
             - bundle exec rake test
