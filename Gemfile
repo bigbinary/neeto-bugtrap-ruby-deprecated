@@ -29,3 +29,17 @@ group :development do
   gem 'pry-byebug', platforms: :mri
   gem 'rdoc'
 end
+
+group :development, :test do
+  source "https://O6Ts9-SVDaUZpHMRs2CpJp22RwbETDE@gems.neeto.com" do
+
+    # neeto-commons-backend gem for methods and modules that are used across all neeto products.
+    gem "neeto-commons-backend"
+
+    # For neeto audit
+    gem "neeto-compliance"
+
+  end
+end
+
+
