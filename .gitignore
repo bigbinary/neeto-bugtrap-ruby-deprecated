@@ -7,3 +7,6 @@ Gemfile.lock
 .rbenv-vars
 java.hprof.txt
 .yardoc
+
+# Igonore built gem file
+*.gem
